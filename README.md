@@ -44,8 +44,8 @@ Cargar `sql/datos_prueba.sql`. Contraseña de todas las cuentas: `Prueba2026*`.
 | Rol | Correo |
 |---|---|
 | Coordinador | coordinador.prueba@correo.uts.edu.co |
-| Docente (director del proyecto de prueba) | director.prueba@correo.uts.edu.co |
-| Docente (evaluador del proyecto de prueba) | evaluador.prueba@correo.uts.edu.co |
+| Docente 1 (director del proyecto de prueba) | docente1.prueba@correo.uts.edu.co |
+| Docente 2 (evaluador del proyecto de prueba) | docente2.prueba@correo.uts.edu.co |
 | Estudiante (aprobada, nivel Tecnológico) | estudiante.prueba@uts.edu.co |
 | Estudiante (cuenta pendiente) | pendiente.prueba@uts.edu.co |
 
