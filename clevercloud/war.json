@@ -1,0 +1,8 @@
+{
+  "deploy": {
+    "container": "TOMCAT9",
+    "war": [
+      { "file": "app.war", "context": "/", "checkMe": "/" }
+    ]
+  }
+}

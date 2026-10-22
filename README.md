@@ -18,6 +18,9 @@ Detalle de carpetas en la sección 9 del documento del sistema (`docs/`).
 1. Crear una base MySQL 8 vacía.
 2. Ejecutar `sql/schema.sql` y luego `sql/datos_iniciales.sql`.
 
+## Despliegue en Clever Cloud
+Tipo de app: Java + WAR (Tomcat 9, Java 21). Variables propias: `CC_JAVA_VERSION=21` y `CC_PRE_BUILD_HOOK="jar cf app.war -C webapp ."` (arma el WAR sin Maven). `clevercloud/war.json` declara el contenedor. Para publicar: `clever deploy`.
+
 ## Variables de entorno
 La conexión nunca está escrita en el código; se leen estas variables (las define Clever Cloud al enlazar el add-on MySQL):
 
