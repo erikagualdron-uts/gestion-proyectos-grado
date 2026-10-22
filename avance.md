@@ -42,3 +42,23 @@
 - Las opciones de menú de módulos aún no construidos llevan a la página "Página no disponible" (aceptado).
 
 **Pruebas hechas en el despliegue (con peticiones HTTP):** login de administrador, coordinador, estudiante y docente; clave incorrecta; cuenta pendiente; POST sin token CSRF; acceso sin sesión; sesión recordada y cierre de sesión; validaciones del registro. **Sin probar aún:** acceso denegado por rol (aún no hay páginas restringidas por rol; se prueba con el módulo de usuarios).
+
+## Jueves – Módulo 1: Usuarios, aprobación de cuentas y perfil (RF-08 a RF-16)
+**Implementado**
+- **Usuarios** (administrador): tarjetas de resumen, búsqueda por nombre, correo o documento, filtros por rol y estado, tabla con paginación (5, 10 o 20 por página), ventana de detalle (ojo) y edición (lápiz).
+- **Crear y editar usuarios**: administradores, coordinadores y docentes con contraseña inicial (hash y sal); el administrador puede cambiar documento y correo y restablecer la contraseña; inactivar y reactivar (borrado lógico, se conserva el historial). No se puede inactivar la propia cuenta ni dejar el sistema sin administrador activo.
+- **Solicitudes de cuenta**: lista de estudiantes pendientes; aprobar exige el nivel (Tecnológico o Profesional); rechazar exige observación y confirmación y no asigna nivel.
+- **Mi perfil** (todos los roles): nombre y tipo de documento editables; documento, correo, rol y nivel visibles y bloqueados; foto por enlace (cambiar o eliminar, imagen por defecto); cambio de contraseña.
+- Aviso en el inicio del administrador con las solicitudes pendientes.
+- Todo cambio queda en `historial_version` (registro, creación, edición, inactivación, aprobación o rechazo, perfil, contraseña).
+
+**Pantallas:** `usuarios/usuarios.jsp`, `usuarios/usuario_form.jsp`, `usuarios/cuentas_pendientes.jsp`, `perfil/perfil.jsp`.
+**Procesos:** `usuario_proc.jsp`, `cuenta_decision_proc.jsp`, `perfil_proc.jsp`. **Fragmento nuevo:** `paginacion.jsp`; scripts `tablas.js`.
+**Requerimientos:** RF-04, RF-08, RF-09, RF-10, RF-11, RF-12, RF-13, RF-14, RF-15, RF-16. **Historias:** HU-03, HU-04, HU-05, HU-06, HU-07.
+
+**Problemas resueltos**
+- `fmt:formatNumber` devolvía "2.0" y rompía el cálculo de páginas; el total se calcula con EL y `fn:substringBefore`.
+- Los datos de la sesión (nombre, foto, rol, nivel) se refrescan desde la base en cada página, así un cambio hecho por el administrador se ve de inmediato.
+
+**Pruebas hechas en el despliegue (peticiones HTTP):** crear usuario con dominio incorrecto, rol inválido, claves distintas y duplicado; crear, editar (documento, correo, rol y contraseña), inactivar y reactivar; login del inactivo; aprobar sin nivel y rechazar sin observación; aprobar y rechazar; volver a decidir una cuenta ya gestionada; login de aprobado y rechazado; **acceso denegado por rol** (estudiante y docente a páginas del administrador, y a sus procesos); POST sin token y sin sesión; perfil (validaciones, foto, enlace no válido, quitar foto, documento y correo no modificables por POST, cambio de contraseña); nombres con HTML se muestran escapados.
+**Decisiones:** el estudiante rechazado no puede reactivarse desde la pantalla (solo se edita su información); el correo del personal debe ser `@correo.uts.edu.co` y el de estudiantes `@uts.edu.co`.
