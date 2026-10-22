@@ -4,6 +4,6 @@
      Las credenciales vienen de variables de entorno (Clever Cloud). --%>
 <sql:setDataSource var="bd" scope="request"
     driver="com.mysql.cj.jdbc.Driver"
-    url="jdbc:mysql://${System.getenv('MYSQL_ADDON_HOST')}:${System.getenv('MYSQL_ADDON_PORT')}/${System.getenv('MYSQL_ADDON_DB')}?useUnicode=true&characterEncoding=UTF-8&connectionTimeZone=America/Bogota"
+    url="jdbc:mysql://${System.getenv('MYSQL_ADDON_HOST')}:${System.getenv('MYSQL_ADDON_PORT')}/${System.getenv('MYSQL_ADDON_DB')}?useUnicode=true&characterEncoding=UTF-8&connectionTimeZone=America/Bogota&useOldAliasMetadataBehavior=true"
     user="${System.getenv('MYSQL_ADDON_USER')}"
     password="${System.getenv('MYSQL_ADDON_PASSWORD')}" />
