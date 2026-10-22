@@ -30,6 +30,15 @@
       if (!boton) { return; }
       var formulario = modal.querySelector('form');
       if (formulario) { formulario.reset(); formulario.classList.remove('was-validated'); }
+      // data-llenar-accion: la ruta del proceso viene en el botón (data-accion-url)
+      modal.querySelectorAll('form[data-llenar-accion]').forEach(function (f) {
+        if (boton.dataset.accionUrl) { f.action = boton.dataset.accionUrl; }
+      });
+      // data-mostrar-si="clave:valor": muestra el bloque solo si el botón trae ese dato
+      modal.querySelectorAll('[data-mostrar-si]').forEach(function (bloque) {
+        var par = bloque.getAttribute('data-mostrar-si').split(':');
+        bloque.hidden = (boton.dataset[par[0]] !== par[1]);
+      });
       modal.querySelectorAll('[data-llenar]').forEach(function (nodo) {
         var valor = boton.dataset[nodo.getAttribute('data-llenar')];
         nodo.textContent = (valor && valor.length) ? valor : '—';
@@ -44,11 +53,13 @@
   document.querySelectorAll('form[data-decisiones]').forEach(function (form) {
     form.addEventListener('submit', function (evento) {
       var decision = evento.submitter ? evento.submitter.value : '';
-      form.querySelector('[name="nivel"]').required = (decision === 'APROBAR');
-      form.querySelector('[name="observacion"]').required = (decision === 'RECHAZAR');
+      var nivel = form.querySelector('[name="nivel"]');
+      var observacion = form.querySelector('[name="observacion"]');
+      if (nivel) { nivel.required = (decision === 'APROBAR'); }
+      if (observacion) { observacion.required = (decision === 'RECHAZAR' || decision === 'APLAZAR'); }
       form.classList.add('was-validated');
       if (!form.checkValidity()) { evento.preventDefault(); return; }
-      if (decision === 'RECHAZAR' && !window.confirm('¿Seguro que deseas rechazar esta cuenta? Esta decisión es extrema y queda registrada.')) {
+      if (decision === 'RECHAZAR' && !window.confirm('¿Seguro que deseas rechazar? Esta decisión es extrema y queda registrada.')) {
         evento.preventDefault();
       }
     });

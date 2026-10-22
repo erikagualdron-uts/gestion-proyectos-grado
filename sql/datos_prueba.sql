@@ -8,11 +8,11 @@ INSERT INTO usuario (id_rol, tipo_documento, numero_documento, nombre_completo, 
   ((SELECT id_rol FROM rol WHERE nombre = 'COORDINADOR'), 'CC', '1000000001', 'María Rojas Prueba',
    'coordinador.prueba@correo.uts.edu.co', SHA2(CONCAT('a1b2c3d4e5f60718', 'Prueba2026*'), 256), 'a1b2c3d4e5f60718',
    NULL, 'APROBADA', NULL, NOW()),
-  ((SELECT id_rol FROM rol WHERE nombre = 'DOCENTE'), 'CC', '1000000002', 'Carlos Director Prueba',
-   'director.prueba@correo.uts.edu.co', SHA2(CONCAT('b2c3d4e5f6071829', 'Prueba2026*'), 256), 'b2c3d4e5f6071829',
+  ((SELECT id_rol FROM rol WHERE nombre = 'DOCENTE'), 'CC', '1000000002', 'Carlos Docente Uno',
+   'docente1.prueba@correo.uts.edu.co', SHA2(CONCAT('b2c3d4e5f6071829', 'Prueba2026*'), 256), 'b2c3d4e5f6071829',
    NULL, 'APROBADA', NULL, NOW()),
-  ((SELECT id_rol FROM rol WHERE nombre = 'DOCENTE'), 'CC', '1000000003', 'Laura Evaluadora Prueba',
-   'evaluador.prueba@correo.uts.edu.co', SHA2(CONCAT('c3d4e5f60718293a', 'Prueba2026*'), 256), 'c3d4e5f60718293a',
+  ((SELECT id_rol FROM rol WHERE nombre = 'DOCENTE'), 'CC', '1000000003', 'Laura Docente Dos',
+   'docente2.prueba@correo.uts.edu.co', SHA2(CONCAT('c3d4e5f60718293a', 'Prueba2026*'), 256), 'c3d4e5f60718293a',
    NULL, 'APROBADA', NULL, NOW()),
   ((SELECT id_rol FROM rol WHERE nombre = 'ESTUDIANTE'), 'CC', '1000000004', 'Erika Estudiante Prueba',
    'estudiante.prueba@uts.edu.co', SHA2(CONCAT('d4e5f60718293a4b', 'Prueba2026*'), 256), 'd4e5f60718293a4b',
@@ -22,17 +22,17 @@ INSERT INTO usuario (id_rol, tipo_documento, numero_documento, nombre_completo, 
    NULL, 'PENDIENTE', NULL, NULL);
 
 SET @coordinador := (SELECT id_usuario FROM usuario WHERE correo = 'coordinador.prueba@correo.uts.edu.co');
-SET @director    := (SELECT id_usuario FROM usuario WHERE correo = 'director.prueba@correo.uts.edu.co');
-SET @evaluador   := (SELECT id_usuario FROM usuario WHERE correo = 'evaluador.prueba@correo.uts.edu.co');
+SET @docente1    := (SELECT id_usuario FROM usuario WHERE correo = 'docente1.prueba@correo.uts.edu.co');
+SET @docente2    := (SELECT id_usuario FROM usuario WHERE correo = 'docente2.prueba@correo.uts.edu.co');
 SET @estudiante  := (SELECT id_usuario FROM usuario WHERE correo = 'estudiante.prueba@uts.edu.co');
 
 -- Dos ideas aprobadas del banco
 INSERT INTO idea_banco (codigo, id_docente, titulo, descripcion, objetivo, alcance, estado_decision, id_revisor, disponible, fecha_decision) VALUES
-  ('ID-0001', @director, 'Sistema web para el control de inventario de laboratorios',
+  ('ID-0001', @docente1, 'Sistema web para el control de inventario de laboratorios',
    'Aplicación web para registrar y consultar los equipos de los laboratorios.',
    'Controlar el préstamo y el estado de los equipos.', 'Módulos de inventario, préstamos y reportes.',
    'APROBADO', @coordinador, 0, NOW()),
-  ('ID-0002', @evaluador, 'Aplicación móvil para el reporte de residuos en el campus',
+  ('ID-0002', @docente2, 'Aplicación móvil para el reporte de residuos en el campus',
    'Aplicación para reportar puntos críticos de residuos en el campus.',
    'Facilitar el reporte y seguimiento de residuos.', 'Reporte con foto, mapa y seguimiento.',
    'APROBADO', @coordinador, 1, NOW());
@@ -49,7 +49,7 @@ SET @propuesta := (SELECT id_propuesta FROM propuesta WHERE codigo = 'PG-0001');
 INSERT INTO propuesta_estudiante (id_propuesta, id_estudiante, es_responsable) VALUES (@propuesta, @estudiante, 1);
 
 INSERT INTO proyecto (id_propuesta, id_director, id_evaluador, fase_actual, estado_general, fecha_inicio)
-VALUES (@propuesta, @director, @evaluador, 2, 'EN_CURSO', CURDATE());
+VALUES (@propuesta, @docente1, @docente2, 2, 'EN_CURSO', CURDATE());
 SET @proyecto := (SELECT id_proyecto FROM proyecto WHERE id_propuesta = @propuesta);
 
 INSERT INTO proyecto_fase (id_proyecto, id_fase, estado, fecha_inicio, fecha_fin) VALUES

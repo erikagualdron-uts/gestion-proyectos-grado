@@ -12,13 +12,13 @@ INSERT INTO fase (id_fase, numero, nombre, descripcion) VALUES
   (4,4,'Informe I','El estudiante envía el informe al director'),
   (5,5,'Informe II','El director envía el informe al evaluador y al comité'),
   (6,6,'Revisión final','Evaluador y comité aprueban o aplazan');
-INSERT INTO enlace_documental (nombre, descripcion, url, orden) VALUES
-  ('Calendario académico','Fechas del semestre','#',1),
-  ('Formatos institucionales','Formatos de grado','#',2),
-  ('Presentación de propuesta','Guía para la propuesta','#',3),
-  ('Presentación de informe final','Guía del informe final','#',4),
-  ('Reglamento de estímulos','Estímulos para trabajos de grado','#',5),
-  ('Reglamento de trabajos de grado','Reglamento vigente','#',6);
+INSERT INTO enlace_documental (nombre, descripcion, url, icono, orden) VALUES
+  ('Calendario académico','Fechas del semestre','#','bi-calendar-event',1),
+  ('Formatos institucionales','Formatos de grado','#','bi-file-earmark-text',2),
+  ('Presentación de propuesta','Guía para la propuesta','#','bi-easel',3),
+  ('Presentación de informe final','Guía del informe final','#','bi-mortarboard',4),
+  ('Reglamento de estímulos','Estímulos para trabajos de grado','#','bi-award',5),
+  ('Reglamento de trabajos de grado','Reglamento vigente','#','bi-journal-text',6);
 -- Administrador inicial (cambiar la contraseña tras el primer ingreso)
 INSERT INTO usuario (id_rol, tipo_documento, numero_documento, nombre_completo,
                      correo, contrasena_hash, sal, estado_cuenta)

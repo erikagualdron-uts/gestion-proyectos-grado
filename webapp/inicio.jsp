@@ -40,6 +40,10 @@
   </sql:query>
 </c:if>
 
+<sql:query var="calendario" dataSource="${bd}">
+  SELECT url FROM enlace_documental WHERE nombre LIKE 'Calendario%' AND activo = 1 ORDER BY orden LIMIT 1
+</sql:query>
+
 <%-- Administrador: solicitudes de cuenta por revisar --%>
 <c:if test="${sessionScope.rol == 'ADMINISTRADOR'}">
   <sql:query var="pendientesCuenta" dataSource="${bd}">
@@ -83,6 +87,16 @@
       </a>
     </div>
   </c:forEach>
+  <%-- Calendario académico (RF-18): abre el enlace externo configurado en la base documental --%>
+  <c:if test="${calendario.rowCount > 0 and (fn:startsWith(calendario.rows[0].url, 'https://') or fn:startsWith(calendario.rows[0].url, 'http://'))}">
+    <div class="col-12 col-md-6 col-xl-4">
+      <a class="tarjeta tarjeta-modulo" href="<c:out value='${calendario.rows[0].url}' />" target="_blank" rel="noopener noreferrer">
+        <span class="icono-caja"><i class="bi bi-calendar-event"></i></span>
+        <h3>Calendario académico <i class="bi bi-box-arrow-up-right fs-6 text-secondary"></i></h3>
+        <p>Consulta las fechas del semestre.</p>
+      </a>
+    </div>
+  </c:if>
 </div>
 
 <c:if test="${sessionScope.rol == 'ADMINISTRADOR' and pendientesCuenta.rows[0].total > 0}">
