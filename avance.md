@@ -117,3 +117,30 @@
 
 **Pruebas hechas en el despliegue (peticiones HTTP):** lista, filtros y búsqueda; mismo docente como director y evaluador; usuarios que no son docentes; docente inactivo (no aparece ni se acepta por POST directo); proyecto inexistente y datos no numéricos; guardar sin cambios; cambiar, quitar y restaurar la asignación; inicio del estudiante con director y evaluador; búsqueda de estudiantes (documento, nombre, código, sin resultados); accesos y procesos prohibidos para docente, estudiante y administrador.
 **Pendiente:** la pantalla de seguimiento a la que enlazan los ojos (módulo 4).
+
+## Jueves – Módulo 4: Fases, entregas, revisiones y módulos de docentes (RF-38 a RF-52)
+**Reglas del flujo (definidas a partir del PDF)**
+| Fase | Entrega | Decide |
+|---|---|---|
+| 1 Pago | Estudiante responsable (comprobante) | Coordinador (comité) |
+| 2 Propuesta I | Estudiante responsable (anteproyecto) | Director |
+| 3 Propuesta II | Se copia el documento aprobado en la fase 2 | El director aprueba el envío; luego evaluador y comité (avanza cuando ambos aprueban) |
+| 4 Informe I | Estudiante responsable (informe) | Director |
+| 5 Informe II | Se copia el informe aprobado en la fase 4 | Igual que la fase 3 |
+| 6 Revisión final | Estudiante responsable (informe final) | Evaluador y comité (ambos) |
+- Aplazado: el proyecto se queda en la fase, el responsable sube una nueva versión (v2, v3…) y la revisión vuelve a empezar; las versiones anteriores se conservan y la vigente queda marcada. En las fases 3 y 5 la nueva versión vuelve primero al director.
+- Rechazado: exige observación y confirmación y cierra el proyecto. Fase 6 aprobada: el proyecto queda "Apto para graduación".
+- Rejilla de evaluación (la adjunta el evaluador) y Turnitin (lo adjunta el director en la fase 5): enlaces opcionales al calificar.
+- Solo el responsable entrega; el compañero solo visualiza. Si el responsable está inactivo, el proyecto no recibe documentos.
+
+**Implementado**
+- **Seguimiento** (`proyectos/seguimiento.jsp`): línea de tiempo con las seis tarjetas (verdes las superadas y la actual con aro lima, grises las pendientes, roja la rechazada), detalle de la fase elegida con sus documentos y versiones (estado, quién entregó y enlace), tabla de revisiones, ventana "Detalles del proyecto", entrega por enlace del responsable y botón para calificar. Acceso: estudiantes del proyecto, director y evaluador asignados, coordinador y administrador.
+- **Entrega por enlace** (`entrega_proc.jsp`): valida URL, crea nueva versión vigente, conserva las anteriores y avisa al revisor.
+- **Calificar** (`revision_form.jsp`, `revision_proc.jsp`): crear, editar y consultar la revisión; observación obligatoria para aplazar o rechazar; la fase avanza, se devuelve o se cierra según las decisiones; avisos a estudiantes y siguientes revisores; historial de cada paso.
+- **Docente Director y Docente Evaluador**: tabla con ID, descripción y estado (fase, estudiantes, "Por revisar"), ojo y lápiz, tarjetas de fase que filtran, búsqueda y paginación. Un docente solo ve los proyectos donde ocupa ese papel.
+
+**Pantallas:** `proyectos/seguimiento.jsp`, `proyectos/revision_form.jsp`, `docente_director/docente_director.jsp`, `docente_evaluador/docente_evaluador.jsp`. **Procesos:** `entrega_proc.jsp`, `revision_proc.jsp`. **Fragmentos:** `fases.jsp`, `proyectos_docente.jsp`.
+**Requerimientos:** RF-38 a RF-52 (RF-46 con confirmación en el navegador). **Historias:** HU-22 a HU-32.
+
+**Pruebas hechas en el despliegue (peticiones HTTP):** ciclo completo de las seis fases hasta "Apto para graduación" (con aplazados en las fases 1, 2 y 3, rejilla y Turnitin); compañero y otros roles que intentan entregar o calificar; enlaces inválidos; entrega mientras el documento está en revisión; evaluador y comité antes de que el director apruebe el envío (también por POST directo); documento cambiado o inexistente; rechazo que cierra el proyecto y bloqueo de nuevas entregas y decisiones; permisos del seguimiento por rol (estudiante ajeno, docente no asignado); tablas de Director y Evaluador con filtro por fase y búsqueda; historial de versiones y revisiones en la base.
+**Pendiente / mejoras posibles:** que el coordinador vea en su asignación un indicador de proyectos "por validar".
