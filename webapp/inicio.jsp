@@ -84,13 +84,13 @@
       <a class="btn btn-outline-uts" href="${ctx}/modulos/notificaciones/notificaciones.jsp">Ver notificaciones</a>
     </div>
   </c:when>
-  <c:otherwise>
+  <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
     <div class="vacio">
       <span class="icono-circulo"><i class="bi bi-file-earmark"></i></span>
       <h3>Aún no hay revisiones nuevas</h3>
-      <p>Cuando haya novedades en tus proyectos, las verás aquí.</p>
+      <p>Cuando tu director revise un documento, lo verás aquí.</p>
     </div>
-  </c:otherwise>
+  </c:when>
 </c:choose>
 
 <jsp:include page="/WEB-INF/includes/pie.jsp" />
