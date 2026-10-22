@@ -99,3 +99,21 @@
 - `main`: módulo de acceso (RF-01 a RF-07) y módulo 1 (usuarios, cuentas y perfil, RF-08 a RF-16), probados.
 - `develop`: además, módulo 2 (RF-17 a RF-28), pendiente de que lo pruebe la estudiante antes de integrarlo a `main`.
 - Siguiente: módulo 3 (tabla de solicitudes, asignación de director y evaluador, RF-29 a RF-37).
+
+## Jueves – Módulo 3: Asignación de proyectos (RF-33 a RF-37)
+**Implementado**
+- **Asignación de director y evaluador** (coordinador, RF-34, RF-35): tabla de proyectos con tarjetas de resumen (proyectos, sin director, sin evaluador, completos), búsqueda por código, título, estudiante, director o evaluador, filtro por estado de asignación y paginación. El lápiz abre una ventana para elegir director y evaluador entre los docentes activos.
+- **Reglas**: el director y el evaluador deben ser docentes distintos (en el navegador, en el servidor y con la restricción de la base de datos); solo se aceptan docentes activos con cuenta aprobada; solo se modifican proyectos en curso. Se puede reasignar o quitar un docente.
+- **Trazabilidad y avisos**: cada cambio queda en el historial del proyecto; se avisa al docente asignado y a los estudiantes del proyecto.
+- **Buscar estudiante** (RF-36): por documento, nombre, correo o código de propuesta; muestra su propuesta (o anteproyecto), estado, fase, director y evaluador, e indica si es compañero.
+- **Información para el estudiante** (RF-37): el inicio muestra su director y su evaluador (o "Por asignar").
+- **Seguimiento por fila** (RF-33): en Propuestas Banco y en las tablas de proyectos aparece la opción de ver el seguimiento (la pantalla de seguimiento se construye en el módulo 4).
+
+**Pantallas:** `proyectos/asignacion.jsp`, `proyectos/buscar_estudiante.jsp`. **Proceso:** `asignacion_proc.jsp`.
+**Requerimientos:** RF-33 (enlace), RF-34, RF-35, RF-36, RF-37. **Historias:** HU-20 y HU-21.
+
+**Problemas resueltos**
+- `es_responsable` (TINYINT(1)) llega como verdadero/falso y no se puede comparar con 0: se usa `not e.es_responsable`.
+
+**Pruebas hechas en el despliegue (peticiones HTTP):** lista, filtros y búsqueda; mismo docente como director y evaluador; usuarios que no son docentes; docente inactivo (no aparece ni se acepta por POST directo); proyecto inexistente y datos no numéricos; guardar sin cambios; cambiar, quitar y restaurar la asignación; inicio del estudiante con director y evaluador; búsqueda de estudiantes (documento, nombre, código, sin resultados); accesos y procesos prohibidos para docente, estudiante y administrador.
+**Pendiente:** la pantalla de seguimiento a la que enlazan los ojos (módulo 4).
