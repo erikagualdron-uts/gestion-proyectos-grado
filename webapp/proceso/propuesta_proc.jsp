@@ -131,6 +131,15 @@
     </c:if>
   </c:if>
   <c:set var="editaContenido" value="${accion == 'crear' or (accion == 'editar' and empty errorPropuesta and actual.rows[0].estado_decision == 'APLAZADO')}" />
+  <%-- Una vez agregado, el compañero queda fijo: no se quita ni se cambia --%>
+  <c:set var="companeroFijo" value="${false}" />
+  <c:if test="${accion == 'editar' and empty errorPropuesta}">
+    <sql:query var="tieneCompa" dataSource="${bd}">
+      SELECT COUNT(*) AS total FROM propuesta_estudiante WHERE id_propuesta = ? AND es_responsable = 0
+      <sql:param value="${idObj}" />
+    </sql:query>
+    <c:set var="companeroFijo" value="${tieneCompa.rows[0].total > 0}" />
+  </c:if>
 
   <c:if test="${empty errorPropuesta and editaContenido}">
     <c:choose>
@@ -147,7 +156,7 @@
   </c:if>
 
   <%-- Segundo estudiante: debe existir, estar aprobado y activo, ser otra persona y estar libre --%>
-  <c:if test="${empty errorPropuesta and not empty companeroIngresado}">
+  <c:if test="${empty errorPropuesta and not empty companeroIngresado and not companeroFijo}">
     <sql:query var="compa" dataSource="${bd}">
       SELECT u.id_usuario, u.nombre_completo FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
       WHERE u.numero_documento = ? AND r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'APROBADA' AND u.activo = 1
@@ -175,12 +184,6 @@
 
   <c:if test="${empty errorPropuesta}">
     <c:set var="descripcionFinal" value="${empty descripcionIngresada ? tituloIngresado : descripcionIngresada}" />
-    <c:if test="${accion == 'editar' and not empty companeroIngresado}">
-      <sql:query var="yaEra" dataSource="${bd}">
-        SELECT COUNT(*) AS total FROM propuesta_estudiante WHERE id_propuesta = ? AND id_estudiante = ? AND es_responsable = 0
-        <sql:param value="${idObj}" /><sql:param value="${compa.rows[0].id_usuario}" />
-      </sql:query>
-    </c:if>
     <c:if test="${accion == 'editar'}">
       <sql:query var="versiones" dataSource="${bd}">
         SELECT COUNT(*) AS total FROM historial_version WHERE entidad = 'PROPUESTA' AND id_entidad = ? AND accion = 'REENVIAR'
@@ -246,24 +249,24 @@
                 <sql:param value="${'La propuesta ' += actual.rows[0].codigo += ' fue corregida y reenviada.'}" />
               </sql:update>
             </c:if>
-            <sql:update>
-              DELETE FROM propuesta_estudiante WHERE id_propuesta = ? AND es_responsable = 0
-              <sql:param value="${idPropuesta}" />
-            </sql:update>
+            <c:if test="${not companeroFijo}">
+              <sql:update>
+                DELETE FROM propuesta_estudiante WHERE id_propuesta = ? AND es_responsable = 0
+                <sql:param value="${idPropuesta}" />
+              </sql:update>
+            </c:if>
           </c:otherwise>
         </c:choose>
-        <c:if test="${not empty companeroIngresado}">
+        <c:if test="${not empty companeroIngresado and not companeroFijo}">
           <sql:update>
             INSERT INTO propuesta_estudiante (id_propuesta, id_estudiante, es_responsable) VALUES (?, ?, 0)
             <sql:param value="${idPropuesta}" /><sql:param value="${compa.rows[0].id_usuario}" />
           </sql:update>
-          <c:if test="${accion == 'crear' or yaEra.rows[0].total == 0}">
-            <sql:update>
-              INSERT INTO notificacion (id_usuario, tipo, mensaje) VALUES (?, 'COMPANERO_AGREGADO', ?)
-              <sql:param value="${compa.rows[0].id_usuario}" />
-              <sql:param value="${sessionScope.nombre += ' te agregó como compañero en una propuesta de trabajo de grado.'}" />
-            </sql:update>
-          </c:if>
+          <sql:update>
+            INSERT INTO notificacion (id_usuario, tipo, mensaje) VALUES (?, 'COMPANERO_AGREGADO', ?)
+            <sql:param value="${compa.rows[0].id_usuario}" />
+            <sql:param value="${sessionScope.nombre += ' te agregó como compañero en una propuesta de trabajo de grado.'}" />
+          </sql:update>
         </c:if>
       </sql:transaction>
     </c:catch>
@@ -273,7 +276,7 @@
   <c:choose>
     <c:when test="${empty errorPropuesta}">
       <c:set var="flashTipo" value="success" scope="session" />
-      <c:set var="flashMsg" value="${accion == 'crear' ? 'Propuesta enviada. Queda pendiente de aprobación del coordinador.' : (editaContenido ? 'Propuesta corregida y reenviada. Queda pendiente de aprobación.' : 'Compañero actualizado.')}" scope="session" />
+      <c:set var="flashMsg" value="${accion == 'crear' ? 'Propuesta enviada. Queda pendiente de aprobación del coordinador.' : (editaContenido ? 'Propuesta corregida y reenviada. Queda pendiente de aprobación.' : 'Compañero agregado.')}" scope="session" />
       <c:redirect url="/modulos/propuestas/propuestas_banco.jsp" />
     </c:when>
     <c:otherwise>

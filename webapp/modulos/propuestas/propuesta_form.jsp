@@ -48,6 +48,7 @@
 </c:if>
 
 <c:set var="editando" value="${not empty propuesta}" />
+<c:set var="companeroFijo" value="${editando and companero.rowCount > 0}" />
 <c:set var="contenidoEditable" value="${not editando or propuesta.estado_decision == 'APLAZADO'}" />
 <c:set var="titulo" value="${editando ? 'Corregir propuesta' : 'Nueva propuesta'}" scope="request" />
 <c:set var="vTitulo" value="${not empty sessionScope.vpTitulo ? sessionScope.vpTitulo : (editando ? propuesta.titulo : '')}" />
@@ -63,7 +64,7 @@
   <c:choose>
     <c:when test="${not editando}">Propón tu propia idea de trabajo de grado. Quedará pendiente de aprobación del coordinador.</c:when>
     <c:when test="${propuesta.estado_decision == 'APLAZADO'}">El coordinador aplazó tu propuesta. Corrígela y reenvíala; se conserva la versión anterior en el historial.</c:when>
-    <c:otherwise>Tu propuesta está pendiente de decisión. Mientras tanto solo puedes agregar o cambiar a tu compañero.</c:otherwise>
+    <c:otherwise>Tu propuesta está pendiente de decisión. Mientras tanto solo puedes agregar a tu compañero (si aún no lo tienes).</c:otherwise>
   </c:choose>
 </p>
 
@@ -102,17 +103,20 @@
 
         <div class="mb-4">
           <label for="companero" class="form-label">Segundo estudiante <span class="texto-sec">(opcional)</span></label>
-          <input type="text" class="form-control" id="companero" name="companero" maxlength="20" pattern="[0-9A-Za-z]{5,20}" inputmode="numeric" placeholder="Número de documento de tu compañero" value="<c:out value='${vCompanero}' />">
+          <input type="text" class="form-control ${companeroFijo ? 'campo-bloqueado' : ''}" id="companero" name="companero" maxlength="20" pattern="[0-9A-Za-z]{5,20}" inputmode="numeric" placeholder="Número de documento de tu compañero"
+                 value="<c:out value='${companeroFijo ? companero.rows[0].numero_documento : vCompanero}' />" ${companeroFijo ? 'readonly' : ''}>
           <div class="form-text">
-            Debe tener cuenta aprobada y no estar en otra propuesta activa.
-            <c:if test="${editando and companero.rowCount > 0}"> Actual: <strong><c:out value="${companero.rows[0].nombre_completo}" /></strong>. Déjalo vacío para quitarlo.</c:if>
+            <c:choose>
+              <c:when test="${companeroFijo}">Compañero registrado: <strong><c:out value="${companero.rows[0].nombre_completo}" /></strong>. Ya no se puede modificar.</c:when>
+              <c:otherwise>Debe tener cuenta aprobada y no estar en otra propuesta activa. Una vez agregado, no se podrá cambiar.</c:otherwise>
+            </c:choose>
           </div>
           <div class="invalid-feedback">Entre 5 y 20 letras o números.</div>
         </div>
 
         <div class="d-flex flex-wrap gap-2">
           <button type="submit" class="btn btn-uts px-4">
-            <i class="bi bi-send me-1"></i>${not editando ? 'Enviar propuesta' : (propuesta.estado_decision == 'APLAZADO' ? 'Corregir y reenviar' : 'Guardar compañero')}
+            <i class="bi bi-send me-1"></i>${not editando ? 'Enviar propuesta' : (propuesta.estado_decision == 'APLAZADO' ? 'Corregir y reenviar' : 'Agregar compañero')}
           </button>
           <a class="btn btn-outline-uts px-4" href="${ctx}/modulos/propuestas/propuestas_banco.jsp">Cancelar</a>
         </div>
