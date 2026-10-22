@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@ include file="/WEB-INF/includes/conexion.jsp" %>
 <c:set var="rolesPermitidos" value="ADMINISTRADOR" />
@@ -22,7 +21,7 @@
   <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" />
 </sql:query>
 <c:set var="totalRegistros" value="${conteo.rows[0].total}" />
-<fmt:formatNumber var="totalPaginas" value="${((totalRegistros + pp - 1) - ((totalRegistros + pp - 1) mod pp)) div pp}" pattern="#" />
+<c:set var="totalPaginas" value="${fn:substringBefore(((totalRegistros + pp - 1) - ((totalRegistros + pp - 1) mod pp)) div pp, '.')}" />
 <c:set var="totalPaginas" value="${totalPaginas < 1 ? 1 : totalPaginas}" />
 <c:set var="pagActual" value="${pagPedida > totalPaginas ? totalPaginas : pagPedida}" />
 
