@@ -8,6 +8,7 @@
 <%-- Crear o editar un usuario (RF-08, RF-10, RF-11). Sin id: crea personal (administrador, coordinador, docente).
      Con id: edita, incluidos el documento y el correo, e inactiva o reactiva. --%>
 <c:set var="menuActivo" value="/modulos/usuarios/usuarios.jsp" scope="request" />
+<c:set var="volverA" value="/modulos/usuarios/usuarios.jsp" scope="request" />
 
 <c:if test="${not empty param.id}">
   <c:catch var="idInvalido"><c:set var="idEditar" value="${param.id + 0}" /></c:catch>
