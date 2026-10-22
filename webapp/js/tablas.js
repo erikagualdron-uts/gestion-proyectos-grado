@@ -65,6 +65,25 @@
     });
   });
 
+  // Asignación: el director y el evaluador no pueden ser la misma persona
+  document.querySelectorAll('form[data-asignacion]').forEach(function (form) {
+    var director = form.querySelector('[name="director"]');
+    var evaluador = form.querySelector('[name="evaluador"]');
+    function revisar() {
+      var iguales = director.value !== '' && director.value === evaluador.value;
+      evaluador.setCustomValidity(iguales ? 'Deben ser distintos' : '');
+      evaluador.classList.toggle('is-invalid', iguales);
+    }
+    director.addEventListener('change', revisar);
+    evaluador.addEventListener('change', revisar);
+    var ventana = form.closest('.modal');
+    if (ventana) { ventana.addEventListener('show.bs.modal', revisar); }
+    form.addEventListener('submit', function (evento) {
+      revisar();
+      if (!form.checkValidity()) { evento.preventDefault(); }
+    });
+  });
+
   // Confirmaciones antes de enviar (data-confirmar="mensaje")
   document.querySelectorAll('form[data-confirmar]').forEach(function (form) {
     form.addEventListener('submit', function (evento) {

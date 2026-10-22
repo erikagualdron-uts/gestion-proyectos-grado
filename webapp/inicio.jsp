@@ -29,10 +29,12 @@
 <%-- Proyecto del estudiante (si ya tiene uno) --%>
 <c:if test="${sessionScope.rol == 'ESTUDIANTE'}">
   <sql:query var="proyecto" dataSource="${bd}">
-    SELECT f.numero, f.nombre AS fase, pf.estado
+    SELECT p.id_proyecto, f.numero, f.nombre AS fase, pf.estado, d.nombre_completo AS director, ev.nombre_completo AS evaluador
     FROM propuesta_estudiante pe
     JOIN proyecto p ON p.id_propuesta = pe.id_propuesta
     JOIN fase f ON f.id_fase = p.fase_actual
+    LEFT JOIN usuario d ON d.id_usuario = p.id_director
+    LEFT JOIN usuario ev ON ev.id_usuario = p.id_evaluador
     LEFT JOIN proyecto_fase pf ON pf.id_proyecto = p.id_proyecto AND pf.id_fase = p.fase_actual
     WHERE pe.id_estudiante = ?
     ORDER BY p.id_proyecto DESC LIMIT 1
@@ -63,6 +65,11 @@
     <div>
       <div class="etiqueta-sup">Tu proyecto</div>
       <div class="fw-bold fs-5 titulo">Fase <c:out value="${py.numero}" /> · <c:out value="${py.fase}" /></div>
+      <div class="texto-sec mt-1">
+        <i class="bi bi-person-check me-1"></i>Director: <strong><c:out value="${empty py.director ? 'Por asignar' : py.director}" /></strong>
+        <span class="mx-1">·</span>
+        <i class="bi bi-clipboard-check me-1"></i>Evaluador: <strong><c:out value="${empty py.evaluador ? 'Por asignar' : py.evaluador}" /></strong>
+      </div>
     </div>
     <div class="d-flex flex-wrap align-items-center gap-3">
       <c:choose>
@@ -71,7 +78,7 @@
         <c:when test="${py.estado == 'RECHAZADA'}"><span class="insignia insignia-rechazado">Rechazado</span></c:when>
         <c:otherwise><span class="insignia insignia-pendiente">En curso</span></c:otherwise>
       </c:choose>
-      <a class="btn btn-uts" href="${ctx}/modulos/proyectos/seguimiento.jsp">Ver seguimiento</a>
+      <a class="btn btn-uts" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${py.id_proyecto}">Ver seguimiento</a>
     </div>
   </div>
 </c:if>
