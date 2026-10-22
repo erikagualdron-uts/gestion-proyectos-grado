@@ -41,7 +41,7 @@
 </c:if>
 
 <sql:query var="calendario" dataSource="${bd}">
-  SELECT url FROM enlace_documental WHERE nombre = 'Calendario académico' AND activo = 1 ORDER BY orden LIMIT 1
+  SELECT url FROM enlace_documental WHERE nombre LIKE 'Calendario%' AND activo = 1 ORDER BY orden LIMIT 1
 </sql:query>
 
 <%-- Administrador: solicitudes de cuenta por revisar --%>
