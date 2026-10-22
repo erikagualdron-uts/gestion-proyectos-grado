@@ -163,8 +163,35 @@ textarea.form-control { height: auto; }
 img.iniciales { object-fit: cover; }
 .campo-bloqueado { background: #F1F4F2 !important; color: var(--texto-sec); }
 
+/* ---------- Seguimiento por fases (línea de tiempo con tarjetas) ---------- */
+.linea-fases { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; padding: 24px; }
+.fase-col { display: flex; flex-direction: column; align-items: center; text-decoration: none; position: relative; }
+.fase-arriba { width: 100%; height: 38px; display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 12px; }
+.fase-arriba::after { content: ''; position: absolute; top: 50%; left: 50%; width: calc(100% + 12px); height: 4px; margin-top: -2px; background: #DDE3E0; z-index: 0; }
+.fase-col:last-child .fase-arriba::after { display: none; }
+.fase-col.superada .fase-arriba::after { background: var(--verde-esmeralda); }
+.fase-circulo { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .85rem; background: #E8ECEA; color: var(--pendiente-texto); position: relative; z-index: 1; }
+.fase-col.superada .fase-circulo { background: var(--verde-esmeralda); color: #fff; }
+.fase-col.actual .fase-circulo { background: var(--verde-esmeralda); color: #fff; box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--lima); }
+.fase-col.rechazada .fase-circulo { background: var(--rechazado-texto); color: #fff; }
+.fase-tarjeta { width: 100%; border-radius: 14px; padding: 14px 10px; text-align: center; background: #E8ECEA; color: var(--pendiente-texto); flex: 1; transition: transform .12s; }
+.fase-col:hover .fase-tarjeta { transform: translateY(-2px); }
+.fase-tarjeta small { display: block; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; font-size: .68rem; margin-bottom: 4px; }
+.fase-tarjeta strong { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1rem; }
+.fase-col.superada .fase-tarjeta, .fase-col.actual .fase-tarjeta { background: var(--verde-esmeralda); color: #fff; }
+.fase-col.superada .fase-tarjeta small, .fase-col.actual .fase-tarjeta small { color: var(--lima); }
+.fase-col.actual .fase-tarjeta { box-shadow: 0 0 0 3px var(--lima); }
+.fase-col.rechazada .fase-tarjeta { background: var(--rechazado-fondo); color: var(--rechazado-texto); }
+.fase-col.elegida .fase-tarjeta { outline: 3px solid var(--verde-bosque); outline-offset: 2px; }
+.doc-anterior td { color: var(--texto-sec); background: #FBFCFB !important; font-size: .9rem; }
+.panel-entrega { background: var(--fondo); border-top: 1px solid var(--borde); padding: 20px 24px; }
+.panel-detalle-cabecera { padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.panel-detalle-cabecera h2 { font-size: 1.25rem; font-weight: 800; color: var(--verde-bosque); margin: 0; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 991.98px) {
+  .linea-fases { grid-template-columns: repeat(2, 1fr); padding: 16px; }
+  .fase-arriba::after { display: none; }
   .publica { grid-template-columns: 1fr; }
   .publica-panel { padding: 28px 24px; }
   .publica-panel .logo { height: 60px; }
