@@ -175,6 +175,12 @@
 
   <c:if test="${empty errorPropuesta}">
     <c:set var="descripcionFinal" value="${empty descripcionIngresada ? tituloIngresado : descripcionIngresada}" />
+    <c:if test="${accion == 'editar' and not empty companeroIngresado}">
+      <sql:query var="yaEra" dataSource="${bd}">
+        SELECT COUNT(*) AS total FROM propuesta_estudiante WHERE id_propuesta = ? AND id_estudiante = ? AND es_responsable = 0
+        <sql:param value="${idObj}" /><sql:param value="${compa.rows[0].id_usuario}" />
+      </sql:query>
+    </c:if>
     <c:if test="${accion == 'editar'}">
       <sql:query var="versiones" dataSource="${bd}">
         SELECT COUNT(*) AS total FROM historial_version WHERE entidad = 'PROPUESTA' AND id_entidad = ? AND accion = 'REENVIAR'
@@ -251,11 +257,13 @@
             INSERT INTO propuesta_estudiante (id_propuesta, id_estudiante, es_responsable) VALUES (?, ?, 0)
             <sql:param value="${idPropuesta}" /><sql:param value="${compa.rows[0].id_usuario}" />
           </sql:update>
-          <sql:update>
-            INSERT INTO notificacion (id_usuario, tipo, mensaje) VALUES (?, 'COMPANERO_AGREGADO', ?)
-            <sql:param value="${compa.rows[0].id_usuario}" />
-            <sql:param value="${sessionScope.nombre += ' te agregó como compañero en una propuesta de trabajo de grado.'}" />
-          </sql:update>
+          <c:if test="${accion == 'crear' or yaEra.rows[0].total == 0}">
+            <sql:update>
+              INSERT INTO notificacion (id_usuario, tipo, mensaje) VALUES (?, 'COMPANERO_AGREGADO', ?)
+              <sql:param value="${compa.rows[0].id_usuario}" />
+              <sql:param value="${sessionScope.nombre += ' te agregó como compañero en una propuesta de trabajo de grado.'}" />
+            </sql:update>
+          </c:if>
         </c:if>
       </sql:transaction>
     </c:catch>
