@@ -1,0 +1,134 @@
+/* Sistema de Gestión de Proyectos de Grado - estilos comunes (ver DISENO.md) */
+:root {
+  --verde-bosque: #0B3D2E;
+  --verde-esmeralda: #14684B;
+  --verde-claro: #E6F2EC;
+  --lima: #C4D600;
+  --fondo: #F5F8F6;
+  --borde: #E3E8E5;
+  --texto: #1F2A26;
+  --texto-sec: #5E6B66;
+  --ok-fondo: #DFF3E8;  --ok-texto: #0B5B3A;
+  --aplazado-fondo: #FFF4D6;  --aplazado-texto: #7A5A00;
+  --rechazado-fondo: #FBE0DE; --rechazado-texto: #9A2A22;
+  --pendiente-fondo: #E8ECEA; --pendiente-texto: #46524D;
+  --radio: 14px;
+  --sombra: 0 6px 24px rgba(11, 61, 46, .08);
+  --bs-body-font-family: 'Inter', system-ui, sans-serif;
+  --bs-body-color: var(--texto);
+  --bs-body-bg: var(--fondo);
+  --bs-link-color: var(--verde-esmeralda);
+  --bs-link-hover-color: var(--verde-bosque);
+}
+
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--fondo); color: var(--texto); }
+h1, h2, h3, h4, h5, .btn, .titulo { font-family: 'Montserrat', sans-serif; }
+
+/* ---------- Botones ---------- */
+.btn { font-weight: 700; border-radius: 10px; }
+.btn-uts { background: var(--verde-esmeralda); border-color: var(--verde-esmeralda); color: #fff; }
+.btn-uts:hover, .btn-uts:focus { background: var(--verde-bosque); border-color: var(--verde-bosque); color: #fff; }
+.btn-outline-uts { border: 1px solid var(--borde); background: #fff; color: var(--verde-esmeralda); }
+.btn-outline-uts:hover { background: var(--verde-claro); color: var(--verde-bosque); }
+.btn-icono { width: 38px; height: 38px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+
+/* ---------- Formularios ---------- */
+.form-label { font-weight: 600; font-size: .875rem; margin-bottom: .35rem; }
+.form-control, .form-select { height: 46px; border-radius: 10px; border-color: var(--borde); }
+textarea.form-control { height: auto; }
+.form-control:focus, .form-select:focus { border-color: var(--verde-esmeralda); box-shadow: 0 0 0 .2rem rgba(20, 104, 75, .15); }
+.form-check-input:checked { background-color: var(--verde-esmeralda); border-color: var(--verde-esmeralda); }
+.campo-clave { position: relative; }
+.campo-clave .form-control { padding-right: 46px; }
+.campo-clave .ver-clave { position: absolute; top: 0; right: 0; height: 46px; width: 46px; border: 0; background: none; color: var(--texto-sec); }
+
+/* ---------- Mensajes ---------- */
+.alert { border-radius: 10px; font-size: .9rem; }
+.alert-success { background: var(--ok-fondo); border-color: #bfe5cf; color: var(--ok-texto); }
+.alert-danger  { background: var(--rechazado-fondo); border-color: #f2c3bf; color: var(--rechazado-texto); }
+.alert-warning { background: var(--aplazado-fondo); border-color: #f1dc9a; color: var(--aplazado-texto); }
+
+/* ---------- Pantallas públicas (login y registro) ---------- */
+.publica { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+.publica-panel {
+  background: linear-gradient(180deg, var(--verde-bosque) 0%, var(--verde-esmeralda) 100%);
+  color: #fff; padding: 48px 72px; display: flex; flex-direction: column;
+}
+.publica-panel .logo { height: 84px; width: auto; align-self: flex-start; }
+.publica-panel .mensaje { margin: auto 0; max-width: 540px; }
+.publica-panel .barra { width: 56px; height: 4px; background: var(--lima); margin-bottom: 24px; }
+.publica-panel h1 { font-weight: 800; font-size: 3rem; line-height: 1.15; }
+.publica-panel p { color: #d8ebe2; font-size: 1.05rem; margin-top: 1.25rem; }
+.publica-area { display: flex; align-items: center; justify-content: center; padding: 32px 20px; }
+.tarjeta-form { background: #fff; border-radius: 20px; box-shadow: var(--sombra); padding: 40px; width: 100%; max-width: 420px; }
+.tarjeta-form.ancha { max-width: 520px; }
+.tarjeta-form h2 { font-weight: 800; font-size: 1.6rem; color: var(--verde-bosque); margin-bottom: .25rem; }
+.tarjeta-form .sub { color: var(--texto-sec); font-size: .9rem; margin-bottom: 1.5rem; }
+.tarjeta-form a { font-weight: 600; }
+
+/* ---------- Menú lateral ---------- */
+.menu-lateral { --bs-offcanvas-width: 260px; --bs-offcanvas-bg: var(--verde-bosque); --bs-offcanvas-color: #fff; background: var(--verde-bosque); }
+.menu-lateral .menu-logo { padding: 22px 24px 16px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.menu-lateral .menu-logo img { height: 60px; width: auto; }
+.menu-lateral nav { padding: 16px; flex: 1; overflow-y: auto; }
+.menu-lateral .item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 14px; margin-bottom: 4px;
+  border-radius: 10px; color: #e6f2ec; text-decoration: none; font-weight: 500; font-size: .95rem;
+}
+.menu-lateral .item i { font-size: 1.1rem; }
+.menu-lateral .item:hover { background: rgba(230, 242, 236, .12); color: #fff; }
+.menu-lateral .item.activo { background: var(--verde-esmeralda); color: #fff; font-weight: 600; }
+.menu-lateral .menu-pie { padding: 16px; }
+
+@media (min-width: 992px) {
+  .menu-lateral { position: fixed !important; top: 0; bottom: 0; left: 0; width: 260px !important; z-index: 1030; background-color: var(--verde-bosque) !important; visibility: visible !important; transform: none !important; }
+  .contenido { margin-left: 260px; }
+}
+
+/* ---------- Cabecera y contenido ---------- */
+.contenido { min-height: 100vh; padding: 0 32px 40px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 24px 0 8px; gap: 12px; }
+.topbar .rol { color: var(--texto-sec); font-size: .9rem; }
+.topbar .derecha { display: flex; align-items: center; gap: 14px; }
+.campana { position: relative; width: 44px; height: 44px; border: 1px solid var(--borde); border-radius: 12px; background: #fff; display: inline-flex; align-items: center; justify-content: center; color: var(--verde-bosque); text-decoration: none; }
+.campana .contador { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--lima); color: var(--verde-bosque); font-size: .7rem; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.usuario { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: .95rem; }
+.iniciales { width: 44px; height: 44px; border-radius: 50%; background: var(--verde-esmeralda); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 700; }
+.titulo-pagina { font-weight: 800; font-size: 30px; color: var(--verde-bosque); margin: 18px 0 4px; }
+.descripcion-pagina { color: var(--texto-sec); margin-bottom: 24px; }
+
+/* ---------- Tarjetas ---------- */
+.tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: var(--radio); padding: 22px; }
+.tarjeta-modulo { display: block; height: 100%; text-decoration: none; color: var(--texto); transition: border-color .15s, box-shadow .15s; }
+.tarjeta-modulo:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra); color: var(--texto); }
+.icono-caja { width: 44px; height: 44px; border-radius: 12px; background: var(--verde-claro); color: var(--verde-esmeralda); display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 14px; }
+.tarjeta-modulo h3 { font-weight: 700; font-size: 1.15rem; color: var(--verde-bosque); margin-bottom: 6px; }
+.tarjeta-modulo p { color: var(--texto-sec); font-size: .9rem; margin: 0; }
+.etiqueta-sup { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--texto-sec); font-weight: 600; }
+
+/* ---------- Insignias de estado ---------- */
+.insignia { display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+.insignia::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.insignia-aprobado  { background: var(--ok-fondo); color: var(--ok-texto); }
+.insignia-aplazado  { background: var(--aplazado-fondo); color: var(--aplazado-texto); }
+.insignia-rechazado { background: var(--rechazado-fondo); color: var(--rechazado-texto); }
+.insignia-pendiente { background: var(--pendiente-fondo); color: var(--pendiente-texto); }
+
+/* ---------- Estado vacío ---------- */
+.vacio { background: #fff; border: 1px dashed #c9d3ce; border-radius: var(--radio); padding: 36px 20px; text-align: center; }
+.vacio .icono-circulo { width: 48px; height: 48px; border-radius: 50%; background: var(--verde-claro); color: var(--verde-esmeralda); display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 10px; }
+.vacio h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.vacio p { color: var(--texto-sec); font-size: .88rem; margin: 0; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+  .publica { grid-template-columns: 1fr; }
+  .publica-panel { padding: 28px 24px; }
+  .publica-panel .logo { height: 60px; }
+  .publica-panel .mensaje { margin: 28px 0 8px; }
+  .publica-panel h1 { font-size: 1.8rem; }
+  .publica-panel p { font-size: .95rem; margin-top: .75rem; }
+  .contenido { padding: 0 16px 32px; }
+  .usuario .nombre { display: none; }
+  .tarjeta-form { padding: 28px 22px; }
+}
