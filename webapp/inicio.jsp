@@ -40,6 +40,14 @@
   </sql:query>
 </c:if>
 
+<%-- Administrador: solicitudes de cuenta por revisar --%>
+<c:if test="${sessionScope.rol == 'ADMINISTRADOR'}">
+  <sql:query var="pendientesCuenta" dataSource="${bd}">
+    SELECT COUNT(*) AS total FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
+    WHERE r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'PENDIENTE' AND u.activo = 1
+  </sql:query>
+</c:if>
+
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
 
 <h1 class="titulo-pagina">Hola, <c:out value="${sessionScope.primerNombre}" /></h1>
@@ -76,6 +84,16 @@
     </div>
   </c:forEach>
 </div>
+
+<c:if test="${sessionScope.rol == 'ADMINISTRADOR' and pendientesCuenta.rows[0].total > 0}">
+  <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <div class="d-flex align-items-center gap-3">
+      <span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span>
+      <div><span class="fw-bold"><c:out value="${pendientesCuenta.rows[0].total}" /> solicitud(es) de cuenta pendiente(s)</span><div class="texto-sec">Estudiantes esperando aprobación.</div></div>
+    </div>
+    <a class="btn btn-uts" href="${ctx}/modulos/usuarios/cuentas_pendientes.jsp">Ver solicitudes</a>
+  </div>
+</c:if>
 
 <c:choose>
   <c:when test="${notifCount > 0}">

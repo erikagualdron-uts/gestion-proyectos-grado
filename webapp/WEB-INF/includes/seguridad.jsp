@@ -54,7 +54,11 @@
     <c:redirect url="/index.jsp" />
   </c:if>
   <sql:query var="vigente" dataSource="${bd}">
-    SELECT u.nivel, r.nombre AS rol
+    SELECT u.nivel, u.nombre_completo, u.correo, u.foto_url, r.nombre AS rol,
+           SUBSTRING_INDEX(TRIM(u.nombre_completo), ' ', 1) AS primer_nombre,
+           UPPER(CONCAT(LEFT(TRIM(u.nombre_completo), 1),
+             IF(LOCATE(' ', TRIM(u.nombre_completo)) > 0,
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(TRIM(u.nombre_completo), ' ', 2), ' ', -1), 1), ''))) AS iniciales
     FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
     WHERE u.id_usuario = ? AND u.estado_cuenta = 'APROBADA' AND u.activo = 1
     <sql:param value="${sessionScope.usuarioId}" />
@@ -65,8 +69,14 @@
     <c:set var="flashMsg" value="Tu cuenta ya no está habilitada para ingresar." scope="session" />
     <c:redirect url="/index.jsp" />
   </c:if>
+  <%-- Los datos de la sesión se refrescan desde la base en cada página (rol, nombre, foto, nivel) --%>
   <c:set var="rol" value="${vigente.rows[0].rol}" scope="session" />
   <c:set var="nivel" value="${vigente.rows[0].nivel}" scope="session" />
+  <c:set var="nombre" value="${vigente.rows[0].nombre_completo}" scope="session" />
+  <c:set var="primerNombre" value="${vigente.rows[0].primer_nombre}" scope="session" />
+  <c:set var="iniciales" value="${vigente.rows[0].iniciales}" scope="session" />
+  <c:set var="correo" value="${vigente.rows[0].correo}" scope="session" />
+  <c:set var="fotoUrl" value="${vigente.rows[0].foto_url}" scope="session" />
   <c:if test="${not empty rolesPermitidos and not fn:contains(rolesPermitidos, sessionScope.rol)}">
     <c:redirect url="/acceso_denegado.jsp" />
   </c:if>
