@@ -37,8 +37,8 @@
     </div>
     <div class="mb-3">
       <label for="correo" class="form-label">Correo institucional</label>
-      <input type="email" class="form-control" id="correo" name="correo" placeholder="usuario@correo.uts.edu.co" maxlength="120" pattern="[A-Za-z0-9._%+\-]+@(correo\.)?uts\.edu\.co" autocomplete="email" value="<c:out value='${sessionScope.viejoCorreo}' />" required>
-      <div class="invalid-feedback">Usa tu correo institucional (@correo.uts.edu.co o @uts.edu.co).</div>
+      <input type="email" class="form-control" id="correo" name="correo" placeholder="usuario@uts.edu.co" maxlength="120" pattern="[A-Za-z0-9._%+\-]+@uts\.edu\.co" autocomplete="email" value="<c:out value='${sessionScope.viejoCorreo}' />" required>
+      <div class="invalid-feedback">Usa tu correo institucional de estudiante (@uts.edu.co).</div>
     </div>
     <div class="row g-3 mb-4">
       <div class="col-sm-6">

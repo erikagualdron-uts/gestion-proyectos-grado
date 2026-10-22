@@ -6,25 +6,25 @@ SET NAMES utf8mb4;
 INSERT INTO usuario (id_rol, tipo_documento, numero_documento, nombre_completo, correo,
                      contrasena_hash, sal, nivel, estado_cuenta, id_aprobador, fecha_decision) VALUES
   ((SELECT id_rol FROM rol WHERE nombre = 'COORDINADOR'), 'CC', '1000000001', 'María Rojas Prueba',
-   'coordinador.prueba@uts.edu.co', SHA2(CONCAT('a1b2c3d4e5f60718', 'Prueba2026*'), 256), 'a1b2c3d4e5f60718',
+   'coordinador.prueba@correo.uts.edu.co', SHA2(CONCAT('a1b2c3d4e5f60718', 'Prueba2026*'), 256), 'a1b2c3d4e5f60718',
    NULL, 'APROBADA', NULL, NOW()),
   ((SELECT id_rol FROM rol WHERE nombre = 'DOCENTE'), 'CC', '1000000002', 'Carlos Director Prueba',
-   'director.prueba@uts.edu.co', SHA2(CONCAT('b2c3d4e5f6071829', 'Prueba2026*'), 256), 'b2c3d4e5f6071829',
+   'director.prueba@correo.uts.edu.co', SHA2(CONCAT('b2c3d4e5f6071829', 'Prueba2026*'), 256), 'b2c3d4e5f6071829',
    NULL, 'APROBADA', NULL, NOW()),
   ((SELECT id_rol FROM rol WHERE nombre = 'DOCENTE'), 'CC', '1000000003', 'Laura Evaluadora Prueba',
-   'evaluador.prueba@uts.edu.co', SHA2(CONCAT('c3d4e5f60718293a', 'Prueba2026*'), 256), 'c3d4e5f60718293a',
+   'evaluador.prueba@correo.uts.edu.co', SHA2(CONCAT('c3d4e5f60718293a', 'Prueba2026*'), 256), 'c3d4e5f60718293a',
    NULL, 'APROBADA', NULL, NOW()),
   ((SELECT id_rol FROM rol WHERE nombre = 'ESTUDIANTE'), 'CC', '1000000004', 'Erika Estudiante Prueba',
-   'estudiante.prueba@correo.uts.edu.co', SHA2(CONCAT('d4e5f60718293a4b', 'Prueba2026*'), 256), 'd4e5f60718293a4b',
+   'estudiante.prueba@uts.edu.co', SHA2(CONCAT('d4e5f60718293a4b', 'Prueba2026*'), 256), 'd4e5f60718293a4b',
    'TECNOLOGICO', 'APROBADA', NULL, NOW()),
   ((SELECT id_rol FROM rol WHERE nombre = 'ESTUDIANTE'), 'CC', '1000000005', 'Camilo Pendiente Prueba',
-   'pendiente.prueba@correo.uts.edu.co', SHA2(CONCAT('e5f60718293a4b5c', 'Prueba2026*'), 256), 'e5f60718293a4b5c',
+   'pendiente.prueba@uts.edu.co', SHA2(CONCAT('e5f60718293a4b5c', 'Prueba2026*'), 256), 'e5f60718293a4b5c',
    NULL, 'PENDIENTE', NULL, NULL);
 
-SET @coordinador := (SELECT id_usuario FROM usuario WHERE correo = 'coordinador.prueba@uts.edu.co');
-SET @director    := (SELECT id_usuario FROM usuario WHERE correo = 'director.prueba@uts.edu.co');
-SET @evaluador   := (SELECT id_usuario FROM usuario WHERE correo = 'evaluador.prueba@uts.edu.co');
-SET @estudiante  := (SELECT id_usuario FROM usuario WHERE correo = 'estudiante.prueba@correo.uts.edu.co');
+SET @coordinador := (SELECT id_usuario FROM usuario WHERE correo = 'coordinador.prueba@correo.uts.edu.co');
+SET @director    := (SELECT id_usuario FROM usuario WHERE correo = 'director.prueba@correo.uts.edu.co');
+SET @evaluador   := (SELECT id_usuario FROM usuario WHERE correo = 'evaluador.prueba@correo.uts.edu.co');
+SET @estudiante  := (SELECT id_usuario FROM usuario WHERE correo = 'estudiante.prueba@uts.edu.co');
 
 -- Dos ideas aprobadas del banco
 INSERT INTO idea_banco (codigo, id_docente, titulo, descripcion, objetivo, alcance, estado_decision, id_revisor, disponible, fecha_decision) VALUES

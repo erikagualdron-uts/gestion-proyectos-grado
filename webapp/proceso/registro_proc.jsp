@@ -31,8 +31,8 @@
   <c:when test="${docValido.rows[0].ok != 1}">
     <c:set var="errorRegistro" value="El número de documento debe tener entre 5 y 20 letras o números, sin espacios." />
   </c:when>
-  <c:when test="${fn:length(correoIngresado) > 120 or fn:indexOf(correoIngresado, '@') < 1 or fn:length(fn:split(correoIngresado, '@')) != 2 or fn:contains(correoIngresado, ' ') or not (fn:endsWith(correoIngresado, '@correo.uts.edu.co') or fn:endsWith(correoIngresado, '@uts.edu.co'))}">
-    <c:set var="errorRegistro" value="Usa tu correo institucional (@correo.uts.edu.co o @uts.edu.co)." />
+  <c:when test="${fn:length(correoIngresado) > 120 or fn:indexOf(correoIngresado, '@') < 1 or fn:length(fn:split(correoIngresado, '@')) != 2 or fn:contains(correoIngresado, ' ') or not fn:endsWith(correoIngresado, '@uts.edu.co')}">
+    <c:set var="errorRegistro" value="Usa tu correo institucional de estudiante (@uts.edu.co)." />
   </c:when>
   <c:when test="${fn:length(param.clave) < 8 or fn:length(param.clave) > 64}">
     <c:set var="errorRegistro" value="La contraseña debe tener entre 8 y 64 caracteres." />

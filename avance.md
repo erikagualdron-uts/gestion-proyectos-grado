@@ -37,8 +37,8 @@
 - El formulario POST se leía en ISO-8859-1: `fmt:requestEncoding` en `seguridad.jsp`.
 
 **Decisiones**
-- Dominio institucional aceptado: `@correo.uts.edu.co` y `@uts.edu.co` (pendiente de confirmar).
-- El menú del estudiante sigue la imagen aprobada (incluye Mis propuestas, Seguimiento y PQRS), no la tabla 5.2 del PDF.
-- Las opciones de menú de módulos aún no construidos llevan a la página de "Página no disponible".
+- Correos: estudiantes `@uts.edu.co` (el registro solo acepta este dominio); docentes, coordinador y administrador `@correo.uts.edu.co` (los crea el administrador).
+- Los menús y tarjetas siguen la tabla 5.2 del PDF; las imágenes de `docs/referencia/` se usan solo como referencia de diseño. El estudiante llega a seguimiento, historial, PQRS e informe desde Propuesta Banco.
+- Las opciones de menú de módulos aún no construidos llevan a la página "Página no disponible" (aceptado).
 
 **Pruebas hechas en el despliegue (con peticiones HTTP):** login de administrador, coordinador, estudiante y docente; clave incorrecta; cuenta pendiente; POST sin token CSRF; acceso sin sesión; sesión recordada y cierre de sesión; validaciones del registro. **Sin probar aún:** acceso denegado por rol (aún no hay páginas restringidas por rol; se prueba con el módulo de usuarios).

@@ -10,7 +10,7 @@
 <c:choose>
   <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para tu proyecto de grado." />
-    <c:set var="tarjetas" value="bi-lightbulb|Banco de ideas|Explora las ideas aprobadas por los docentes y elige una.|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|Registra o corrige tu propuesta y agrega a tu compañero.|/modulos/propuestas/propuestas_banco.jsp;bi-list-check|Seguimiento|Consulta las seis fases y entrega documentos por enlace.|/modulos/proyectos/seguimiento.jsp;bi-chat|PQRS|Solicita prórroga, cambio de director u otras peticiones.|/modulos/pqrs/pqrs.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp;bi-person|Mi perfil|Revisa y actualiza tus datos personales.|/modulos/perfil/perfil.jsp" />
+    <c:set var="tarjetas" value="bi-lightbulb|Banco de ideas|Explora las ideas aprobadas por los docentes y elige una.|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Propuesta Banco|Registra o corrige tu propuesta y accede a tu seguimiento, historial, PQRS e informe de estado.|/modulos/propuestas/propuestas_banco.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp;bi-person|Mi perfil|Revisa y actualiza tus datos personales.|/modulos/perfil/perfil.jsp" />
   </c:when>
   <c:when test="${sessionScope.rol == 'DOCENTE'}">
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para docentes." />
@@ -18,7 +18,7 @@
   </c:when>
   <c:when test="${sessionScope.rol == 'COORDINADOR'}">
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para la coordinación." />
-    <c:set var="tarjetas" value="bi-file-earmark-text|Propuestas Banco|Decide sobre ideas de docentes y propuestas de estudiantes.|/modulos/propuestas/propuestas_banco.jsp;bi-people|Asignar director y evaluador|Asigna docentes a cada proyecto aprobado.|/modulos/proyectos/asignacion.jsp;bi-chat|PQRS|Resuelve las solicitudes radicadas por los estudiantes.|/modulos/pqrs/pqrs.jsp;bi-bar-chart|Informes de estado|Consulta el avance de los proyectos.|/modulos/informes/informe_coordinador.jsp;bi-lightbulb|Banco de ideas|Consulta las ideas aprobadas por los docentes.|/modulos/banco_ideas/banco_ideas.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp" />
+    <c:set var="tarjetas" value="bi-file-earmark-text|Propuestas Banco|Decide sobre ideas de docentes y propuestas de estudiantes.|/modulos/propuestas/propuestas_banco.jsp;bi-people|Asignación de proyectos|Asigna director y evaluador a cada proyecto aprobado.|/modulos/proyectos/asignacion.jsp;bi-chat|PQRS|Resuelve las solicitudes radicadas por los estudiantes.|/modulos/pqrs/pqrs.jsp;bi-bar-chart|Informes de estado|Consulta el avance de los proyectos.|/modulos/informes/informe_coordinador.jsp;bi-lightbulb|Banco de ideas|Consulta las ideas aprobadas por los docentes.|/modulos/banco_ideas/banco_ideas.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:otherwise>
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para la administración." />
