@@ -88,3 +88,14 @@
 
 **Pruebas hechas en el despliegue (peticiones HTTP):** idea del docente con validación, decisión del coordinador (aplazar sin observación, aprobar, decidir de nuevo); el estudiante elige la idea y otro estudiante no puede elegirla; compañero inexistente, el mismo estudiante, ocupado y válido; aplazar, corregir y reenviar, aprobar y creación del proyecto con sus seis fases; rechazo con liberación de la idea; propuesta propia con compañero; una sola propuesta activa; accesos y procesos prohibidos por rol; administración de enlaces (URL, icono y orden inválidos, crear, editar, desactivar) y la tarjeta de calendario.
 **Pendiente / decisiones:** la opción "ver seguimiento" en cada fila (RF-33) y la asignación de director y evaluador se hacen en el módulo 3. Las ideas de docentes aplazadas no se reenvían (solo las propuestas de estudiantes, RF-28).
+
+### Ajustes posteriores al módulo 2
+- El compañero agregado a una propuesta queda **fijo**: no se quita ni se cambia (formulario y servidor).
+- Regla definida para los módulos siguientes: solo el **responsable** (quien postula) entrega documentos, corrige la propuesta y radica PQRS; el compañero solo visualiza. Si el responsable se inactiva, el proyecto no recibe documentos (no se transfiere la responsabilidad).
+- Cuentas de prueba de docentes renombradas a `docente1.prueba` y `docente2.prueba` (ambas con rol Docente; un docente usa un solo correo y ve los módulos Director y Evaluador).
+- Los seis enlaces de la base documental se precargarán cuando la estudiante los entregue.
+
+### Estado al cierre de la sesión (22/10/2026)
+- `main`: módulo de acceso (RF-01 a RF-07) y módulo 1 (usuarios, cuentas y perfil, RF-08 a RF-16), probados.
+- `develop`: además, módulo 2 (RF-17 a RF-28), pendiente de que lo pruebe la estudiante antes de integrarlo a `main`.
+- Siguiente: módulo 3 (tabla de solicitudes, asignación de director y evaluador, RF-29 a RF-37).
