@@ -62,3 +62,29 @@
 
 **Pruebas hechas en el despliegue (peticiones HTTP):** crear usuario con dominio incorrecto, rol inválido, claves distintas y duplicado; crear, editar (documento, correo, rol y contraseña), inactivar y reactivar; login del inactivo; aprobar sin nivel y rechazar sin observación; aprobar y rechazar; volver a decidir una cuenta ya gestionada; login de aprobado y rechazado; **acceso denegado por rol** (estudiante y docente a páginas del administrador, y a sus procesos); POST sin token y sin sesión; perfil (validaciones, foto, enlace no válido, quitar foto, documento y correo no modificables por POST, cambio de contraseña); nombres con HTML se muestran escapados.
 **Decisiones:** el estudiante rechazado no puede reactivarse desde la pantalla (solo se edita su información); el correo del personal debe ser `@correo.uts.edu.co` y el de estudiantes `@uts.edu.co`.
+
+## Jueves – Módulo 2: Inicio, base documental, banco de ideas y propuestas (RF-17 a RF-28)
+**Implementado**
+- **Inicio** (RF-17, RF-18): tarjetas según el rol, tarjeta "Calendario académico" que abre el enlace externo, panel del proyecto del estudiante y aviso de solicitudes pendientes para el administrador.
+- **Base documental** (RF-19, RF-20): tarjetas con los enlaces activos, que abren en otra pestaña; los que aún no tienen URL se muestran "por configurar". El administrador crea, edita, ordena (por número) y desactiva enlaces desde "Administrar enlaces".
+- **Banco de ideas** (RF-23, RF-24): solo ideas aprobadas y disponibles, solo lectura, con búsqueda, paginación y ventana de detalle. El estudiante elige una idea (la idea queda no disponible) y el docente propone ideas.
+- **Proponer idea** (docente, RF-21): título, descripción, objetivo y alcance obligatorios; queda pendiente.
+- **Propuesta propia** (estudiante, RF-25): título, objetivo y alcance obligatorios; la descripción es opcional (si se omite se copia el título).
+- **Segundo estudiante** (RF-26): se busca por número de documento y se valida que exista, tenga cuenta aprobada y activa, sea otra persona y no esté en otra propuesta activa. Se puede agregar, cambiar o quitar mientras la propuesta esté pendiente o aplazada.
+- **Propuestas Banco** (RF-22, RF-27 y base de RF-29 a RF-32): tabla única de ideas de docentes y propuestas de estudiantes, con tarjetas de resumen, búsqueda, filtros por tipo y estado, paginación, ojo (detalle) y lápiz (gestionar). El coordinador aprueba, aplaza (observación obligatoria) o rechaza (observación y confirmación); docentes y administrador solo visualizan; el estudiante ve las suyas.
+- **Al aprobar una propuesta** se crea el proyecto en la Fase 1 con sus seis fases, todo en una transacción; al **rechazar** una propuesta tomada del banco la idea vuelve a estar disponible.
+- **Corregir y reenviar** (RF-28): una propuesta aplazada se edita y vuelve a Pendiente; el historial conserva la versión anterior y numera las versiones.
+- **Avisos internos**: nueva idea o propuesta (coordinadores), decisiones (docente y estudiantes), idea elegida y compañero agregado. Se ven en el contador de la campana.
+- Una propuesta activa por estudiante (pendiente, aplazada o aprobada); si se rechaza puede crear otra.
+
+**Pantallas:** `base_documental.jsp`, `enlaces_admin.jsp`, `banco_ideas.jsp`, `idea_form.jsp`, `propuesta_form.jsp`, `propuestas_banco.jsp` (el detalle y la decisión son ventanas modales, no páginas aparte).
+**Procesos:** `enlace_proc.jsp`, `idea_proc.jsp`, `propuesta_proc.jsp`.
+**Requerimientos:** RF-17 a RF-28, y parte de RF-29 a RF-32. **Historias:** HU-08 a HU-19 (HU-10 incluida).
+
+**Problemas resueltos**
+- El conector MySQL devolvía el nombre real de la columna en vez del alias (ya resuelto en el módulo de acceso con `useOldAliasMetadataBehavior`).
+- La restricción única `uq_propuesta_id_idea` impedía volver a elegir una idea de una propuesta rechazada: al rechazar se desliga la idea (queda registrada en el historial) y se libera.
+- Los códigos `ID-000N` y `PG-000N` se generan a partir del id insertado (primero un código temporal y luego el definitivo) para evitar duplicados bajo concurrencia.
+
+**Pruebas hechas en el despliegue (peticiones HTTP):** idea del docente con validación, decisión del coordinador (aplazar sin observación, aprobar, decidir de nuevo); el estudiante elige la idea y otro estudiante no puede elegirla; compañero inexistente, el mismo estudiante, ocupado y válido; aplazar, corregir y reenviar, aprobar y creación del proyecto con sus seis fases; rechazo con liberación de la idea; propuesta propia con compañero; una sola propuesta activa; accesos y procesos prohibidos por rol; administración de enlaces (URL, icono y orden inválidos, crear, editar, desactivar) y la tarjeta de calendario.
+**Pendiente / decisiones:** la opción "ver seguimiento" en cada fila (RF-33) y la asignación de director y evaluador se hacen en el módulo 3. Las ideas de docentes aplazadas no se reenvían (solo las propuestas de estudiantes, RF-28).
