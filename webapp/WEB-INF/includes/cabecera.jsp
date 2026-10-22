@@ -59,7 +59,10 @@
             <c:if test="${notifCount > 0}"><span class="contador"><c:out value="${notifCount}" /></span></c:if>
           </a>
           <div class="usuario">
-            <span class="iniciales"><c:out value="${sessionScope.iniciales}" /></span>
+            <c:choose>
+              <c:when test="${not empty sessionScope.fotoUrl}"><img class="iniciales" src="<c:out value='${sessionScope.fotoUrl}' />" alt="Foto de perfil" referrerpolicy="no-referrer"></c:when>
+              <c:otherwise><span class="iniciales"><c:out value="${sessionScope.iniciales}" /></span></c:otherwise>
+            </c:choose>
             <span class="nombre"><c:out value="${sessionScope.nombre}" /></span>
           </div>
         </div>
