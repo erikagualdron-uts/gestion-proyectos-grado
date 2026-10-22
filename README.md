@@ -35,5 +35,19 @@ La conexión nunca está escrita en el código; se leen estas variables (las def
 ## Usuario inicial
 `sql/datos_iniciales.sql` crea un administrador **solo para pruebas**: `admin@correo.uts.edu.co` (la contraseña de prueba está en el script; cámbiala tras el primer ingreso). Los usuarios de demostración por rol irán en `sql/datos_prueba.sql` (solo para pruebas, sin datos reales).
 
+## Correos institucionales
+Estudiantes: `@uts.edu.co`. Docentes, coordinador y administrador: `@correo.uts.edu.co`.
+
+## Usuarios de prueba (solo para demostración)
+Cargar `sql/datos_prueba.sql`. Contraseña de todas las cuentas: `Prueba2026*`.
+
+| Rol | Correo |
+|---|---|
+| Coordinador | coordinador.prueba@correo.uts.edu.co |
+| Docente (director del proyecto de prueba) | director.prueba@correo.uts.edu.co |
+| Docente (evaluador del proyecto de prueba) | evaluador.prueba@correo.uts.edu.co |
+| Estudiante (aprobada, nivel Tecnológico) | estudiante.prueba@uts.edu.co |
+| Estudiante (cuenta pendiente) | pendiente.prueba@uts.edu.co |
+
 ## Ramas
 `main` (estable) y `develop` (trabajo).
