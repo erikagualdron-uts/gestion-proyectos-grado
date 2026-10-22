@@ -91,7 +91,7 @@
                   <td colspan="5" class="texto-sec">Aún no tiene propuesta.</td>
                 </c:when>
                 <c:otherwise>
-                  <td style="min-width: 200px"><div class="fw-semibold"><c:out value="${e.codigo}" /></div><div class="texto-sec"><c:out value="${e.titulo}" /><c:if test="${e.es_responsable == 0}"> · compañero</c:if></div></td>
+                  <td style="min-width: 200px"><div class="fw-semibold"><c:out value="${e.codigo}" /></div><div class="texto-sec"><c:out value="${e.titulo}" /><c:if test="${not e.es_responsable}"> · compañero</c:if></div></td>
                   <td><span class="insignia insignia-${e.estado_decision == 'APROBADO' ? 'aprobado' : (e.estado_decision == 'APLAZADO' ? 'aplazado' : (e.estado_decision == 'RECHAZADO' ? 'rechazado' : 'pendiente'))}"><c:out value="${e.estado_decision == 'APROBADO' ? 'Aprobado' : (e.estado_decision == 'APLAZADO' ? 'Aplazado' : (e.estado_decision == 'RECHAZADO' ? 'Rechazado' : 'Pendiente'))}" /></span></td>
                   <td><c:choose><c:when test="${empty e.id_proyecto}"><span class="texto-sec">Anteproyecto</span></c:when><c:otherwise>Fase <c:out value="${e.fase_actual}" /> · <c:out value="${e.fase}" /></c:otherwise></c:choose></td>
                   <td><c:out value="${empty e.director ? (empty e.id_proyecto ? '—' : 'Sin asignar') : e.director}" /></td>
