@@ -24,16 +24,17 @@
 <c:set var="origenDatos">
   (SELECT 'IDEA' AS tipo, i.id_idea AS id, i.codigo, i.titulo, i.descripcion, i.objetivo, i.alcance,
           d.nombre_completo AS autor, i.estado_decision AS estado, i.observacion, i.fecha_creacion AS fecha,
-          '' AS miembros, 0 AS id_responsable, 'Idea de docente' AS origen_texto
+          '' AS miembros, 0 AS id_responsable, 'Idea de docente' AS origen_texto, 0 AS id_proyecto
    FROM idea_banco i JOIN usuario d ON d.id_usuario = i.id_docente
    UNION ALL
    SELECT 'PROPUESTA', p.id_propuesta, p.codigo, p.titulo, p.descripcion, p.objetivo, p.alcance,
           GROUP_CONCAT(e.nombre_completo ORDER BY pe.es_responsable DESC SEPARATOR ', '), p.estado_decision, p.observacion, p.fecha_creacion,
           GROUP_CONCAT(pe.id_estudiante), MAX(IF(pe.es_responsable = 1, pe.id_estudiante, 0)),
-          IF(p.origen = 'BANCO', 'Propuesta desde el banco de ideas', 'Propuesta propia')
+          IF(p.origen = 'BANCO', 'Propuesta desde el banco de ideas', 'Propuesta propia'), IFNULL(MAX(pr.id_proyecto), 0)
    FROM propuesta p
    JOIN propuesta_estudiante pe ON pe.id_propuesta = p.id_propuesta
    JOIN usuario e ON e.id_usuario = pe.id_estudiante
+   LEFT JOIN proyecto pr ON pr.id_propuesta = p.id_propuesta
    GROUP BY p.id_propuesta) t
 </c:set>
 <c:set var="rolConsulta" value="${sessionScope.rol}" />
@@ -61,7 +62,7 @@
 <c:set var="pagActual" value="${pagPedida > totalPaginas ? totalPaginas : pagPedida}" />
 
 <sql:query var="filas" dataSource="${bd}">
-  SELECT tipo, id, codigo, titulo, descripcion, objetivo, alcance, autor, estado, observacion, origen_texto, id_responsable,
+  SELECT tipo, id, codigo, titulo, descripcion, objetivo, alcance, autor, estado, observacion, origen_texto, id_responsable, id_proyecto,
          DATE_FORMAT(fecha, '%d/%m/%Y') AS fecha_texto
   FROM ${origenDatos}
   WHERE (? <> 'ESTUDIANTE' OR (tipo = 'PROPUESTA' AND FIND_IN_SET(?, miembros) > 0))
@@ -178,6 +179,9 @@
                         data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}" data-autor="${fn:escapeXml(f.autor)}"
                         data-origen="${fn:escapeXml(f.origen_texto)}" data-estado="${estadoTexto}" data-fecha="${f.fecha_texto}"
                         data-observacion="${fn:escapeXml(f.observacion)}"><i class="bi bi-eye"></i></button>
+                <c:if test="${f.id_proyecto > 0}">
+                  <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${f.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(f.codigo)}"><i class="bi bi-list-check"></i></a>
+                </c:if>
                 <c:choose>
                   <c:when test="${esCoordinador}">
                     <button type="button" class="btn btn-outline-uts btn-icono" ${f.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalGestionar"
