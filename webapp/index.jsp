@@ -20,7 +20,7 @@
       <p style="color:#0B5B3A"><strong>Conexión a la base de datos: correcta.</strong> Roles encontrados: ${roles.rowCount}.</p>
     </c:when>
     <c:otherwise>
-      <p style="color:#9A2A22"><strong>No se pudo conectar a la base de datos.</strong></p><pre>DIAG: <c:out value="${errorBd}"/></pre>
+      <p style="color:#9A2A22"><strong>No se pudo conectar a la base de datos.</strong></p>
     </c:otherwise>
   </c:choose>
 </body>
