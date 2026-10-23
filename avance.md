@@ -38,7 +38,7 @@
 
 **Decisiones**
 - Correos: estudiantes `@uts.edu.co` (el registro solo acepta este dominio); docentes, coordinador y administrador `@correo.uts.edu.co` (los crea el administrador).
-- Los menús y tarjetas siguen la tabla 5.2 del PDF; las imágenes de `docs/referencia/` se usan solo como referencia de diseño. El estudiante llega a seguimiento, historial, PQRS e informe desde Propuesta Banco.
+- Los menús y tarjetas siguen la tabla 5.2 del PDF; las imágenes de `docs/referencia/` se usan solo como referencia de diseño. El estudiante llega a seguimiento, historial, PQRS e informe desde "Mis propuestas" (en el menú del estudiante y en el título de la pantalla se usa "Mis propuestas" en lugar de "Propuesta Banco" por claridad; los demás roles ven "Propuestas Banco").
 - Las opciones de menú de módulos aún no construidos llevan a la página "Página no disponible" (aceptado).
 
 **Pruebas hechas en el despliegue (con peticiones HTTP):** login de administrador, coordinador, estudiante y docente; clave incorrecta; cuenta pendiente; POST sin token CSRF; acceso sin sesión; sesión recordada y cierre de sesión; validaciones del registro. **Sin probar aún:** acceso denegado por rol (aún no hay páginas restringidas por rol; se prueba con el módulo de usuarios).
