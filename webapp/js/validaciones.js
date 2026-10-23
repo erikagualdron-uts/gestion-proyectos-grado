@@ -37,3 +37,20 @@
     });
   });
 })();
+
+// PQRS: la prórroga exige el enlace del soporte de pago
+(function () {
+  'use strict';
+  document.querySelectorAll('form[data-pqrs]').forEach(function (form) {
+    var tipo = form.querySelector('[name="tipo"]');
+    var soporte = form.querySelector('[name="soporte"]');
+    var ayuda = form.querySelector('[data-ayuda-soporte]');
+    function revisar() {
+      var prorroga = tipo.value === 'PRORROGA';
+      soporte.required = prorroga;
+      if (ayuda) { ayuda.textContent = prorroga ? 'Obligatorio: enlace al soporte de pago de la prórroga.' : 'Opcional: enlace a un soporte (documento, captura, etc.).'; }
+    }
+    tipo.addEventListener('change', revisar);
+    revisar();
+  });
+})();

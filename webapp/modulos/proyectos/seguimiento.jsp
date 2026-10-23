@@ -129,7 +129,11 @@
     <h1 class="titulo-pagina">Seguimiento del proyecto</h1>
     <p class="descripcion-pagina mb-3">Verde: fase superada o actual. Gris: fase pendiente.</p>
   </div>
-  <button type="button" class="btn btn-outline-uts mb-3" data-bs-toggle="modal" data-bs-target="#modalProyecto"><i class="bi bi-info-circle me-1"></i>Detalles del proyecto</button>
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <a class="btn btn-outline-uts" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Historial de versiones</a>
+    <c:if test="${sessionScope.rol == 'ESTUDIANTE'}"><a class="btn btn-outline-uts" href="${ctx}/modulos/pqrs/pqrs.jsp"><i class="bi bi-chat me-1"></i>PQRS</a></c:if>
+    <button type="button" class="btn btn-outline-uts" data-bs-toggle="modal" data-bs-target="#modalProyecto"><i class="bi bi-info-circle me-1"></i>Detalles del proyecto</button>
+  </div>
 </div>
 
 <c:choose>
