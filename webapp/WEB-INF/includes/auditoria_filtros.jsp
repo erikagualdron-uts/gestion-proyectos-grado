@@ -4,8 +4,8 @@
      Parámetros de desdeAuditoria, en orden: desde x2, hasta x2, usuario x2, entidad x2, acción x2, aq, aqLike x3. --%>
 <c:set var="aq" value="${fn:trim(param.aq)}" />
 <c:set var="aqLike" value="%${aq}%" />
-<c:set var="aDesde" value="${not empty param.desde and param.desde.matches('\\d{4}-\\d{2}-\\d{2}') ? param.desde : ''}" />
-<c:set var="aHasta" value="${not empty param.hasta and param.hasta.matches('\\d{4}-\\d{2}-\\d{2}') ? param.hasta : ''}" />
+<c:set var="aDesde" value="${not empty param.desde and param.desde.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}') ? param.desde : ''}" />
+<c:set var="aHasta" value="${not empty param.hasta and param.hasta.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}') ? param.hasta : ''}" />
 <c:catch var="errorUsuarioAud"><c:set var="aUsuario" value="${empty param.usuario ? 0 : param.usuario + 0}" /></c:catch>
 <c:if test="${not empty errorUsuarioAud or aUsuario < 0}"><c:set var="aUsuario" value="${0}" /></c:if>
 <c:set var="aEntidad" value="${fn:contains(',USUARIO,IDEA,PROPUESTA,PROYECTO,FASE,DOCUMENTO,PQRS,', ',' += param.entidad += ',') ? param.entidad : ''}" />
