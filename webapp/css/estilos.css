@@ -283,3 +283,18 @@ a.resumen:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra
 .etiqueta-tipo { display: inline-block; margin-top: 4px; padding: 1px 8px; border-radius: 999px; font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .etiqueta-tipo.idea { background: #F1F6C2; color: #5A6200; }
 .etiqueta-tipo.propuesta { background: var(--verde-claro); color: var(--verde-esmeralda); }
+
+/* Tablero de fases de los módulos Docente Director y Evaluador: cada tarjeta filtra por una fase */
+.tablero-fases { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.fase-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 16px 8px; border-radius: var(--radio); text-align: center; text-decoration: none; transition: transform .15s, box-shadow .15s; }
+.fase-tile:hover { transform: translateY(-2px); box-shadow: var(--sombra); }
+.fase-tile-numero { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 2rem; line-height: 1; }
+.fase-tile-nombre { font-weight: 700; font-size: .95rem; margin-top: 4px; }
+.fase-tile-fase { font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+.fase-tile.con-proyectos { background: var(--verde-esmeralda); color: #fff; }
+.fase-tile.con-proyectos .fase-tile-numero { color: var(--lima); }
+.fase-tile.vacia { background: #EEF2F0; color: var(--texto-sec); }
+.fase-tile.vacia:hover { color: var(--texto-sec); }
+.fase-tile.activa { outline: 3px solid var(--verde-bosque); outline-offset: 2px; }
+@media (max-width: 991px) { .tablero-fases { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 575px) { .tablero-fases { grid-template-columns: repeat(2, 1fr); } }

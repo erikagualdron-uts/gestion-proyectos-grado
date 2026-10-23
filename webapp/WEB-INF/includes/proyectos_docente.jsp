@@ -79,19 +79,15 @@
 <h1 class="titulo-pagina">Docente <c:out value="${esDirector ? 'Director' : 'Evaluador'}" /></h1>
 <p class="descripcion-pagina">Proyectos donde eres <c:out value="${esDirector ? 'director' : 'evaluador'}" />. Elige una fase para filtrar la tabla.</p>
 
-<div class="tabla-envoltorio mb-4">
-  <div class="linea-fases">
-    <c:forEach var="n" begin="1" end="6">
-      <a class="fase-col ${filtroFase == n ? 'elegida' : ''} ${(empty conteoFases['f' += n] or conteoFases['f' += n] == 0) ? 'pendiente' : 'superada'}" href="${ctx}${rutaDocente}?fase=${filtroFase == n ? 0 : n}" aria-label="Filtrar por la fase ${n}: ${nombresFase[n - 1]}">
-        <div class="fase-arriba"><span class="fase-circulo"><c:out value="${n}" /></span></div>
-        <div class="fase-tarjeta">
-          <small>Fase <c:out value="${n}" /></small>
-          <strong><c:out value="${nombresFase[n - 1]}" /></strong>
-          <span class="d-block mt-1" style="font-size: .8rem; opacity: .85"><c:out value="${empty conteoFases['f' += n] ? 0 : conteoFases['f' += n]}" /> proyecto(s)</span>
-        </div>
-      </a>
-    </c:forEach>
-  </div>
+<div class="tablero-fases mb-4">
+  <c:forEach var="n" begin="1" end="6">
+    <c:set var="cantidadFase" value="${empty conteoFases['f' += n] ? 0 : conteoFases['f' += n]}" />
+    <a class="fase-tile ${cantidadFase > 0 ? 'con-proyectos' : 'vacia'} ${filtroFase == n ? 'activa' : ''}" href="${ctx}${rutaDocente}?fase=${filtroFase == n ? 0 : n}" title="${filtroFase == n ? 'Quitar el filtro' : 'Ver solo los proyectos de esta fase'}" aria-label="Fase ${n}: ${nombresFase[n - 1]}, ${cantidadFase} proyecto(s)">
+      <span class="fase-tile-numero"><c:out value="${cantidadFase}" /></span>
+      <span class="fase-tile-nombre"><c:out value="${nombresFase[n - 1]}" /></span>
+      <span class="fase-tile-fase">Fase <c:out value="${n}" /></span>
+    </a>
+  </c:forEach>
 </div>
 
 <form method="get" action="${ctx}${rutaDocente}" class="row g-3 align-items-end mb-3">

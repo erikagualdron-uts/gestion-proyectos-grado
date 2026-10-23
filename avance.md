@@ -320,6 +320,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Módulos Docente Director y Evaluador (23/10/2026)
 - Las tarjetas de fase con proyectos van en verde y las vacías en gris; columnas "Código" y "Proyecto" (título y estudiantes) en lugar de "ID" y "Descripción"; la situación dice "Esperando el documento" o "En revisión de otros" en vez de "En espera"; el lápiz de calificar solo está activo cuando hay un documento por calificar y, si no, sale apagado con texto flotante.
 
+### Tablero de fases en Docente Director y Evaluador (23/10/2026)
+- La línea de tiempo se reemplazó por seis tarjetas con el número de proyectos en grande (verde si hay proyectos, gris si no); cada una filtra la tabla por esa fase y la elegida lleva un marco. Se reacomodan a 3 y 2 por fila en pantallas pequeñas.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
