@@ -352,6 +352,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Calificar: director en la Fase 5 (23/10/2026)
 - Si el Turnitin (director) o la rejilla (evaluador) ya están adjuntos para esa versión, ya no se muestra la caja vacía sino una nota; la ayuda del botón usa su mismo nombre ("Aprobar envío: envía el documento a revisión del evaluador y del comité"); "versión aprobada en la Fase X"; el aviso de decisión ya registrada es informativo.
 
+### Fase aplazada: textos (23/10/2026)
+- El cuadro de la observación muestra la fecha y, para quien no es el estudiante, "Esperando que (responsable) envíe una nueva versión", además de avisar que con la nueva versión se vuelve a revisar. Al comité, en la Fase 5, la ayuda de "Aprobar" le dice que el proyecto queda listo para sustentación.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

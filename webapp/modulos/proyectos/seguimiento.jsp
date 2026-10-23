@@ -189,9 +189,13 @@
       <%-- Observación completa cuando la fase fue aplazada o rechazada --%>
       <c:if test="${(pf.estado == 'APLAZADA' or pf.estado == 'RECHAZADA') and not empty ultimaObservacion}">
         <div class="mx-4 mb-3 alert ${pf.estado == 'APLAZADA' ? 'alert-warning' : 'alert-danger'}" role="alert">
-          <div class="fw-bold mb-1"><i class="bi bi-chat-left-text me-1"></i>Observación del <c:out value="${ultimaObservacion.rol_revisor == 'DIRECTOR' ? 'director' : (ultimaObservacion.rol_revisor == 'EVALUADOR' ? 'evaluador' : 'comité')}" /> (<c:out value="${ultimaObservacion.revisor}" />)</div>
+          <div class="fw-bold mb-1"><i class="bi bi-chat-left-text me-1"></i>Observación del <c:out value="${ultimaObservacion.rol_revisor == 'DIRECTOR' ? 'director' : (ultimaObservacion.rol_revisor == 'EVALUADOR' ? 'evaluador' : 'comité')}" /> (<c:out value="${ultimaObservacion.revisor}" />) <span class="fw-normal">· <c:out value="${ultimaObservacion.fecha}" /></span></div>
           <div style="white-space: pre-line"><c:out value="${ultimaObservacion.observaciones}" /></div>
-          <c:if test="${pf.estado == 'APLAZADA' and soyResponsable and esFaseActual}"><div class="mt-2">Corrige el documento y envía una nueva versión con el formulario de abajo.</div></c:if>
+          <c:choose>
+            <c:when test="${pf.estado == 'APLAZADA' and soyResponsable and esFaseActual}"><div class="mt-2">Corrige el documento y envía una nueva versión con el formulario de abajo.</div></c:when>
+            <c:when test="${pf.estado == 'APLAZADA' and esFaseActual}"><div class="mt-2"><i class="bi bi-hourglass-split me-1"></i>Esperando que <strong><c:out value="${fn:substringBefore(py.estudiantes, ',')}" /></strong> envíe una nueva versión.</div></c:when>
+          </c:choose>
+          <c:if test="${pf.estado == 'APLAZADA' and esFaseActual}"><div class="small mt-1">Con la nueva versión, quienes deben decidir vuelven a revisar.</div></c:if>
         </div>
       </c:if>
       <%-- Quién falta por decidir --%>

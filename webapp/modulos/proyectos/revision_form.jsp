@@ -257,7 +257,8 @@
                 <c:when test="${etiquetaAprobar == 'Aprobar envío'}">envía el documento a revisión del evaluador y del comité.</c:when>
                 <c:when test="${fase == 1}">valida el pago y el proyecto pasa a la Fase 2.</c:when>
                 <c:when test="${(fase == 3 or fase == 5) and not empty faltanOtros}">registra tu aprobación. Aún falta la decisión de: <c:out value="${faltanOtros}" />.</c:when>
-                <c:when test="${fase == 3 or fase == 5}">registra tu aprobación; con ella la fase queda aprobada.</c:when>
+                <c:when test="${fase == 5}">registra tu aprobación; con ella la fase queda aprobada y el proyecto queda listo para sustentación.</c:when>
+                <c:when test="${fase == 3}">registra tu aprobación; con ella la fase queda aprobada.</c:when>
                 <c:otherwise>aprueba la fase y el proyecto avanza.</c:otherwise>
               </c:choose></li>
               <li><strong>Aplazar:</strong> el estudiante corrige y envía una nueva versión (la observación es obligatoria).</li>
