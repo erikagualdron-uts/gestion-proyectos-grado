@@ -9,7 +9,7 @@ Estudiante: Erika Viviana Gualdrón Parra · Tecnología en Desarrollo de Sistem
 - Logos: `img/logo_oscuro.png` (fondos oscuros) e `img/logo_uts.png` (fondos claros).
 
 ## 1. Fuente de verdad
-- El PDF del sistema (`Documento_Sistema_Gestion_Proyectos_de_Grado.pdf`): requerimientos RF-01 a RF-62, RNF-01 a RNF-20, historias de usuario, base de datos de 15 tablas, estructura de carpetas y script SQL (Anexo A).
+- La documentación del sistema (`docs/Documentacion_Sistema_Gestion_Proyectos_de_Grado.pdf`, versión final; el documento inicial con el que se empezó está en el historial de Git): requerimientos RF-01 a RF-62, RNF-01 a RNF-20, historias de usuario, base de datos de 15 tablas, estructura de carpetas y script SQL (Anexo A).
 - Si el PDF y mis instrucciones se contradicen, avísame y pregúntame.
 
 ## 2. Reglas técnicas obligatorias
