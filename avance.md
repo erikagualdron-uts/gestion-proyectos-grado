@@ -249,6 +249,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - En el seguimiento se quitaron los botones de historial y PQRS de la cabecera; el historial se abre desde "Detalles del proyecto".
 - La ventana de detalles muestra el estado como etiqueta, "N de 6 fases aprobadas" con barra, el rol de quien mira (responsable, compañero, director o evaluador), estudiantes con responsable y compañero, director y evaluador con su correo institucional, fecha de inicio, último movimiento y, plegable, descripción, objetivo y alcance.
 
+### Se quita la pantalla de Historial de versiones (23/10/2026)
+- Decisión de la estudiante: se eliminó la pantalla `modulos/historial/historial.jsp` y todos sus accesos (tablas del coordinador y de los docentes, panel de control, seguimiento y detalles del proyecto). La tabla `historial_version` se conserva: sigue registrando los eventos (RNF-13) y alimenta el panel de control (último movimiento y actividad).
+- Las versiones de los documentos siguen visibles en el seguimiento de cada fase (versión vigente y anteriores, con sus revisiones).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
@@ -277,6 +281,7 @@ Resumen para actualizar la documentación final. Lo que no aparece aquí se impl
 | Decisión del director | No se detalla | Queda cerrada cuando el evaluador o el comité ya decidieron sobre la versión (fases 3 y 5) | Evitar decisiones contradictorias |
 | Informe de estado | Para el coordinador y para el estudiante (RF-60, RF-61, HU-39) | **Solo para el coordinador**; no hay informe del estudiante | Definido por la estudiante |
 | Módulos del administrador | El administrador consulta propuestas, PQRS e historial | Solo gestiona usuarios, cuentas y enlaces de la base documental | Definido por la estudiante |
+| Historial de versiones | Pantalla de historial con línea de tiempo por proyecto (RF-58, RF-59) | **No existe como pantalla**: las versiones y revisiones se ven en el seguimiento de cada fase; la tabla `historial_version` sigue registrando los eventos | Definido por la estudiante |
 | Pantalla de informes | Informe de estado por proyecto | **Panel de control**: resumen con gráficos e informe de proyectos (solo coordinador) | Definido por la estudiante |
 | Exportar el informe | CSV o imprimir (RF-62, deseable) | Solo **imprimir** (con estilos de impresión); no hay exportación a archivo | Definido por la estudiante |
 | PQRS | Aprobar, aplazar o rechazar (HU-34) | Solo **aprobar o rechazar**; el cambio de director aprobado se aplica al proyecto | En PQRS no hay reenvío |

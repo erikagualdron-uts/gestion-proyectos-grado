@@ -137,7 +137,6 @@
               </td>
               <td class="acciones">
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/historial/historial.jsp?id=${p.id_proyecto}" aria-label="Ver el historial de ${fn:escapeXml(p.codigo)}"><i class="bi bi-clock-history"></i></a>
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/revision_form.jsp?id=${p.id_proyecto}" aria-label="Calificar el documento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-pencil"></i></a>
               </td>
             </tr>

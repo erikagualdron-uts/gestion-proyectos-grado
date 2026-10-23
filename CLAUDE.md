@@ -35,7 +35,7 @@ Estudiante: Erika Viviana Gualdrón Parra · Tecnología en Desarrollo de Sistem
 
 **Estados de decisión:** APROBADO, APLAZADO (el estudiante corrige y reenvía una nueva versión), RECHAZADO (solo casos extremos; exige confirmación y observación obligatoria) y PENDIENTE (estado técnico inicial).
 
-**Otros módulos:** banco de ideas (solo ideas aprobadas, solo lectura), tabla de solicitudes con visualizar y gestionar, seguimiento con seis tarjetas (verde: superada o actual; gris: pendiente), PQRS (prórroga, cambio de director, petición, queja, reclamo, sugerencia), historial de versiones (se conservan todas, una marcada como vigente), notificaciones, informes de estado, base documental con seis tarjetas de enlaces.
+**Otros módulos:** banco de ideas (solo ideas aprobadas, solo lectura), tabla de solicitudes con visualizar y gestionar, seguimiento con seis tarjetas (verde: superada o actual; gris: pendiente), PQRS (prórroga, cambio de director, petición, queja, reclamo, sugerencia), versiones de los documentos (se conservan todas, una marcada como vigente; sin pantalla de historial), notificaciones, informes de estado, base documental con seis tarjetas de enlaces.
 
 ## 4. Cómo trabajar conmigo
 - Antes de configurar cuentas o servicios (GitHub, Clever Cloud, base de datos), **pregúntame los datos que necesites y encárgate tú de la configuración**. Guíame para iniciar sesión por navegador (`gh auth login`, `clever login`).

@@ -63,7 +63,7 @@
 <p class="descripcion-pagina">
   <c:choose>
     <c:when test="${not editando}">Propón tu propia idea de trabajo de grado. Quedará pendiente de aprobación del coordinador.</c:when>
-    <c:when test="${propuesta.estado_decision == 'APLAZADO'}">El coordinador aplazó tu propuesta. Corrígela y reenvíala; se conserva la versión anterior en el historial.</c:when>
+    <c:when test="${propuesta.estado_decision == 'APLAZADO'}">El coordinador aplazó tu propuesta. Corrígela y reenvíala; se conserva la versión anterior.</c:when>
     <c:otherwise>Tu propuesta está pendiente de decisión. Mientras tanto solo puedes agregar a tu compañero (si aún no lo tienes).</c:otherwise>
   </c:choose>
 </p>

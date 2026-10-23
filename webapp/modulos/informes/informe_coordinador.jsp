@@ -272,7 +272,6 @@
                   <td><c:choose><c:when test="${empty p.ultimo_fecha}">—</c:when><c:otherwise><div><c:out value="${p.ultimo_movimiento}" /></div><div class="texto-sec"><c:out value="${p.ultimo_fecha}" /></div></c:otherwise></c:choose></td>
                   <td class="acciones no-imprimir">
                     <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/historial/historial.jsp?id=${p.id_proyecto}" aria-label="Ver el historial de ${fn:escapeXml(p.codigo)}"><i class="bi bi-clock-history"></i></a>
                   </td>
                 </tr>
               </c:forEach>

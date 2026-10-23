@@ -10,7 +10,7 @@
 <c:choose>
   <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para tu proyecto de grado." />
-    <c:set var="tarjetas" value="bi-lightbulb|Banco de ideas|Explora las ideas aprobadas por los docentes y elige una.|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|Registra o corrige tu propuesta y accede a tu seguimiento e historial.|/modulos/propuestas/propuestas_banco.jsp;bi-chat|PQRS|Radica una prórroga, cambio de director, petición, queja, reclamo o sugerencia y consulta su respuesta.|/modulos/pqrs/pqrs.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp" />
+    <c:set var="tarjetas" value="bi-lightbulb|Banco de ideas|Explora las ideas aprobadas por los docentes y elige una.|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|Registra o corrige tu propuesta y accede a tu seguimiento.|/modulos/propuestas/propuestas_banco.jsp;bi-chat|PQRS|Radica una prórroga, cambio de director, petición, queja, reclamo o sugerencia y consulta su respuesta.|/modulos/pqrs/pqrs.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:when test="${sessionScope.rol == 'DOCENTE'}">
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para docentes." />

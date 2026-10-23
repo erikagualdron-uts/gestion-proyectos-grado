@@ -223,7 +223,6 @@
               <div class="col-md-6">
                 <div class="dato-etiqueta">Director</div><div class="dato-valor"><c:out value="${empty py.director ? 'Sin asignar' : py.director}" /></div>
                 <div class="dato-etiqueta">Evaluador</div><div class="dato-valor"><c:out value="${empty py.evaluador ? 'Sin asignar' : py.evaluador}" /></div>
-                <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Ver historial de versiones</a>
               </div>
               <div class="col-md-6">
                 <div class="dato-etiqueta">Fases aprobadas</div>
@@ -378,7 +377,6 @@
         </details>
       </div>
       <div class="modal-footer border-0 pt-0">
-        <a class="btn btn-outline-uts" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Ver historial de versiones</a>
         <button type="button" class="btn btn-uts" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>

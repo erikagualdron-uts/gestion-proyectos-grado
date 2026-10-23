@@ -131,7 +131,6 @@
               <td><c:choose><c:when test="${empty p.evaluador}"><span class="insignia insignia-aplazado">Sin asignar</span></c:when><c:otherwise><c:out value="${p.evaluador}" /></c:otherwise></c:choose></td>
               <td class="acciones">
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/historial/historial.jsp?id=${p.id_proyecto}" aria-label="Ver el historial de ${fn:escapeXml(p.codigo)}"><i class="bi bi-clock-history"></i></a>
                 <button type="button" class="btn btn-outline-uts btn-icono" ${p.estado_general == 'EN_CURSO' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalAsignar" aria-label="Asignar director y evaluador de ${fn:escapeXml(p.codigo)}"
                         data-id="${p.id_proyecto}" data-codigo="${fn:escapeXml(p.codigo)}" data-titulo="${fn:escapeXml(p.titulo)}" data-estudiantes="${fn:escapeXml(p.estudiantes)}"
                         data-director="${empty p.id_director ? '' : p.id_director}" data-evaluador="${empty p.id_evaluador ? '' : p.id_evaluador}"><i class="bi bi-pencil"></i></button>
