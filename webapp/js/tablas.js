@@ -55,6 +55,8 @@
       var decision = evento.submitter ? evento.submitter.value : '';
       var nivel = form.querySelector('[name="nivel"]');
       var observacion = form.querySelector('[name="observacion"]');
+      var rejilla = form.querySelector('[data-obligatoria-aprobar]');
+      if (rejilla) { rejilla.required = (decision === 'APROBAR'); }
       if (nivel) { nivel.required = (decision === 'APROBAR'); }
       if (observacion) { observacion.required = (decision === 'RECHAZAR' || decision === 'APLAZAR'); }
       form.classList.add('was-validated');

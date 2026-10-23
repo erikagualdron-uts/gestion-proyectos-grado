@@ -31,7 +31,7 @@ Estudiante: Erika Viviana Gualdrón Parra · Tecnología en Desarrollo de Sistem
 
 **Cuentas:** solo correo institucional; contraseña con hash y sal; cuenta Pendiente no puede ingresar; casilla "Mantener sesión activa" (tabla `sesion_persistente`).
 
-**Fases (en orden):** 1 Pago, 2 Propuesta I, 3 Propuesta II, 4 Informe I, 5 Informe II, 6 Revisión final. El estudiante no avanza hasta que la fase actual sea aprobada. Al aprobar la fase 6 queda apto para graduarse.
+**Fases (en orden):** 1 Pago, 2 Propuesta I, 3 Propuesta II, 4 Informe I, 5 Informe II, 6 Revisión final. El estudiante no avanza hasta que la fase actual sea aprobada. Al aprobar la fase 6 queda listo para la sustentación (en la base: `APTO_GRADUACION`).
 
 **Estados de decisión:** APROBADO, APLAZADO (el estudiante corrige y reenvía una nueva versión), RECHAZADO (solo casos extremos; exige confirmación y observación obligatoria) y PENDIENTE (estado técnico inicial).
 

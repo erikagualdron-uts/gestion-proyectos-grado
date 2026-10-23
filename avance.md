@@ -38,7 +38,7 @@
 
 **Decisiones**
 - Correos: estudiantes `@uts.edu.co` (el registro solo acepta este dominio); docentes, coordinador y administrador `@correo.uts.edu.co` (los crea el administrador).
-- Los menús y tarjetas siguen la tabla 5.2 del PDF; las imágenes de `docs/referencia/` se usan solo como referencia de diseño. El estudiante llega a seguimiento, historial, PQRS e informe desde Propuesta Banco.
+- Los menús y tarjetas siguen la tabla 5.2 del PDF; las imágenes de `docs/referencia/` se usan solo como referencia de diseño. El estudiante llega a seguimiento, historial, PQRS e informe desde "Mis propuestas" (en el menú del estudiante y en el título de la pantalla se usa "Mis propuestas" en lugar de "Propuesta Banco" por claridad; los demás roles ven "Propuestas Banco").
 - Las opciones de menú de módulos aún no construidos llevan a la página "Página no disponible" (aceptado).
 
 **Pruebas hechas en el despliegue (con peticiones HTTP):** login de administrador, coordinador, estudiante y docente; clave incorrecta; cuenta pendiente; POST sin token CSRF; acceso sin sesión; sesión recordada y cierre de sesión; validaciones del registro. **Sin probar aún:** acceso denegado por rol (aún no hay páginas restringidas por rol; se prueba con el módulo de usuarios).
@@ -117,3 +117,47 @@
 
 **Pruebas hechas en el despliegue (peticiones HTTP):** lista, filtros y búsqueda; mismo docente como director y evaluador; usuarios que no son docentes; docente inactivo (no aparece ni se acepta por POST directo); proyecto inexistente y datos no numéricos; guardar sin cambios; cambiar, quitar y restaurar la asignación; inicio del estudiante con director y evaluador; búsqueda de estudiantes (documento, nombre, código, sin resultados); accesos y procesos prohibidos para docente, estudiante y administrador.
 **Pendiente:** la pantalla de seguimiento a la que enlazan los ojos (módulo 4).
+
+## Jueves – Módulo 4: Fases, entregas, revisiones y módulos de docentes (RF-38 a RF-52)
+**Reglas del flujo (definidas a partir del PDF)**
+| Fase | Entrega | Decide |
+|---|---|---|
+| 1 Pago | Estudiante responsable (comprobante) | Coordinador (comité) |
+| 2 Propuesta I | Estudiante responsable (anteproyecto) | Director |
+| 3 Propuesta II | Se copia el documento aprobado en la fase 2 | El director aprueba el envío; luego evaluador y comité (avanza cuando ambos aprueban) |
+| 4 Informe I | Estudiante responsable (informe) | Director |
+| 5 Informe II | Se copia el informe aprobado en la fase 4 | Igual que la fase 3 |
+| 6 Revisión final | Estudiante responsable (informe final) | Evaluador y comité (ambos) |
+- Aplazado: el proyecto se queda en la fase, el responsable sube una nueva versión (v2, v3…) y la revisión vuelve a empezar; las versiones anteriores se conservan y la vigente queda marcada. En las fases 3 y 5 la nueva versión vuelve primero al director.
+- Rechazado: exige observación y confirmación y cierra el proyecto. Fase 6 aprobada: el proyecto queda "Listo para sustentación".
+- Rejilla de evaluación (la adjunta el evaluador) y Turnitin (lo adjunta el director en la fase 5): enlaces opcionales al calificar.
+- Solo el responsable entrega; el compañero solo visualiza. Si el responsable está inactivo, el proyecto no recibe documentos.
+
+**Implementado**
+- **Seguimiento** (`proyectos/seguimiento.jsp`): línea de tiempo con las seis tarjetas (verdes las superadas y la actual con aro lima, grises las pendientes, roja la rechazada), detalle de la fase elegida con sus documentos y versiones (estado, quién entregó y enlace), tabla de revisiones, ventana "Detalles del proyecto", entrega por enlace del responsable y botón para calificar. Acceso: estudiantes del proyecto, director y evaluador asignados, coordinador y administrador.
+- **Entrega por enlace** (`entrega_proc.jsp`): valida URL, crea nueva versión vigente, conserva las anteriores y avisa al revisor.
+- **Calificar** (`revision_form.jsp`, `revision_proc.jsp`): crear, editar y consultar la revisión; observación obligatoria para aplazar o rechazar; la fase avanza, se devuelve o se cierra según las decisiones; avisos a estudiantes y siguientes revisores; historial de cada paso.
+- **Docente Director y Docente Evaluador**: tabla con ID, descripción y estado (fase, estudiantes, "Por revisar"), ojo y lápiz, tarjetas de fase que filtran, búsqueda y paginación. Un docente solo ve los proyectos donde ocupa ese papel.
+
+**Pantallas:** `proyectos/seguimiento.jsp`, `proyectos/revision_form.jsp`, `docente_director/docente_director.jsp`, `docente_evaluador/docente_evaluador.jsp`. **Procesos:** `entrega_proc.jsp`, `revision_proc.jsp`. **Fragmentos:** `fases.jsp`, `proyectos_docente.jsp`.
+**Requerimientos:** RF-38 a RF-52 (RF-46 con confirmación en el navegador). **Historias:** HU-22 a HU-32.
+
+**Pruebas hechas en el despliegue (peticiones HTTP):** ciclo completo de las seis fases hasta "Listo para sustentación" (con aplazados en las fases 1, 2 y 3, rejilla y Turnitin); compañero y otros roles que intentan entregar o calificar; enlaces inválidos; entrega mientras el documento está en revisión; evaluador y comité antes de que el director apruebe el envío (también por POST directo); documento cambiado o inexistente; rechazo que cierra el proyecto y bloqueo de nuevas entregas y decisiones; permisos del seguimiento por rol (estudiante ajeno, docente no asignado); tablas de Director y Evaluador con filtro por fase y búsqueda; historial de versiones y revisiones en la base.
+**Pendiente / mejoras posibles:** que el coordinador vea en su asignación un indicador de proyectos "por validar".
+
+### Ajuste de diseño (22/10/2026)
+- En "Mis propuestas" el estudiante ya no ve las cuatro tarjetas de resumen (solo tiene una propuesta activa y el estado se ve en la tabla). Se conservan el buscador y el filtro de estado para cumplir RF-29 y RF-30. Los demás roles siguen viendo las tarjetas.
+- En "Calificar documento" el revisor ve ahora la fase y su estado, el comentario de la entrega, un botón "Abrir documento" (sin repetir el nombre) y las observaciones que recibieron las versiones anteriores, para comprobar que se corrigieron. El orden de los botones de decisión (Rechazar, Aplazar, Aprobar) se mantiene igual en todas las pantallas por coherencia.
+- **Rejilla de evaluación y formato F-DC-124:** el formato institucional trae la rejilla dentro del mismo documento (SI/NO por criterio, concepto final y firmas del director y del evaluador) y el informe de similitud en el Anexo A. En el sistema el evaluador adjunta el enlace de su copia diligenciada ("Rejilla de evaluación diligenciada (formato F-DC-124)"): **obligatorio para aprobar en la Fase 3** (si no la adjuntó ya para esa versión) y opcional en las demás fases y decisiones. Diferencias conocidas con el formato: admite hasta 3 estudiantes (el sistema, 2) y pide los datos del pago (LQ, banco, valor); el sistema solo pide el enlace del comprobante.
+- En las fases 3 y 5, cuando el evaluador o el comité ya decidieron sobre una versión, la decisión del director queda cerrada (no se puede editar, ni en la pantalla ni en el servidor), para no dejar decisiones contradictorias. Además, el documento que el sistema copia a esas fases se describe como "aprobada en la Fase N y enviada por el director".
+- Al aprobar la fase 6 el proyecto se muestra como **"Listo para sustentación"** (antes decía "Apto para graduación"): después de la revisión final lo que sigue es la sustentación del trabajo de grado. Es solo el texto visible: el valor interno en la base de datos sigue siendo `APTO_GRADUACION`.
+- **Turnitin obligatorio (fase 5):** como evidencia del reporte de la herramienta antiplagio, el director debe adjuntar el enlace del informe de similitud en **cualquier decisión** (aprobar el envío, aplazar o rechazar), una vez por versión del informe. No se verifica el porcentaje: el sistema solo guarda el enlace.
+- "Calificar documento": ahora muestra el progreso de la revisión de la versión (por ejemplo "Director: aprobó · Evaluador: pendiente · Comité: pendiente"), pone primero los enlaces de evidencia (rejilla o Turnitin) y después las observaciones, y el aviso de "Ya registraste una decisión" explica hasta cuándo se puede cambiar.
+
+### Ajustes según los formatos institucionales F-DC-124, F-DC-125 y F-DC-129 (23/10/2026)
+- **F-DC-124** es el formato del **anteproyecto** (fases 2 y 3, con su rejilla y el informe de similitud como Anexo A); **F-DC-125** es el formato del **informe de trabajo de grado** (fases 4 y 5); **F-DC-129** es la **rejilla de evaluación del informe** (fase 5).
+- Los documentos se llaman ahora "Anteproyecto (F-DC-124)" e "Informe (F-DC-125)", para que el estudiante sepa qué formato usar.
+- **Rejilla del evaluador:** obligatoria para aprobar en la **fase 3** (formato F-DC-124, sección de rejilla) y en la **fase 5** (formato F-DC-129), una vez por versión.
+- **Fase 6 (Revisión final):** ya no tiene entrega ni revisión. Se alcanza sola cuando el evaluador y el comité aprueban la fase 5, y deja el proyecto **"Listo para sustentación"**. La tarjeta 6 se conserva como estado final.
+- Decisión: el informe de similitud (Turnitin) se exige solo al director en la fase 5; en la fase 3 no se pide.
+- En el seguimiento, el aviso final dice "Se aprobaron todas las fases del proyecto" y la tarjeta de la fase 6 muestra "Listo para sustentación" en lugar de "Aprobada".
