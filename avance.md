@@ -147,4 +147,4 @@
 
 ### Ajuste de diseño (22/10/2026)
 - En "Mis propuestas" el estudiante ya no ve las cuatro tarjetas de resumen (solo tiene una propuesta activa y el estado se ve en la tabla). Se conservan el buscador y el filtro de estado para cumplir RF-29 y RF-30. Los demás roles siguen viendo las tarjetas.
-- En "Calificar documento" el revisor ve ahora la fase y su estado, el comentario del estudiante, un botón "Abrir documento" (sin repetir el nombre) y las observaciones que recibieron las versiones anteriores, para comprobar que se corrigieron. El orden de los botones de decisión (Rechazar, Aplazar, Aprobar) se mantiene igual en todas las pantallas por coherencia.
+- En "Calificar documento" el revisor ve ahora la fase y su estado, el comentario de la entrega, un botón "Abrir documento" (sin repetir el nombre) y las observaciones que recibieron las versiones anteriores, para comprobar que se corrigieron. El orden de los botones de decisión (Rechazar, Aplazar, Aprobar) se mantiene igual en todas las pantallas por coherencia.

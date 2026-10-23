@@ -108,7 +108,7 @@
           <div class="dato-etiqueta">Documento por revisar</div>
           <div class="dato-valor"><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · entregó <c:out value="${docVigente.subido}" /> (<c:out value="${docVigente.fecha}" />)</div>
           <c:if test="${not empty docVigente.comentario}">
-            <div class="dato-etiqueta">Comentario del estudiante</div>
+            <div class="dato-etiqueta">Comentario de la entrega</div>
             <div class="dato-valor" style="white-space: pre-line"><c:out value="${docVigente.comentario}" /></div>
           </c:if>
           <div class="d-flex flex-wrap gap-2">
