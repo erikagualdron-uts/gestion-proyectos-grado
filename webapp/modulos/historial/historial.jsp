@@ -155,7 +155,7 @@
                 <tr>
                   <td style="white-space: nowrap"><c:out value="${e.fecha}" /></td>
                   <td><c:out value="${e.usuario}" /></td>
-                  <td><div class="fw-semibold"><c:out value="${e.accion_texto}" /></div><div class="texto-sec"><c:out value="${fn:substring(e.entidad, 0, 1)}" /><c:out value="${fn:toLowerCase(fn:substring(e.entidad, 1, 20))}" /></div></td>
+                  <td><div class="fw-semibold"><c:out value="${e.accion_texto}" /></div><div class="texto-sec"><c:choose><c:when test="${e.entidad == 'PQRS'}">PQRS</c:when><c:otherwise><c:out value="${fn:substring(e.entidad, 0, 1)}" /><c:out value="${fn:toLowerCase(fn:substring(e.entidad, 1, 20))}" /></c:otherwise></c:choose></div></td>
                   <td>
                     <c:if test="${not empty e.estado_anterior}"><span class="texto-sec"><c:out value="${fn:replace(fn:toLowerCase(e.estado_anterior), '_', ' ')}" /> →</span></c:if>
                     <c:if test="${not empty e.estado_nuevo}"><strong><c:out value="${fn:replace(fn:toLowerCase(e.estado_nuevo), '_', ' ')}" /></strong></c:if>

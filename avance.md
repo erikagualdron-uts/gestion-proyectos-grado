@@ -162,3 +162,19 @@
 - Decisión: el informe de similitud (Turnitin) se exige solo al director en la fase 5; en la fase 3 no se pide.
 - En el seguimiento, el aviso final dice "Se aprobaron todas las fases del proyecto" y la tarjeta de la fase 6 muestra "Listo para sustentación" en lugar de "Aprobada".
 - En el Inicio del estudiante, el panel "Tu proyecto" muestra "Todas las fases aprobadas" y la insignia "Listo para sustentación" cuando el proyecto terminó, y "Proyecto cerrado" cuando se rechazó.
+
+## Jueves – Módulo 5: PQRS, notificaciones, historial e informe de estado (RF-53 a RF-62)
+**Implementado**
+- **PQRS** (RF-53 a RF-56): el estudiante **responsable** radica (prórroga, cambio de director, petición, queja, reclamo o sugerencia, con asunto y descripción). La **prórroga exige el enlace del soporte de pago**. El compañero solo consulta las PQRS del proyecto. El **coordinador** aprueba, aplaza o rechaza con respuesta (obligatoria al aplazar o rechazar); si aprueba un **cambio de director**, elige al nuevo director (docente activo, distinto del evaluador) y el sistema lo aplica al proyecto y avisa al nuevo director, al evaluador y al estudiante. El administrador consulta. Tabla con búsqueda, filtros por tipo y estado, tarjetas de resumen, paginación y ventanas de detalle y de gestión.
+- **Notificaciones** (RF-57): listado de avisos internos con filtro "solo sin leer", marcar uno o todos como leídos y acceso al proyecto; la campana muestra el contador. Solo se pueden marcar los avisos propios.
+- **Historial de versiones** (RF-58, RF-59): línea de tiempo por proyecto (entregas con su enlace, revisiones, decisiones, cambios de fase, asignaciones, PQRS) con filtro por tipo de evento y paginación; solo lectura. Coordinador y administrador ven todos los proyectos, el docente los suyos y el estudiante el propio.
+- **Informe de estado** (RF-60, RF-62), **solo para el coordinador**: proyecto, fase, estado, director, evaluador y último movimiento, con filtros por texto, fase, estado, director y evaluador. Se puede **imprimir** (estilos de impresión que dejan solo el título y la tabla; permite guardar como PDF) y **exportar a Excel** con formato (encabezado verde, bordes y anchos de columna).
+- No hay informe de estado para el estudiante (decisión de la estudiante); se quitó de las descripciones.
+
+**Pantallas:** `pqrs/pqrs.jsp` (el detalle y la gestión son ventanas modales), `pqrs/pqrs_form.jsp`, `notificaciones/notificaciones.jsp`, `historial/historial.jsp`, `informes/informe_coordinador.jsp`, `informes/informe_excel.jsp`. **Procesos:** `pqrs_proc.jsp`, `notificacion_proc.jsp`. **Fragmento:** `informe_filtros.jsp`.
+**Requerimientos:** RF-53 a RF-60 y RF-62 (RF-61, informe del estudiante, descartado). **Historias:** HU-33 a HU-38.
+
+**Problemas resueltos**
+- La exportación fallaba con error 500 por el atributo `trimDirectiveWhitespaces` de la página; se probaron variantes con una sola diferencia cada una hasta aislarlo y se quitó.
+
+**Pruebas hechas en el despliegue (peticiones HTTP):** compañero que intenta radicar; radicar con tipo inválido, asunto corto, prórroga sin soporte y soporte inválido; prórroga, cambio de director y queja válidos; visibilidad de PQRS por rol (responsable, compañero, otro estudiante, coordinador, administrador, docente sin acceso); resolver con y sin respuesta, resolver dos veces, cambio de director sin nuevo director, con el evaluador y con un docente válido (se aplica al proyecto); estudiante y docente que intentan resolver; avisos; notificaciones (marcar una, marcar todas, intentar marcar un aviso ajeno); historial por rol (estudiante propio, compañero, administrador, coordinador, otro estudiante y docente ajeno denegados); informe y sus filtros (incluidos filtros inválidos); exportación a Excel.
