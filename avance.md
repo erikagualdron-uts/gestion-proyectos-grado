@@ -355,6 +355,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Fase aplazada: textos (23/10/2026)
 - El cuadro de la observación muestra la fecha y, para quien no es el estudiante, "Esperando que (responsable) envíe una nueva versión", además de avisar que con la nueva versión se vuelve a revisar. Al comité, en la Fase 5, la ayuda de "Aprobar" le dice que el proyecto queda listo para sustentación.
 
+### Inicio del estudiante: código del proyecto y calendario (23/10/2026)
+- El panel "Tu proyecto" muestra el código y el título (por ejemplo "PG-0005 · Idea de prueba"). La tarjeta "Calendario académico" ya no sale en el inicio del estudiante (la tiene en la Base documental), así que quedan cuatro tarjetas en una fila; los demás roles la conservan (RF-18).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

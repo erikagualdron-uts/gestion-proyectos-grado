@@ -29,9 +29,10 @@
 <%-- Proyecto del estudiante (si ya tiene uno) --%>
 <c:if test="${sessionScope.rol == 'ESTUDIANTE'}">
   <sql:query var="proyecto" dataSource="${bd}">
-    SELECT p.id_proyecto, p.estado_general, f.numero, f.nombre AS fase, pf.estado, d.nombre_completo AS director, ev.nombre_completo AS evaluador
+    SELECT p.id_proyecto, pg.codigo AS codigo_pg, pg.titulo AS titulo_pg, p.estado_general, f.numero, f.nombre AS fase, pf.estado, d.nombre_completo AS director, ev.nombre_completo AS evaluador
     FROM propuesta_estudiante pe
     JOIN proyecto p ON p.id_propuesta = pe.id_propuesta
+    JOIN propuesta pg ON pg.id_propuesta = p.id_propuesta
     JOIN fase f ON f.id_fase = p.fase_actual
     LEFT JOIN usuario d ON d.id_usuario = p.id_director
     LEFT JOIN usuario ev ON ev.id_usuario = p.id_evaluador
@@ -78,6 +79,7 @@
     <div>
       <div class="etiqueta-sup">Tu proyecto</div>
       <div class="fw-bold fs-5 titulo"><c:choose><c:when test="${py.estado_general == 'APTO_GRADUACION'}">Listo para sustentación</c:when><c:otherwise>Fase <c:out value="${py.numero}" /> · <c:out value="${py.fase}" /></c:otherwise></c:choose></div>
+      <div class="texto-sec mt-1"><strong><c:out value="${py.codigo_pg}" /></strong> · <c:out value="${py.titulo_pg}" /></div>
       <div class="texto-sec mt-1">
         <i class="bi bi-person-check me-1"></i>Director: <strong><c:out value="${empty py.director ? 'Sin asignar' : py.director}" /></strong>
         <span class="mx-1">·</span>
@@ -105,7 +107,8 @@
   </div>
 </c:if>
 
-<c:set var="hayCalendario" value="${calendario.rowCount > 0 and (fn:startsWith(calendario.rows[0].url, 'https://') or fn:startsWith(calendario.rows[0].url, 'http://'))}" />
+<%-- El estudiante llega al calendario por la Base documental; los demás roles lo tienen también como tarjeta (RF-18) --%>
+<c:set var="hayCalendario" value="${sessionScope.rol != 'ESTUDIANTE' and calendario.rowCount > 0 and (fn:startsWith(calendario.rows[0].url, 'https://') or fn:startsWith(calendario.rows[0].url, 'http://'))}" />
 <c:set var="columnasTarjeta" value="${fn:length(fn:split(tarjetas, ';')) + (hayCalendario ? 1 : 0) == 4 ? 'col-xl-3' : 'col-xl-4'}" />
 <div class="row g-3 mb-4">
   <c:forEach var="tarjeta" items="${fn:split(tarjetas, ';')}">
@@ -128,7 +131,7 @@
     </div>
   </c:forEach>
   <%-- Calendario académico (RF-18): abre el enlace externo configurado en la base documental --%>
-  <c:if test="${calendario.rowCount > 0 and (fn:startsWith(calendario.rows[0].url, 'https://') or fn:startsWith(calendario.rows[0].url, 'http://'))}">
+  <c:if test="${hayCalendario}">
     <div class="col-12 col-md-6 ${columnasTarjeta}">
       <a class="tarjeta tarjeta-modulo" href="<c:out value='${calendario.rows[0].url}' />" target="_blank" rel="noopener noreferrer">
         <span class="icono-caja"><i class="bi bi-calendar-event"></i></span>
