@@ -80,6 +80,17 @@
   <c:set var="rejillaObligatoria" value="${rejillaRonda.rows[0].total == 0}" />
 </c:if>
 
+<%-- Fase 5: el director adjunta el informe de similitud (Turnitin) como evidencia en cualquier decisión, una vez por versión --%>
+<c:if test="${rolRevision == 'DIRECTOR' and fase == 5 and not empty docVigente}">
+  <sql:query var="turnitinRonda" dataSource="${bd}">
+    SELECT COUNT(*) AS total FROM documento
+    WHERE id_proyecto_fase = ? AND nombre = 'Turnitin'
+      AND fecha_subida >= (SELECT fecha_subida FROM documento WHERE id_documento = ?)
+    <sql:param value="${py.id_proyecto_fase}" /><sql:param value="${docVigente.id_documento}" />
+  </sql:query>
+  <c:set var="turnitinObligatorio" value="${turnitinRonda.rows[0].total == 0}" />
+</c:if>
+
 <%-- Observaciones que recibieron las versiones anteriores del documento (para comprobar que se corrigieron) --%>
 <sql:query var="anteriores" dataSource="${bd}">
   SELECT r.rol_revisor, r.decision, r.observaciones, d.version_num, u.nombre_completo AS revisor, DATE_FORMAT(r.fecha_revision, '%d/%m/%Y %H:%i') AS fecha
@@ -196,8 +207,11 @@
             </c:if>
             <c:if test="${rolRevision == 'DIRECTOR' and fase == 5}">
               <div class="mb-3">
-                <label for="turnitin" class="form-label">Informe Turnitin <span class="texto-sec">(enlace, opcional)</span></label>
-                <input type="url" class="form-control" id="turnitin" name="turnitin" maxlength="500" placeholder="https://...">
+                <label for="turnitin" class="form-label">Informe de similitud (Turnitin)
+                  <span class="texto-sec"><c:out value="${turnitinObligatorio ? '(enlace, obligatorio en cualquier decisión)' : '(ya adjuntado para esta versión)'}" /></span></label>
+                <input type="url" class="form-control" id="turnitin" name="turnitin" maxlength="500" placeholder="https://..." ${turnitinObligatorio ? 'required' : ''}>
+                <div class="form-text">Es la evidencia del reporte de la herramienta antiplagio institucional para esta versión del informe.</div>
+                <div class="invalid-feedback">Adjunta el enlace del informe de similitud (http:// o https://).</div>
               </div>
             </c:if>
             <c:if test="${not empty miRevision}"><div class="alert alert-warning small" role="alert">Ya registraste una decisión (<strong><c:out value="${miRevision.decision}" /></strong>). Al guardar de nuevo se reemplaza.</div></c:if>

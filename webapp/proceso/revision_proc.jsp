@@ -67,6 +67,14 @@
       <sql:param value="${py.id_proyecto_fase}" /><sql:param value="${idDocumento}" />
     </sql:query>
   </c:if>
+  <c:if test="${rolRevision == 'DIRECTOR' and fase == 5}">
+    <sql:query var="turnitinRonda" dataSource="${bd}">
+      SELECT COUNT(*) AS total FROM documento
+      WHERE id_proyecto_fase = ? AND nombre = 'Turnitin'
+        AND fecha_subida >= (SELECT fecha_subida FROM documento WHERE id_documento = ?)
+      <sql:param value="${py.id_proyecto_fase}" /><sql:param value="${idDocumento}" />
+    </sql:query>
+  </c:if>
   <c:set var="miPrevia" value="${0}" />
   <c:set var="directorAprobo" value="${false}" />
   <c:set var="otrosDecidieron" value="${false}" />
@@ -87,6 +95,9 @@
     <c:when test="${rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5) and otrosDecidieron}"><c:set var="errorRevision" value="El evaluador o el comité ya decidieron sobre esta versión: tu decisión quedó cerrada." /></c:when>
     <c:when test="${param.decision == 'APROBAR' and rolRevision == 'EVALUADOR' and fase == 3 and empty rejillaIngresada and rejillaRonda.rows[0].total == 0}">
       <c:set var="errorRevision" value="Para aprobar la Fase 3 adjunta el enlace de la rejilla de evaluación diligenciada (formato F-DC-124)." />
+    </c:when>
+    <c:when test="${rolRevision == 'DIRECTOR' and fase == 5 and empty turnitinIngresado and turnitinRonda.rows[0].total == 0}">
+      <c:set var="errorRevision" value="En la Fase 5 adjunta el enlace del informe de similitud (Turnitin) como evidencia, sea cual sea tu decisión." />
     </c:when>
     <c:when test="${param.decision != 'APROBAR' and (empty observacion or fn:length(observacion) > 2000)}"><c:set var="errorRevision" value="Para aplazar o rechazar escribe las observaciones (máximo 2000 caracteres)." /></c:when>
     <c:when test="${fn:length(observacion) > 2000}"><c:set var="errorRevision" value="Las observaciones pueden tener máximo 2000 caracteres." /></c:when>
