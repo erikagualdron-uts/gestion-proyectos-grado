@@ -10,7 +10,7 @@
 <c:choose>
   <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para tu proyecto de grado." />
-    <c:set var="tarjetas" value="bi-lightbulb|Banco de ideas|Explora las ideas aprobadas por los docentes y elige una.|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|Registra o corrige tu propuesta y accede a tu seguimiento, historial y PQRS.|/modulos/propuestas/propuestas_banco.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp;bi-person|Mi perfil|Revisa y actualiza tus datos personales.|/modulos/perfil/perfil.jsp" />
+    <c:set var="tarjetas" value="bi-lightbulb|Banco de ideas|Explora las ideas aprobadas por los docentes y elige una.|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|Registra o corrige tu propuesta y accede a tu seguimiento e historial.|/modulos/propuestas/propuestas_banco.jsp;bi-chat|PQRS|Radica una prórroga, cambio de director, petición, queja, reclamo o sugerencia y consulta su respuesta.|/modulos/pqrs/pqrs.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:when test="${sessionScope.rol == 'DOCENTE'}">
     <c:set var="descripcionInicio" value="Estos son los módulos disponibles para docentes." />
@@ -63,12 +63,21 @@
 <h1 class="titulo-pagina">Hola, <c:out value="${sessionScope.primerNombre}" /></h1>
 <p class="descripcion-pagina"><c:out value="${descripcionInicio}" /></p>
 
+<c:if test="${notifCount > 0}">
+  <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 py-3">
+    <div><i class="bi bi-bell me-2"></i><span class="fw-bold">Tienes <c:out value="${notifCount}" /> notificación(es) sin leer.</span></div>
+    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/notificaciones/notificaciones.jsp">Ver notificaciones</a>
+  </div>
+</c:if>
+
 <c:if test="${sessionScope.rol == 'ESTUDIANTE' and proyecto.rowCount > 0}">
   <c:set var="py" value="${proyecto.rows[0]}" />
-  <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <c:set var="faseListo" value="${py.estado_general == 'APTO_GRADUACION'}" />
+  <div class="tarjeta mb-4">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
     <div>
       <div class="etiqueta-sup">Tu proyecto</div>
-      <div class="fw-bold fs-5 titulo"><c:choose><c:when test="${py.estado_general == 'APTO_GRADUACION'}">Todas las fases aprobadas</c:when><c:otherwise>Fase <c:out value="${py.numero}" /> · <c:out value="${py.fase}" /></c:otherwise></c:choose></div>
+      <div class="fw-bold fs-5 titulo"><c:choose><c:when test="${py.estado_general == 'APTO_GRADUACION'}">Listo para sustentación</c:when><c:otherwise>Fase <c:out value="${py.numero}" /> · <c:out value="${py.fase}" /></c:otherwise></c:choose></div>
       <div class="texto-sec mt-1">
         <i class="bi bi-person-check me-1"></i>Director: <strong><c:out value="${empty py.director ? 'Por asignar' : py.director}" /></strong>
         <span class="mx-1">·</span>
@@ -77,7 +86,7 @@
     </div>
     <div class="d-flex flex-wrap align-items-center gap-3">
       <c:choose>
-        <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado">Listo para sustentación</span></c:when>
+        <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado"><i class="bi bi-check-circle me-1"></i>Todas las fases aprobadas</span></c:when>
         <c:when test="${py.estado_general == 'CERRADO'}"><span class="insignia insignia-rechazado">Proyecto cerrado</span></c:when>
         <c:when test="${py.estado == 'APROBADA'}"><span class="insignia insignia-aprobado">Aprobado</span></c:when>
         <c:when test="${py.estado == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazado · corregir y reenviar</span></c:when>
@@ -88,12 +97,19 @@
       <a class="btn btn-uts" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${py.id_proyecto}">Ver seguimiento</a>
     </div>
   </div>
+  <div class="progreso-fases mt-3" role="img" aria-label="Avance: ${faseListo ? 6 : py.numero} de 6 fases">
+    <c:forEach var="n" begin="1" end="6"><span class="paso ${faseListo or n < py.numero or (n == py.numero and py.estado == 'APROBADA') ? 'hecho' : (n == py.numero ? 'actual' : '')}"></span></c:forEach>
+  </div>
+  <div class="texto-sec small mt-2"><c:choose><c:when test="${faseListo}">6 de 6 fases aprobadas</c:when><c:otherwise>Fase <c:out value="${py.numero}" /> de 6</c:otherwise></c:choose></div>
+  </div>
 </c:if>
 
+<c:set var="hayCalendario" value="${calendario.rowCount > 0 and (fn:startsWith(calendario.rows[0].url, 'https://') or fn:startsWith(calendario.rows[0].url, 'http://'))}" />
+<c:set var="columnasTarjeta" value="${fn:length(fn:split(tarjetas, ';')) + (hayCalendario ? 1 : 0) == 4 ? 'col-xl-3' : 'col-xl-4'}" />
 <div class="row g-3 mb-4">
   <c:forEach var="tarjeta" items="${fn:split(tarjetas, ';')}">
     <c:set var="p" value="${fn:split(tarjeta, '|')}" />
-    <div class="col-12 col-md-6 col-xl-4">
+    <div class="col-12 col-md-6 ${columnasTarjeta}">
       <a class="tarjeta tarjeta-modulo" href="${ctx}${p[3]}">
         <span class="icono-caja"><i class="bi ${p[0]}"></i></span>
         <h3><c:out value="${p[1]}" /></h3>
@@ -112,7 +128,7 @@
   </c:forEach>
   <%-- Calendario académico (RF-18): abre el enlace externo configurado en la base documental --%>
   <c:if test="${calendario.rowCount > 0 and (fn:startsWith(calendario.rows[0].url, 'https://') or fn:startsWith(calendario.rows[0].url, 'http://'))}">
-    <div class="col-12 col-md-6 col-xl-4">
+    <div class="col-12 col-md-6 ${columnasTarjeta}">
       <a class="tarjeta tarjeta-modulo" href="<c:out value='${calendario.rows[0].url}' />" target="_blank" rel="noopener noreferrer">
         <span class="icono-caja"><i class="bi bi-calendar-event"></i></span>
         <h3>Calendario académico <i class="bi bi-box-arrow-up-right fs-6 text-secondary"></i></h3>
@@ -122,20 +138,12 @@
   </c:if>
 </div>
 
-<c:choose>
-  <c:when test="${notifCount > 0}">
-    <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3">
-      <div><span class="fw-bold">Tienes <c:out value="${notifCount}" /> notificación(es) sin leer.</span></div>
-      <a class="btn btn-outline-uts" href="${ctx}/modulos/notificaciones/notificaciones.jsp">Ver notificaciones</a>
-    </div>
-  </c:when>
-  <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
-    <div class="vacio">
-      <span class="icono-circulo"><i class="bi bi-file-earmark"></i></span>
-      <h3>Aún no hay revisiones nuevas</h3>
-      <p>Cuando tu director revise un documento, lo verás aquí.</p>
-    </div>
-  </c:when>
-</c:choose>
+<c:if test="${sessionScope.rol == 'ESTUDIANTE' and notifCount == 0}">
+  <div class="vacio">
+    <span class="icono-circulo"><i class="bi bi-file-earmark"></i></span>
+    <h3>Aún no hay revisiones nuevas</h3>
+    <p>Cuando tu director revise un documento, lo verás aquí.</p>
+  </div>
+</c:if>
 
 <jsp:include page="/WEB-INF/includes/pie.jsp" />

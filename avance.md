@@ -208,6 +208,11 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Campos de formulario con fondo blanco y borde más marcado en todo el sistema (antes se confundían con los bloqueados).
 - Nuevo/editar usuario: asteriscos en los obligatorios, ejemplos en nombre, documento y correo, explicación de cada rol que cambia al elegirlo y reglas de la contraseña.
 
+### Ajustes del inicio del estudiante (23/10/2026)
+- Se agregó PQRS al menú y una tarjeta de PQRS; se quitó la tarjeta "Mi perfil" (ya está en el menú); las cuatro tarjetas van en una fila.
+- El panel "Tu proyecto" muestra una barra de seis pasos y "Fase X de 6"; con el proyecto terminado el título es "Listo para sustentación" (sin repetirlo en la etiqueta).
+- El aviso de notificaciones sin leer pasó arriba, para todos los roles.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

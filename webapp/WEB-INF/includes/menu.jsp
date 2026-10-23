@@ -4,7 +4,7 @@
 <%-- Menú lateral según el rol (RF-06). Cada opción: icono|texto|ruta, separadas por punto y coma. --%>
 <c:choose>
   <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
-    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|/modulos/propuestas/propuestas_banco.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
+    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|/modulos/propuestas/propuestas_banco.jsp;bi-chat|PQRS|/modulos/pqrs/pqrs.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:when test="${sessionScope.rol == 'DOCENTE'}">
     <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Propuestas Banco|/modulos/propuestas/propuestas_banco.jsp;bi-person-check|Docente Director|/modulos/docente_director/docente_director.jsp;bi-clipboard-check|Docente Evaluador|/modulos/docente_evaluador/docente_evaluador.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />

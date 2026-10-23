@@ -230,3 +230,9 @@ img.iniciales { object-fit: cover; }
 .grafico-caja { position: relative; height: 280px; }
 .grafico-vacio { height: 280px; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--texto-sec); font-size: .9rem; border: 1px dashed #c9d3ce; border-radius: 10px; }
 @media print { .grafico-tarjeta { break-inside: avoid; } .pestanas { display: none !important; } }
+
+/* Avance de fases en el inicio del estudiante */
+.progreso-fases { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.progreso-fases .paso { height: 8px; border-radius: 999px; background: #E3E8E5; }
+.progreso-fases .paso.hecho { background: var(--verde-esmeralda); }
+.progreso-fases .paso.actual { background: #3E9B74; }
