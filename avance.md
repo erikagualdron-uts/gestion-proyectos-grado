@@ -201,6 +201,7 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Ajustes de Mi perfil (23/10/2026)
 - El **tipo de documento** queda bloqueado junto con el número y el correo (solo el administrador los cambia desde Usuarios); el aviso es distinto para el administrador.
 - Se quitó el campo "Rol" repetido (el rol sigue bajo el nombre), se aclaró el ejemplo de la foto y "Cambiar contraseña" pasó debajo de los datos, en una fila, con las reglas (8 a 64 caracteres).
+- Nuevo diseño en dos columnas: a la izquierda una tarjeta de identidad solo de lectura (foto, nombre, rol, documento, correo y nivel, con aviso de bloqueo); a la derecha, "Datos personales" (nombre y foto) y "Cambiar contraseña".
 - El documento del administrador inicial pasó de `0000000000` a `1000000000` (dato de prueba).
 
 ---
