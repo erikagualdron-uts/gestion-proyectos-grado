@@ -69,7 +69,9 @@
   </c:if>
   <c:set var="miPrevia" value="${0}" />
   <c:set var="directorAprobo" value="${false}" />
+  <c:set var="otrosDecidieron" value="${false}" />
   <c:forEach var="r" items="${previas.rows}">
+    <c:if test="${r.rol_revisor != 'DIRECTOR'}"><c:set var="otrosDecidieron" value="${true}" /></c:if>
     <c:if test="${r.rol_revisor == rolRevision}"><c:set var="miPrevia" value="${r.id_revision}" /></c:if>
     <c:if test="${r.rol_revisor == 'DIRECTOR' and r.decision == 'APROBADO'}"><c:set var="directorAprobo" value="${true}" /></c:if>
   </c:forEach>
@@ -82,6 +84,7 @@
     <c:when test="${py.estado_fase != 'EN_CURSO'}"><c:set var="errorRevision" value="La fase no está esperando una revisión." /></c:when>
     <c:when test="${doc.rowCount != 1 or doc.rows[0].id_documento != idDocumento}"><c:set var="errorRevision" value="El documento cambió o no existe: recarga la página y revisa la versión vigente." /></c:when>
     <c:when test="${rolRevision != 'DIRECTOR' and (fase == 3 or fase == 5) and not directorAprobo}"><c:set var="errorRevision" value="Primero el director debe aprobar el envío del documento." /></c:when>
+    <c:when test="${rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5) and otrosDecidieron}"><c:set var="errorRevision" value="El evaluador o el comité ya decidieron sobre esta versión: tu decisión quedó cerrada." /></c:when>
     <c:when test="${param.decision == 'APROBAR' and rolRevision == 'EVALUADOR' and fase == 3 and empty rejillaIngresada and rejillaRonda.rows[0].total == 0}">
       <c:set var="errorRevision" value="Para aprobar la Fase 3 adjunta el enlace de la rejilla de evaluación diligenciada (formato F-DC-124)." />
     </c:when>

@@ -55,6 +55,7 @@
   <c:if test="${d.nombre == nombrePrincipal and empty docVigente}"><c:set var="docVigente" value="${d}" /></c:if>
 </c:forEach>
 
+<c:set var="esCopia" value="${not empty docVigente and fn:startsWith(docVigente.comentario, 'Documento aprobado en la fase anterior')}" />
 <c:if test="${not empty docVigente}">
   <sql:query var="revisiones" dataSource="${bd}">
     SELECT r.rol_revisor, r.decision, r.observaciones, u.nombre_completo AS revisor, DATE_FORMAT(r.fecha_revision, '%d/%m/%Y %H:%i') AS fecha
@@ -64,6 +65,7 @@
   <c:forEach var="r" items="${revisiones.rows}">
     <c:if test="${r.rol_revisor == rolRevision}"><c:set var="miRevision" value="${r}" /></c:if>
     <c:if test="${r.rol_revisor == 'DIRECTOR' and r.decision == 'APROBADO'}"><c:set var="directorAprobo" value="${true}" /></c:if>
+    <c:if test="${r.rol_revisor != 'DIRECTOR'}"><c:set var="otrosDecidieron" value="${true}" /></c:if>
   </c:forEach>
 </c:if>
 
@@ -96,6 +98,7 @@
   <c:when test="${py.estado_fase != 'EN_CURSO'}"><c:set var="motivo" value="La fase no está esperando una revisión (estado: ${py.estado_fase == 'APLAZADA' ? 'aplazada, esperando una nueva versión del estudiante' : py.estado_fase})." /></c:when>
   <c:when test="${empty docVigente}"><c:set var="motivo" value="Aún no hay un documento entregado en esta fase." /></c:when>
   <c:when test="${esperaDirector}"><c:set var="motivo" value="Primero el director debe aprobar el envío del documento al evaluador y al comité." /></c:when>
+  <c:when test="${rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5) and otrosDecidieron}"><c:set var="motivo" value="El evaluador o el comité ya decidieron sobre esta versión, así que tu decisión quedó cerrada. Puedes consultarla en la tabla de revisiones." /></c:when>
 </c:choose>
 <c:set var="puedeRevisar" value="${empty motivo}" />
 <c:set var="etiquetaAprobar" value="${(rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5)) ? 'Aprobar envío' : 'Aprobar'}" />
@@ -117,8 +120,13 @@
       <c:choose>
         <c:when test="${not empty docVigente}">
           <div class="dato-etiqueta">Documento por revisar</div>
-          <div class="dato-valor"><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · entregó <c:out value="${docVigente.subido}" /> (<c:out value="${docVigente.fecha}" />)</div>
-          <c:if test="${not empty docVigente.comentario}">
+          <div class="dato-valor">
+            <c:choose>
+              <c:when test="${esCopia}"><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · aprobada en la Fase <c:out value="${fase - 1}" /> y enviada por el director (<c:out value="${docVigente.fecha}" />)</c:when>
+              <c:otherwise><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · entregó <c:out value="${docVigente.subido}" /> (<c:out value="${docVigente.fecha}" />)</c:otherwise>
+            </c:choose>
+          </div>
+          <c:if test="${not empty docVigente.comentario and not esCopia}">
             <div class="dato-etiqueta">Comentario de la entrega</div>
             <div class="dato-valor" style="white-space: pre-line"><c:out value="${docVigente.comentario}" /></div>
           </c:if>
