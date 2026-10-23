@@ -211,11 +211,16 @@
                 </c:choose>
                 <c:choose>
                   <c:when test="${esCoordinador}">
-                    <span class="d-inline-block" ${f.estado == 'PENDIENTE' ? '' : 'title="Ya decidida"'}><button type="button" class="btn btn-outline-uts btn-icono" ${f.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalGestionar"
-                            title="${f.estado == 'PENDIENTE' ? 'Gestionar' : 'Ya decidida:'} ${fn:escapeXml(f.codigo)}" aria-label="${f.estado == 'PENDIENTE' ? 'Gestionar' : 'Ya decidida:'} ${fn:escapeXml(f.codigo)}"
-                            data-id="${f.id}" data-accion-url="${ctx}/proceso/${f.tipo == 'IDEA' ? 'idea_proc.jsp' : 'propuesta_proc.jsp'}"
-                            data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-autor="${fn:escapeXml(f.autor)}"
-                            data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-pencil"></i></button></span>
+                    <c:choose>
+                      <c:when test="${f.estado == 'PENDIENTE'}">
+                        <button type="button" class="btn btn-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalGestionar"
+                                title="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}" aria-label="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}"
+                                data-id="${f.id}" data-accion-url="${ctx}/proceso/${f.tipo == 'IDEA' ? 'idea_proc.jsp' : 'propuesta_proc.jsp'}"
+                                data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-autor="${fn:escapeXml(f.autor)}"
+                                data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-check2-square"></i></button>
+                      </c:when>
+                      <c:otherwise><span class="btn-icono-vacio" aria-hidden="true"></span></c:otherwise>
+                    </c:choose>
                   </c:when>
                   <c:when test="${sessionScope.rol == 'ESTUDIANTE' and (f.estado == 'PENDIENTE' or f.estado == 'APLAZADO') and f.id_responsable == sessionScope.usuarioId}">
                     <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="${f.estado == 'APLAZADO' ? 'Corregir y reenviar' : 'Editar compañero de'} ${fn:escapeXml(f.codigo)}" aria-label="${f.estado == 'APLAZADO' ? 'Corregir y reenviar' : 'Editar compañero de'} ${fn:escapeXml(f.codigo)}"><i class="bi bi-pencil"></i></a>

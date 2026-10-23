@@ -342,6 +342,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Calificar: ayudas del evaluador y del director (23/10/2026)
 - En las fases 3 y 5, "Aprobar" dice quién más falta por decidir; la ayuda de la rejilla es una sola línea; el cuadro de observaciones trae un ejemplo corto; en la tabla de revisiones, lo vacío dice "Sin observaciones".
 
+### Botón de decidir en Propuestas Banco (23/10/2026)
+- El lápiz del coordinador se reemplazó por un botón verde con el icono de decisión ("Aprobar, aplazar o rechazar"), que solo aparece en lo pendiente; en lo ya decidido no se muestra ningún botón apagado.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
