@@ -397,6 +397,11 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - **Prueba completa de extremo a extremo (135 comprobaciones, todas correctas)** con datos temporales que se borraron al terminar (las tablas quedaron con los mismos conteos de antes): usuarios (crear, repetir correo, dominio incorrecto, contraseña corta, editar, inactivar y reactivar); registro y aprobación o rechazo de cuentas; ideas (proponer, aprobar, aplazar); propuestas (elegir del banco, una activa por estudiante, propia con compañero, aplazar, corregir, rechazar); asignación; compañero de solo lectura; PQRS (los seis tipos, validaciones, resolver, cambio de director con sus reglas y texto con etiquetas escapado); las seis fases hasta "listo para sustentación" con aplazamiento y versiones; rechazo de un documento que cierra el proyecto; notificaciones; perfil y contraseña; enlaces de la base documental; y controles de seguridad.
 - README actualizado (qué hace cada rol, instalación, variables de entorno, hora de Colombia, base documental, usuarios de prueba y seguridad). Los PDF de formatos institucionales se agregaron al `.gitignore`.
 
+### Datos de demostración en el despliegue (23/10/2026)
+- Se borraron los datos de prueba y se cargó, usando el propio sistema, un juego realista: coordinadora y 5 docentes (nombres reales), 10 estudiantes inventados, 7 ideas, 8 propuestas, 7 proyectos en distintas fases (uno listo para sustentación, uno cerrado), 5 PQRS y documentos con enlaces ficticios; fechas repartidas en varias semanas.
+- El administrador tiene nombre inventado y una contraseña nueva. Las credenciales están solo en un archivo local fuera del repositorio.
+- Verificado: todas las cuentas ingresan (la de Brayan es una cuenta pendiente a propósito).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

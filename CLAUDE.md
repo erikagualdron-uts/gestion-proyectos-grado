@@ -78,6 +78,7 @@ Crear un script `sql/datos_prueba.sql` (solo para demostración) con:
 - Un usuario por rol (administrador, coordinador, estudiante, docente director, docente evaluador), con contraseñas simples de prueba. Aclarar en el README que son solo para pruebas.
 - Un par de ideas aprobadas, una propuesta aprobada y un proyecto en distintas fases, para poder recorrer el sistema completo sin crear todo a mano.
 - Nunca usar datos reales de personas.
+- Excepción acordada (23/10/2026): en la base **desplegada** hay datos de demostración con nombres reales de la coordinadora y los docentes, estudiantes inventados y documentos ficticios. Esos nombres y contraseñas nunca se suben al repositorio; `datos_prueba.sql` sigue siendo genérico.
 
 ## 8. Git
 - Ramas: `main` (estable) y `develop` (trabajo). Integrar a main solo con el módulo probado.

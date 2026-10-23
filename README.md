@@ -55,6 +55,9 @@ Seis tarjetas con enlaces externos: calendario académico, formatos instituciona
 - Los enlaces de **Dropbox** (formatos, propuesta e informe final) llevan una clave de acceso compartida y **no están en el repositorio**: el administrador los carga desde *Base documental → Administrar enlaces*.
 - Los PDF de los formatos institucionales (`docs/F-DC-*.pdf`) son solo de referencia local y no se suben.
 
+## Datos de demostración del despliegue
+La base desplegada tiene un juego de datos de demostración: coordinadora y docentes con sus nombres reales, estudiantes totalmente inventados y documentos ficticios (los enlaces apuntan a PDF de ejemplo). Esas cuentas y sus contraseñas **no están en el repositorio**; se entregan aparte. Las cuentas de abajo son las genéricas de `sql/datos_prueba.sql`, para quien instale el sistema desde cero.
+
 ## Usuarios de prueba (solo para demostración, sin datos reales)
 Contraseña de las cuentas de `sql/datos_prueba.sql`: `Prueba2026*`.
 
