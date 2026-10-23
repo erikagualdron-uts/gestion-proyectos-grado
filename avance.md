@@ -317,6 +317,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Etiqueta de tipo en Propuestas Banco (23/10/2026)
 - Bajo el código aparece una etiqueta "Idea" (lima) o "Propuesta" (verde) para coordinador y docente, para distinguir a simple vista las ideas de docentes (ID-) de las propuestas de estudiantes (PG-).
 
+### Módulos Docente Director y Evaluador (23/10/2026)
+- Las tarjetas de fase con proyectos van en verde y las vacías en gris; columnas "Código" y "Proyecto" (título y estudiantes) en lugar de "ID" y "Descripción"; la situación dice "Esperando el documento" o "En revisión de otros" en vez de "En espera"; el lápiz de calificar solo está activo cuando hay un documento por calificar y, si no, sale apagado con texto flotante.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

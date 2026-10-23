@@ -82,7 +82,7 @@
 <div class="tabla-envoltorio mb-4">
   <div class="linea-fases">
     <c:forEach var="n" begin="1" end="6">
-      <a class="fase-col ${filtroFase == n ? 'elegida' : ''} ${filtroFase == n ? 'actual' : 'pendiente'}" href="${ctx}${rutaDocente}?fase=${filtroFase == n ? 0 : n}" aria-label="Filtrar por la fase ${n}: ${nombresFase[n - 1]}">
+      <a class="fase-col ${filtroFase == n ? 'elegida' : ''} ${(empty conteoFases['f' += n] or conteoFases['f' += n] == 0) ? 'pendiente' : 'superada'}" href="${ctx}${rutaDocente}?fase=${filtroFase == n ? 0 : n}" aria-label="Filtrar por la fase ${n}: ${nombresFase[n - 1]}">
         <div class="fase-arriba"><span class="fase-circulo"><c:out value="${n}" /></span></div>
         <div class="fase-tarjeta">
           <small>Fase <c:out value="${n}" /></small>
@@ -117,27 +117,34 @@
   <c:otherwise>
     <div class="tabla-envoltorio table-responsive">
       <table class="table tabla-uts">
-        <thead><tr><th>ID</th><th>Descripción</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+        <thead><tr><th>Código</th><th>Proyecto</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
         <tbody>
           <c:forEach var="p" items="${proyectos.rows}">
             <c:set var="porRevisar" value="${p.estado_general == 'EN_CURSO' and p.estado_fase == 'EN_CURSO' and not empty p.doc_vigente and (esDirector ? ((p.fase_actual == 2 or p.fase_actual == 3 or p.fase_actual == 4 or p.fase_actual == 5) and p.dir_rev == 0) : ((p.fase_actual == 3 or p.fase_actual == 5) and p.dir_ok > 0 and p.eva_rev == 0))}" />
             <tr>
               <td class="fw-bold"><c:out value="${p.codigo}" /></td>
-              <td style="min-width: 220px"><c:out value="${p.titulo}" /></td>
+              <td style="min-width: 220px"><div><c:out value="${p.titulo}" /></div><div class="texto-sec"><c:out value="${p.estudiantes}" /></div></td>
               <td>
-                <div class="fw-semibold">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></div>
-                <div class="texto-sec mb-1"><c:out value="${p.estudiantes}" /></div>
+                <div class="fw-semibold mb-1">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></div>
                 <c:choose>
                   <c:when test="${p.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado">Listo para sustentación</span></c:when>
                   <c:when test="${p.estado_general == 'CERRADO'}"><span class="insignia insignia-rechazado">Cerrado</span></c:when>
                   <c:when test="${porRevisar}"><span class="insignia insignia-aplazado">Por revisar</span></c:when>
                   <c:when test="${p.estado_fase == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazado · espera al estudiante</span></c:when>
-                  <c:otherwise><span class="insignia insignia-pendiente">En espera</span></c:otherwise>
+                  <c:when test="${empty p.doc_vigente}"><span class="insignia insignia-pendiente">Esperando el documento</span></c:when>
+                  <c:otherwise><span class="insignia insignia-pendiente">En revisión de otros</span></c:otherwise>
                 </c:choose>
               </td>
               <td class="acciones">
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/revision_form.jsp?id=${p.id_proyecto}" aria-label="Calificar el documento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-pencil"></i></a>
+                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(p.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
+                <c:choose>
+                  <c:when test="${porRevisar}">
+                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/revision_form.jsp?id=${p.id_proyecto}" title="Calificar el documento de ${fn:escapeXml(p.codigo)}" aria-label="Calificar el documento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-pencil"></i></a>
+                  </c:when>
+                  <c:otherwise>
+                    <span class="d-inline-block" title="No hay ningún documento por calificar"><button type="button" class="btn btn-outline-uts btn-icono" disabled aria-label="No hay documento por calificar en ${fn:escapeXml(p.codigo)}"><i class="bi bi-pencil"></i></button></span>
+                  </c:otherwise>
+                </c:choose>
               </td>
             </tr>
           </c:forEach>
