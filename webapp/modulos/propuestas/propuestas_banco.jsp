@@ -27,7 +27,8 @@
           d.nombre_completo AS autor, i.estado_decision AS estado, i.observacion, i.fecha_creacion AS fecha,
           '' AS miembros, 0 AS id_responsable, 'Idea de docente' AS origen_texto, 0 AS id_proyecto,
           '' AS integrantes_texto, '' AS fase_texto,
-          IFNULL((SELECT CONCAT('Idea de docente · Elegida en ', p2.codigo) FROM propuesta p2 WHERE p2.id_idea = i.id_idea LIMIT 1), '') AS relacion_texto
+          IFNULL((SELECT CONCAT('Idea de docente · Elegida en ', p2.codigo) FROM propuesta p2 WHERE p2.id_idea = i.id_idea LIMIT 1), '') AS relacion_texto,
+          '' AS documentos_texto
    FROM idea_banco i JOIN usuario d ON d.id_usuario = i.id_docente
    UNION ALL
    SELECT 'PROPUESTA', p.id_propuesta, p.codigo, p.titulo, p.descripcion, p.objetivo, p.alcance,
@@ -38,7 +39,8 @@
              MIN(e.nombre_completo)),
           IFNULL(MAX(CASE WHEN pr.id_proyecto IS NULL THEN NULL WHEN pr.estado_general = 'APTO_GRADUACION' THEN 'Listo para sustentación'
                           WHEN pr.estado_general = 'CERRADO' THEN 'Proyecto cerrado' ELSE CONCAT('Fase ', pr.fase_actual, ' · ', fa.nombre) END), ''),
-          IFNULL((SELECT CONCAT('Propuesta desde la idea ', i2.codigo) FROM idea_banco i2 WHERE i2.id_idea = p.id_idea), '')
+          IFNULL((SELECT CONCAT('Propuesta desde la idea ', i2.codigo) FROM idea_banco i2 WHERE i2.id_idea = p.id_idea), ''),
+          GROUP_CONCAT(e.numero_documento)
    FROM propuesta p
    JOIN propuesta_estudiante pe ON pe.id_propuesta = p.id_propuesta
    JOIN usuario e ON e.id_usuario = pe.id_estudiante
@@ -59,10 +61,10 @@
 <sql:query var="conteo" dataSource="${bd}">
   SELECT COUNT(*) AS total FROM ${origenDatos}
   WHERE (? <> 'ESTUDIANTE' OR (tipo = 'PROPUESTA' AND FIND_IN_SET(?, miembros) > 0))
-    AND (? = '' OR codigo LIKE ? OR titulo LIKE ? OR descripcion LIKE ? OR autor LIKE ?)
+    AND (? = '' OR codigo LIKE ? OR titulo LIKE ? OR descripcion LIKE ? OR autor LIKE ? OR (? = 'COORDINADOR' AND documentos_texto LIKE ?))
     AND (? = '' OR estado = ?) AND (? = '' OR tipo = ?)
   <sql:param value="${rolConsulta}" /><sql:param value="${sessionScope.usuarioId}" />
-  <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" />
+  <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${rolConsulta}" /><sql:param value="${qLike}" />
   <sql:param value="${filtroEstado}" /><sql:param value="${filtroEstado}" /><sql:param value="${filtroTipo}" /><sql:param value="${filtroTipo}" />
 </sql:query>
 <c:set var="totalRegistros" value="${conteo.rows[0].total}" />
@@ -75,12 +77,12 @@
          DATE_FORMAT(fecha, '%d/%m/%Y') AS fecha_texto
   FROM ${origenDatos}
   WHERE (? <> 'ESTUDIANTE' OR (tipo = 'PROPUESTA' AND FIND_IN_SET(?, miembros) > 0))
-    AND (? = '' OR codigo LIKE ? OR titulo LIKE ? OR descripcion LIKE ? OR autor LIKE ?)
+    AND (? = '' OR codigo LIKE ? OR titulo LIKE ? OR descripcion LIKE ? OR autor LIKE ? OR (? = 'COORDINADOR' AND documentos_texto LIKE ?))
     AND (? = '' OR estado = ?) AND (? = '' OR tipo = ?)
   ORDER BY (estado = 'PENDIENTE') DESC, fecha DESC, id DESC
   LIMIT ? OFFSET ?
   <sql:param value="${rolConsulta}" /><sql:param value="${sessionScope.usuarioId}" />
-  <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" />
+  <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${rolConsulta}" /><sql:param value="${qLike}" />
   <sql:param value="${filtroEstado}" /><sql:param value="${filtroEstado}" /><sql:param value="${filtroTipo}" /><sql:param value="${filtroTipo}" />
   <sql:param value="${pp}" /><sql:param value="${(pagActual - 1) * pp}" />
 </sql:query>
@@ -138,7 +140,7 @@
   <input type="hidden" name="pag" value="1">
   <div class="col-12 col-md">
     <label for="q" class="form-label">Buscar</label>
-    <input type="search" class="form-control" id="q" name="q" value="<c:out value='${q}' />" placeholder="Código, descripción, estado o estudiante" maxlength="120">
+    <input type="search" class="form-control" id="q" name="q" value="<c:out value='${q}' />" placeholder="${esCoordinador ? 'Código, título, estudiante (nombre o documento) o autor' : 'Código, título o estudiante'}" maxlength="120">
   </div>
   <c:if test="${sessionScope.rol != 'ESTUDIANTE'}">
     <div class="col-6 col-md-auto">

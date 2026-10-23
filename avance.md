@@ -287,6 +287,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Se quita "Buscar estudiante" (23/10/2026)
 - Decisión de la estudiante: se eliminó la pantalla `proyectos/buscar_estudiante.jsp` y su botón en Asignación de proyectos. La consulta por estudiante (RF-36) se resuelve con el buscador de Asignación de proyectos (nombre o documento del estudiante, código, título, director o evaluador) y el de Propuestas Banco (nombre del estudiante).
 
+### Búsqueda por documento en Propuestas Banco (23/10/2026)
+- El coordinador puede buscar propuestas por el número de documento de los estudiantes, además de por código, título y nombre.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
