@@ -39,7 +39,7 @@
         borderColor: esDona ? '#fff' : color,
         borderWidth: esDona ? 2 : 0,
         borderRadius: esDona ? 0 : 4,
-        maxBarThickness: 38
+        maxBarThickness: 28
       };
     });
 

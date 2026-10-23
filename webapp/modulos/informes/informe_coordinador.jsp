@@ -70,10 +70,14 @@
   </c:forEach>
 
   <sql:query var="porDia" dataSource="${bd}">
-    SELECT DATE_FORMAT(MIN(fecha_evento), '%d/%m') AS dia, COUNT(*) AS n
-    FROM historial_version
-    WHERE fecha_evento >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
-    GROUP BY DATE(fecha_evento) ORDER BY DATE(fecha_evento)
+    WITH RECURSIVE dias AS (
+      SELECT CURDATE() - INTERVAL 29 DAY AS dia
+      UNION ALL
+      SELECT dia + INTERVAL 1 DAY FROM dias WHERE dia < CURDATE()
+    )
+    SELECT DATE_FORMAT(dias.dia, '%d/%m') AS dia, COUNT(h.id_historial) AS n
+    FROM dias LEFT JOIN historial_version h ON DATE(h.fecha_evento) = dias.dia
+    GROUP BY dias.dia ORDER BY dias.dia
   </sql:query>
   <c:set var="etDia" value="" /><c:set var="daDia" value="" /><c:set var="totalDias" value="${0}" />
   <c:forEach var="d" items="${porDia.rows}">
@@ -198,9 +202,9 @@
       <div class="col-12">
         <div class="tarjeta grafico-tarjeta">
           <h2>Actividad de los últimos 30 días</h2>
-          <div class="texto-sec"><c:out value="${totalDias}" /> evento(s) registrados. Cada barra es un día con actividad.</div>
+          <div class="texto-sec"><c:out value="${totalDias}" /> evento(s) registrados en los últimos 30 días. Los días sin barra no tuvieron actividad.</div>
           <c:choose>
-            <c:when test="${porDia.rowCount > 0}">
+            <c:when test="${totalDias > 0}">
               <div class="grafico-caja"><canvas data-grafico="barras" data-etiquetas="<c:out value='${etDia}' />" data-series="Eventos=<c:out value='${daDia}' />" data-colores="#0B3D2E" role="img" aria-label="Gráfico de eventos por día"></canvas></div>
             </c:when>
             <c:otherwise><div class="grafico-vacio">No hay actividad registrada en los últimos 30 días.</div></c:otherwise>
@@ -260,15 +264,17 @@
       <c:otherwise>
         <div class="tabla-envoltorio table-responsive">
           <table class="table tabla-uts">
-            <thead><tr><th>Proyecto</th><th>Fase</th><th>Estado</th><th>Director</th><th>Evaluador</th><th>Último movimiento</th><th class="text-end no-imprimir">Acciones</th></tr></thead>
+            <thead><tr><th>Proyecto</th><th>Fase</th><th>Estado</th><th>Docentes</th><th>Último movimiento</th><th class="text-end no-imprimir">Acciones</th></tr></thead>
             <tbody>
               <c:forEach var="p" items="${proyectos.rows}">
                 <tr>
                   <td style="min-width: 240px"><div class="fw-semibold"><c:out value="${p.codigo}" /> · <c:out value="${p.titulo}" /></div><div class="texto-sec"><c:out value="${p.estudiantes}" /></div></td>
                   <td style="white-space: nowrap">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></td>
-                  <td><span class="insignia insignia-${p.estado_general == 'EN_CURSO' ? 'pendiente' : (p.estado_general == 'CERRADO' ? 'rechazado' : 'aprobado')}"><c:out value="${p.estado_general == 'EN_CURSO' ? 'En curso' : (p.estado_general == 'CERRADO' ? 'Cerrado' : 'Listo para sustentación')}" /></span></td>
-                  <td><c:out value="${empty p.director ? 'Sin asignar' : p.director}" /></td>
-                  <td><c:out value="${empty p.evaluador ? 'Sin asignar' : p.evaluador}" /></td>
+                  <td><span class="insignia insignia-${p.estado_general == 'EN_CURSO' ? 'pendiente' : (p.estado_general == 'CERRADO' ? 'rechazado' : 'aprobado')}" style="white-space: nowrap"><c:out value="${p.estado_general == 'EN_CURSO' ? 'En curso' : (p.estado_general == 'CERRADO' ? 'Cerrado' : 'Listo para sustentación')}" /></span></td>
+                  <td style="min-width: 200px">
+                    <div class="small"><span class="texto-sec">Director:</span> <c:out value="${empty p.director ? 'Sin asignar' : p.director}" /></div>
+                    <div class="small"><span class="texto-sec">Evaluador:</span> <c:out value="${empty p.evaluador ? 'Sin asignar' : p.evaluador}" /></div>
+                  </td>
                   <td><c:choose><c:when test="${empty p.ultimo_fecha}">—</c:when><c:otherwise><div><c:out value="${p.ultimo_movimiento}" /></div><div class="texto-sec"><c:out value="${p.ultimo_fecha}" /></div></c:otherwise></c:choose></td>
                   <td class="acciones no-imprimir">
                     <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>

@@ -34,7 +34,11 @@
   (SELECT CASE h.accion WHEN 'CREAR' THEN 'Creación' WHEN 'DECIDIR' THEN 'Decisión' WHEN 'ASIGNAR' THEN 'Asignación'
      WHEN 'ENTREGAR' THEN 'Entrega de documento' WHEN 'REVISAR' THEN 'Revisión' WHEN 'EDITAR_REVISION' THEN 'Revisión editada'
      WHEN 'APROBAR_FASE' THEN 'Fase aprobada' WHEN 'APLAZAR_FASE' THEN 'Fase aplazada' WHEN 'CERRAR_PROYECTO' THEN 'Proyecto cerrado'
-     WHEN 'APTO_GRADUACION' THEN 'Listo para sustentación' WHEN 'CAMBIAR_DIRECTOR' THEN 'Cambio de director' ELSE h.accion END
+     WHEN 'APTO_GRADUACION' THEN 'Listo para sustentación' WHEN 'CAMBIAR_DIRECTOR' THEN 'Cambio de director'
+     WHEN 'RADICAR' THEN 'PQRS radicada' WHEN 'RESOLVER' THEN 'PQRS resuelta' WHEN 'REENVIAR' THEN 'Reenvío corregido'
+     WHEN 'RESERVAR' THEN 'Idea reservada' WHEN 'REGISTRO' THEN 'Registro de cuenta' WHEN 'EDITAR' THEN 'Edición de datos'
+     WHEN 'EDITAR_PERFIL' THEN 'Perfil editado' WHEN 'CAMBIAR_CLAVE' THEN 'Cambio de contraseña' WHEN 'INACTIVAR' THEN 'Inactivación'
+     WHEN 'REACTIVAR' THEN 'Reactivación' ELSE h.accion END
    FROM historial_version h WHERE h.id_proyecto = pr.id_proyecto
    ORDER BY h.fecha_evento DESC, h.id_historial DESC LIMIT 1) AS ultimo_movimiento
 </c:set>

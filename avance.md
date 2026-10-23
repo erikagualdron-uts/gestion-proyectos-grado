@@ -296,6 +296,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Ventana de asignación (23/10/2026)
 - El docente elegido como director ya no se ofrece como evaluador (y al revés); cada docente muestra cuántos proyectos en curso dirige y evalúa; si el proyecto ya pasó de la Fase 1, un aviso explica que lo ya revisado queda a nombre de quien lo hizo y lo pendiente lo revisa la nueva persona (así funciona: los permisos de calificar dependen de la asignación vigente).
 
+### Retoques del Panel de control (23/10/2026)
+- El último movimiento ya muestra "PQRS resuelta" y demás acciones con su nombre (antes salía el código, como "RESOLVER").
+- La actividad muestra los 30 días completos (con ceros), las barras son menos gruesas y la pestaña Proyectos junta director y evaluador en una columna "Docentes" y evita partir la etiqueta de estado.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
