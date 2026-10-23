@@ -232,8 +232,10 @@ img.iniciales { object-fit: cover; }
 .grafico-vacio { height: 280px; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--texto-sec); font-size: .9rem; border: 1px dashed #c9d3ce; border-radius: 10px; }
 @media print { .grafico-tarjeta { break-inside: avoid; } .pestanas { display: none !important; } }
 
-/* Avance de fases en el inicio del estudiante */
-.progreso-fases { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
-.progreso-fases .paso { height: 8px; border-radius: 999px; background: #E3E8E5; }
-.progreso-fases .paso.hecho { background: var(--verde-esmeralda); }
-.progreso-fases .paso.actual { background: #3E9B74; }
+/* Tren de fases en miniatura (inicio del estudiante) */
+.linea-fases.mini { padding: 14px 0 0; gap: 8px; }
+.linea-fases.mini .fase-arriba { margin-bottom: 6px; }
+.linea-fases.mini .fase-arriba::after { width: calc(100% + 8px); }
+.linea-fases.mini small { font-size: .72rem; color: var(--texto-sec); text-align: center; line-height: 1.2; }
+.linea-fases.mini .fase-col.actual small { color: var(--verde-bosque); font-weight: 700; }
+@media (max-width: 575px) { .linea-fases.mini { grid-template-columns: repeat(6, 1fr); } .linea-fases.mini small { display: none; } }

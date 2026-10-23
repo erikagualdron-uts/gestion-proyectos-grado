@@ -60,15 +60,15 @@
 
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
 
+<c:if test="${sessionScope.rol == 'ESTUDIANTE' and proyecto.rowCount > 0}">
+  <c:choose>
+    <c:when test="${proyecto.rows[0].estado_general == 'APTO_GRADUACION'}"><c:set var="descripcionInicio" value="Todas tus fases están aprobadas: ya puedes preparar tu sustentación." /></c:when>
+    <c:when test="${proyecto.rows[0].estado_general == 'EN_CURSO' and proyecto.rows[0].estado == 'APLAZADA'}"><c:set var="descripcionInicio" value="Tu fase fue aplazada: corrige el documento y envía una nueva versión." /></c:when>
+  </c:choose>
+</c:if>
 <h1 class="titulo-pagina">Hola, <c:out value="${sessionScope.primerNombre}" /></h1>
 <p class="descripcion-pagina"><c:out value="${descripcionInicio}" /></p>
 
-<c:if test="${notifCount > 0}">
-  <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 py-3">
-    <div><i class="bi bi-bell me-2"></i><span class="fw-bold">Tienes <c:out value="${notifCount}" /> notificación(es) sin leer.</span></div>
-    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/notificaciones/notificaciones.jsp">Ver notificaciones</a>
-  </div>
-</c:if>
 
 <c:if test="${sessionScope.rol == 'ESTUDIANTE' and proyecto.rowCount > 0}">
   <c:set var="py" value="${proyecto.rows[0]}" />
@@ -86,21 +86,29 @@
     </div>
     <div class="d-flex flex-wrap align-items-center gap-3">
       <c:choose>
-        <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado"><i class="bi bi-check-circle me-1"></i>Todas las fases aprobadas</span></c:when>
         <c:when test="${py.estado_general == 'CERRADO'}"><span class="insignia insignia-rechazado">Proyecto cerrado</span></c:when>
-        <c:when test="${py.estado == 'APROBADA'}"><span class="insignia insignia-aprobado">Aprobado</span></c:when>
-        <c:when test="${py.estado == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazado · corregir y reenviar</span></c:when>
-        <c:when test="${py.estado == 'RECHAZADA'}"><span class="insignia insignia-rechazado">Rechazado</span></c:when>
-        <c:otherwise><span class="insignia insignia-pendiente">En curso</span></c:otherwise>
+        <c:when test="${py.estado_general == 'EN_CURSO' and py.estado == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazada · corregir y reenviar</span></c:when>
+        <c:when test="${py.estado_general == 'EN_CURSO' and py.estado == 'RECHAZADA'}"><span class="insignia insignia-rechazado">Rechazada</span></c:when>
       </c:choose>
-      <a class="btn btn-outline-uts" href="${ctx}/modulos/pqrs/pqrs.jsp"><i class="bi bi-chat me-1"></i>PQRS</a>
       <a class="btn btn-uts" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${py.id_proyecto}">Ver seguimiento</a>
     </div>
   </div>
-  <div class="progreso-fases mt-3" role="img" aria-label="Avance: ${faseListo ? 6 : py.numero} de 6 fases">
-    <c:forEach var="n" begin="1" end="6"><span class="paso ${faseListo or n < py.numero or (n == py.numero and py.estado == 'APROBADA') ? 'hecho' : (n == py.numero ? 'actual' : '')}"></span></c:forEach>
+  <div class="linea-fases mini" role="img" aria-label="Avance: ${faseListo ? 6 : py.numero} de 6 fases">
+    <c:forEach var="nombreFase" items="${fn:split('Pago,Propuesta I,Propuesta II,Informe I,Informe II,Revisión final', ',')}" varStatus="vf">
+      <c:set var="claseMini" value="${faseListo or vf.count < py.numero or (vf.count == py.numero and py.estado == 'APROBADA') ? 'superada' : (vf.count == py.numero ? (py.estado_general == 'CERRADO' ? 'rechazada' : 'actual') : 'pendiente')}" />
+      <div class="fase-col ${claseMini}">
+        <div class="fase-arriba"><span class="fase-circulo"><c:choose><c:when test="${claseMini == 'superada'}"><i class="bi bi-check-lg"></i></c:when><c:when test="${claseMini == 'rechazada'}"><i class="bi bi-x-lg"></i></c:when><c:otherwise><c:out value="${vf.count}" /></c:otherwise></c:choose></span></div>
+        <small><c:out value="${nombreFase}" /></small>
+      </div>
+    </c:forEach>
   </div>
-  <div class="texto-sec small mt-2"><c:choose><c:when test="${faseListo}">6 de 6 fases aprobadas</c:when><c:otherwise>Fase <c:out value="${py.numero}" /> de 6</c:otherwise></c:choose></div>
+  </div>
+</c:if>
+
+<c:if test="${notifCount > 0}">
+  <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 py-3">
+    <div><i class="bi bi-bell me-2"></i><span class="fw-bold">Tienes <c:out value="${notifCount}" /> notificación(es) sin leer.</span></div>
+    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/notificaciones/notificaciones.jsp">Ver notificaciones</a>
   </div>
 </c:if>
 

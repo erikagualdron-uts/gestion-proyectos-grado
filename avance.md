@@ -260,6 +260,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Detalle de PQRS (23/10/2026)
 - La ventana muestra arriba el estado (etiqueta) y la respuesta con el color de la decisión, quién respondió y cuándo; si no hay respuesta, un aviso. El soporte es un enlace "Abrir soporte"; "Nuevo director" solo aparece en cambios de director; el solicitante se oculta al estudiante; se agregó el botón "Cerrar".
 
+### Inicio del estudiante: tren de fases (23/10/2026)
+- La barra de rayas se reemplazó por un tren de seis fases en miniatura (mismo diseño del seguimiento, con el nombre de cada fase); se quitó el botón PQRS y la etiqueta repetida del panel, el aviso de notificaciones pasó debajo del panel del proyecto y el saludo cambia según el momento (todo aprobado o fase aplazada).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
