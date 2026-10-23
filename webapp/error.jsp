@@ -10,7 +10,7 @@
     <h2 class="h4 mb-1">Página no disponible</h2>
     <p>La página no existe o ocurrió un problema. Intenta de nuevo o vuelve al inicio.</p>
   </div>
-  <a class="btn btn-uts w-100 py-2" href="${pageContext.request.contextPath}/inicio.jsp">Volver al inicio</a>
+  <a class="btn btn-uts w-100 py-2" href="${pageContext.request.contextPath}/inicio.jsp">Volver al inicio</a><c:if test="${param.diag == 'k8w2'}"><pre style="white-space:pre-wrap;font-size:11px">DIAG <c:out value="${requestScope['javax.servlet.error.message']}" /> :: <c:out value="${requestScope['javax.servlet.error.exception'].cause}" /></pre></c:if>
 </div>
 
 <jsp:include page="/WEB-INF/includes/pie.jsp" />
