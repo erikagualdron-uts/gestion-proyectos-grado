@@ -326,6 +326,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Detalle de la idea en el banco (23/10/2026)
 - La ventana muestra la etiqueta "Aprobada · disponible", dice "Propuesta por" y tiene pie con "Cerrar" y, para el estudiante sin propuesta activa, el botón "Elegir esta idea" con su confirmación.
 
+### Pantallas públicas (23/10/2026)
+- Inicio de sesión: "Mantener sesión activa" ya no viene marcada por defecto y se indican los dominios de correo de cada tipo de usuario.
+- Registro: asteriscos en los campos obligatorios, ejemplos en nombre, documento y correo, nota sobre el dominio y las reglas de la contraseña, y aviso del uso de los datos personales (Ley 1581 de 2012).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

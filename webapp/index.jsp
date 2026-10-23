@@ -21,7 +21,8 @@
     <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
     <div class="mb-3">
       <label for="correo" class="form-label">Correo institucional</label>
-      <input type="email" class="form-control" id="correo" name="correo" placeholder="usuario@correo.uts.edu.co" maxlength="120" autocomplete="username" required>
+      <input type="email" class="form-control" id="correo" name="correo" placeholder="Tu correo institucional" maxlength="120" autocomplete="username" required>
+      <div class="form-text">Estudiantes: @uts.edu.co · Docentes y personal: @correo.uts.edu.co</div>
       <div class="invalid-feedback">Ingresa un correo válido.</div>
     </div>
     <div class="mb-3">
@@ -33,7 +34,7 @@
       </div>
     </div>
     <div class="form-check mb-4">
-      <input class="form-check-input" type="checkbox" id="recordar" name="recordar" checked>
+      <input class="form-check-input" type="checkbox" id="recordar" name="recordar">
       <label class="form-check-label small" for="recordar">Mantener sesión activa</label>
     </div>
     <button type="submit" class="btn btn-uts w-100 py-2">Ingresar</button>
