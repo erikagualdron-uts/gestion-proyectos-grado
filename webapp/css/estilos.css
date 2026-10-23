@@ -218,3 +218,14 @@ img.iniciales { object-fit: cover; }
   .titulo-pagina { font-size: 22px; margin-top: 0; }
   @page { margin: 14mm; }
 }
+
+/* Panel de control y auditoría (pestañas y gráficos) */
+.pestanas { border-bottom: 1px solid var(--borde); margin-bottom: 1.25rem; gap: 4px; flex-wrap: nowrap; overflow-x: auto; }
+.pestanas .nav-link { color: var(--texto-sec); font-weight: 600; border: 0; border-bottom: 3px solid transparent; border-radius: 0; white-space: nowrap; }
+.pestanas .nav-link:hover { color: var(--verde-esmeralda); }
+.pestanas .nav-link.active { color: var(--verde-bosque); background: transparent; border-bottom-color: var(--verde-esmeralda); }
+.grafico-tarjeta h2 { font-size: 1rem; font-weight: 700; color: var(--verde-bosque); margin-bottom: 2px; }
+.grafico-tarjeta .texto-sec { font-size: .82rem; margin-bottom: 12px; }
+.grafico-caja { position: relative; height: 280px; }
+.grafico-vacio { height: 280px; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--texto-sec); font-size: .9rem; border: 1px dashed #c9d3ce; border-radius: 10px; }
+@media print { .grafico-tarjeta { break-inside: avoid; } .pestanas { display: none !important; } }
