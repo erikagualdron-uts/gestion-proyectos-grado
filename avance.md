@@ -204,6 +204,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Nuevo diseño en dos columnas: a la izquierda una tarjeta de identidad solo de lectura (foto, nombre, rol, documento, correo y nivel, con aviso de bloqueo); a la derecha, "Datos personales" (nombre y foto) y "Cambiar contraseña".
 - El documento del administrador inicial pasó de `0000000000` a `1000000000` (dato de prueba).
 
+### Ajustes del formulario de usuarios (23/10/2026)
+- Campos de formulario con fondo blanco y borde más marcado en todo el sistema (antes se confundían con los bloqueados).
+- Nuevo/editar usuario: asteriscos en los obligatorios, ejemplos en nombre, documento y correo, explicación de cada rol que cambia al elegirlo y reglas de la contraseña.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

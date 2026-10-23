@@ -36,7 +36,8 @@ h1, h2, h3, h4, h5, .btn, .titulo { font-family: 'Montserrat', sans-serif; }
 
 /* ---------- Formularios ---------- */
 .form-label { font-weight: 600; font-size: .875rem; margin-bottom: .35rem; }
-.form-control, .form-select { height: 46px; border-radius: 10px; border-color: var(--borde); }
+.form-control, .form-select { height: 46px; border-radius: 10px; border-color: #C9D3CE; background-color: #fff; }
+.form-label.requerido::after { content: ' *'; color: #C0392B; }
 textarea.form-control { height: auto; }
 .form-control:focus, .form-select:focus { border-color: var(--verde-esmeralda); box-shadow: 0 0 0 .2rem rgba(20, 104, 75, .15); }
 .form-check-input:checked { background-color: var(--verde-esmeralda); border-color: var(--verde-esmeralda); }

@@ -58,6 +58,20 @@
     });
   });
 
+  // select[data-ayudas="VALOR=texto|VALOR=texto"]: muestra bajo la lista la explicación de la opción elegida
+  document.querySelectorAll('select[data-ayudas]').forEach(function (lista) {
+    var destino = document.querySelector('[data-ayuda-de="' + lista.id + '"]');
+    if (!destino) { return; }
+    var textos = {};
+    lista.getAttribute('data-ayudas').split('|').forEach(function (par) {
+      var i = par.indexOf('=');
+      textos[par.slice(0, i)] = par.slice(i + 1);
+    });
+    function mostrar() { destino.textContent = textos[lista.value] || ''; }
+    lista.addEventListener('change', mostrar);
+    mostrar();
+  });
+
   // Decisión sobre una cuenta: aprobar exige nivel; rechazar exige observación y confirmación
   document.querySelectorAll('form[data-decisiones]').forEach(function (form) {
     form.addEventListener('submit', function (evento) {

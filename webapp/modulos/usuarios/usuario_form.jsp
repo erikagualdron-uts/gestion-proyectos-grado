@@ -73,13 +73,13 @@
         <c:if test="${editando}"><input type="hidden" name="id" value="${usuario.id_usuario}"></c:if>
 
         <div class="mb-3">
-          <label for="nombre" class="form-label">Nombre completo</label>
-          <input type="text" class="form-control" id="nombre" name="nombre" maxlength="120" minlength="5" value="<c:out value='${vNombre}' />" required>
+          <label for="nombre" class="form-label requerido">Nombre completo</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" maxlength="120" minlength="5" placeholder="Nombre y apellido" value="<c:out value='${vNombre}' />" required>
           <div class="invalid-feedback">Ingresa el nombre completo.</div>
         </div>
         <div class="row g-3 mb-3">
           <div class="col-sm-5">
-            <label for="tipo" class="form-label">Tipo de documento</label>
+            <label for="tipo" class="form-label requerido">Tipo de documento</label>
             <select class="form-select" id="tipo" name="tipo" required>
               <c:forEach var="t" items="${fn:split('CC,TI,CE,PASAPORTE,OTRO', ',')}">
                 <option value="${t}" ${vTipo == t ? 'selected' : ''}>${t}</option>
@@ -87,15 +87,15 @@
             </select>
           </div>
           <div class="col-sm-7">
-            <label for="documento" class="form-label">Número de documento</label>
-            <input type="text" class="form-control" id="documento" name="documento" pattern="[0-9A-Za-z]{5,20}" maxlength="20" value="<c:out value='${vDocumento}' />" required>
+            <label for="documento" class="form-label requerido">Número de documento</label>
+            <input type="text" class="form-control" id="documento" name="documento" placeholder="Solo letras y números, sin espacios" pattern="[0-9A-Za-z]{5,20}" maxlength="20" value="<c:out value='${vDocumento}' />" required>
             <div class="invalid-feedback">Entre 5 y 20 letras o números, sin espacios.</div>
           </div>
         </div>
         <div class="mb-3">
-          <label for="correo" class="form-label">Correo institucional</label>
+          <label for="correo" class="form-label requerido">Correo institucional</label>
           <input type="email" class="form-control" id="correo" name="correo" maxlength="120"
-                 placeholder="${esEstudiante ? 'usuario@uts.edu.co' : 'usuario@correo.uts.edu.co'}"
+                 placeholder="${esEstudiante ? 'nombre.apellido@uts.edu.co' : 'nombre.apellido@correo.uts.edu.co'}"
                  pattern="${esEstudiante ? '[A-Za-z0-9._%+\\-]+@uts\\.edu\\.co' : '[A-Za-z0-9._%+\\-]+@correo\\.uts\\.edu\\.co'}"
                  value="<c:out value='${vCorreo}' />" required>
           <div class="form-text">${esEstudiante ? 'Estudiantes: @uts.edu.co.' : 'Docentes, coordinadores y administradores: @correo.uts.edu.co.'}</div>
@@ -121,13 +121,14 @@
             </c:when>
             <c:otherwise>
               <div class="col-sm-6">
-                <label for="rol" class="form-label">Rol</label>
-                <select class="form-select" id="rol" name="rol" required ${soyYo ? 'disabled' : ''}>
+                <label for="rol" class="form-label requerido">Rol</label>
+                <select class="form-select" id="rol" name="rol" required ${soyYo ? 'disabled' : ''} data-ayudas="ADMINISTRADOR=Gestiona usuarios, aprueba cuentas de estudiantes y administra los enlaces de la base documental.|COORDINADOR=Decide sobre ideas y propuestas, asigna director y evaluador, resuelve PQRS y consulta el panel de control.|DOCENTE=Propone ideas y puede ser director o evaluador cuando el coordinador lo asigne a un proyecto, pero nunca ambos en el mismo.">
                   <option value="ADMINISTRADOR" ${vRol == 'ADMINISTRADOR' ? 'selected' : ''}>Administrador</option>
                   <option value="COORDINADOR" ${vRol == 'COORDINADOR' ? 'selected' : ''}>Coordinador</option>
                   <option value="DOCENTE" ${vRol == 'DOCENTE' ? 'selected' : ''}>Docente</option>
                 </select>
                 <c:if test="${soyYo}"><input type="hidden" name="rol" value="${usuario.rol}"><div class="form-text">No puedes cambiar tu propio rol.</div></c:if>
+                <c:if test="${not soyYo}"><div class="form-text" data-ayuda-de="rol"></div></c:if>
               </div>
             </c:otherwise>
           </c:choose>
@@ -135,16 +136,16 @@
 
         <div class="row g-3 mb-4">
           <div class="col-sm-6">
-            <label for="clave" class="form-label">${editando ? 'Nueva contraseña (opcional)' : 'Contraseña inicial'}</label>
+            <label for="clave" class="form-label ${editando ? '' : 'requerido'}">${editando ? 'Nueva contraseña (opcional)' : 'Contraseña inicial'}</label>
             <div class="campo-clave">
               <input type="password" class="form-control" id="clave" name="clave" minlength="8" maxlength="64" autocomplete="new-password" ${editando ? '' : 'required'}>
               <button type="button" class="ver-clave" data-target="clave" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
               <div class="invalid-feedback">Mínimo 8 caracteres.</div>
             </div>
-            <c:if test="${editando}"><div class="form-text">Déjala vacía para no cambiarla.</div></c:if>
+            <div class="form-text">${editando ? 'Déjala vacía para no cambiarla. ' : ''}Entre 8 y 64 caracteres. La persona puede cambiarla después en Mi perfil.</div>
           </div>
           <div class="col-sm-6">
-            <label for="confirmar" class="form-label">Confirmar contraseña</label>
+            <label for="confirmar" class="form-label ${editando ? '' : 'requerido'}">Confirmar contraseña</label>
             <div class="campo-clave">
               <input type="password" class="form-control" id="confirmar" name="confirmar" maxlength="64" autocomplete="new-password" ${editando ? '' : 'required'}>
               <button type="button" class="ver-clave" data-target="confirmar" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
