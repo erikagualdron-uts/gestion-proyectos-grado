@@ -26,7 +26,11 @@
 
 <sql:query var="consulta" dataSource="${bd}">
   SELECT pr.id_proyecto, pr.fase_actual, pr.estado_general, pr.id_director, pr.id_evaluador, p.codigo, p.titulo,
-         d.nombre_completo AS director, ev.nombre_completo AS evaluador,
+         p.descripcion, p.objetivo, p.alcance, DATE_FORMAT(pr.fecha_inicio, '%d/%m/%Y') AS inicio_texto,
+         (SELECT DATE_FORMAT(MAX(h.fecha_evento), '%d/%m/%Y %H:%i') FROM historial_version h WHERE h.id_proyecto = pr.id_proyecto) AS ultimo_movimiento,
+         d.nombre_completo AS director, ev.nombre_completo AS evaluador, d.correo AS director_correo, ev.correo AS evaluador_correo,
+         (SELECT GROUP_CONCAT(CONCAT(e.nombre_completo, IF(pe.es_responsable = 1, ' (responsable)', ' (compañero)')) ORDER BY pe.es_responsable DESC SEPARATOR ', ')
+          FROM propuesta_estudiante pe JOIN usuario e ON e.id_usuario = pe.id_estudiante WHERE pe.id_propuesta = p.id_propuesta) AS integrantes,
          (SELECT GROUP_CONCAT(e.nombre_completo ORDER BY pe.es_responsable DESC SEPARATOR ', ')
           FROM propuesta_estudiante pe JOIN usuario e ON e.id_usuario = pe.id_estudiante WHERE pe.id_propuesta = p.id_propuesta) AS estudiantes,
          (SELECT pe.id_estudiante FROM propuesta_estudiante pe WHERE pe.id_propuesta = p.id_propuesta AND pe.es_responsable = 1 LIMIT 1) AS id_responsable,
@@ -106,6 +110,8 @@
     <c:when test="${r.documento != primerDocRevision}"><c:set var="variosDocsRevision" value="${true}" /></c:when>
   </c:choose>
 </c:forEach>
+<c:set var="fasesAprobadas" value="${0}" />
+<c:forEach var="f" items="${fases.rows}"><c:if test="${f.estado == 'APROBADA'}"><c:set var="fasesAprobadas" value="${fasesAprobadas + 1}" /></c:if></c:forEach>
 <%-- Nombre de la fase actual (para el detalle del proyecto) --%>
 <c:forEach var="f" items="${fases.rows}"><c:if test="${f.numero == py.fase_actual}"><c:set var="nombreFaseActual" value="${f.nombre}" /></c:if></c:forEach>
 
@@ -325,22 +331,51 @@
 </div>
 
 <div class="modal fade" id="modalProyecto" tabindex="-1" aria-labelledby="tituloProyecto" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header border-0">
         <h2 class="modal-title fs-5" id="tituloProyecto">Detalles del proyecto</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body pt-0">
-        <div class="dato-etiqueta">Código</div><div class="dato-valor"><c:out value="${py.codigo}" /></div>
-        <div class="dato-etiqueta">Título</div><div class="dato-valor"><c:out value="${py.titulo}" /></div>
-        <div class="dato-etiqueta">Estudiantes</div><div class="dato-valor"><c:out value="${py.estudiantes}" /></div>
-        <div class="row">
-          <div class="col-6"><div class="dato-etiqueta">Director</div><div class="dato-valor"><c:out value="${empty py.director ? 'Sin asignar' : py.director}" /></div></div>
-          <div class="col-6"><div class="dato-etiqueta">Evaluador</div><div class="dato-valor"><c:out value="${empty py.evaluador ? 'Sin asignar' : py.evaluador}" /></div></div>
-          <div class="col-6"><div class="dato-etiqueta">Fase actual</div><div class="dato-valor">Fase <c:out value="${py.fase_actual}" /> · <c:out value="${nombreFaseActual}" /></div></div>
-          <div class="col-6"><div class="dato-etiqueta">Estado</div><div class="dato-valor"><c:out value="${py.estado_general == 'EN_CURSO' ? 'En curso' : (py.estado_general == 'APTO_GRADUACION' ? 'Listo para sustentación' : 'Cerrado')}" /></div></div>
+        <div class="fw-bold titulo" style="color: var(--verde-bosque)"><c:out value="${py.codigo}" /> · <c:out value="${py.titulo}" /></div>
+        <div class="d-flex flex-wrap align-items-center gap-2 mt-2 mb-3">
+          <span class="insignia insignia-${py.estado_general == 'EN_CURSO' ? 'pendiente' : (py.estado_general == 'CERRADO' ? 'rechazado' : 'aprobado')}"><c:out value="${py.estado_general == 'EN_CURSO' ? 'En curso' : (py.estado_general == 'APTO_GRADUACION' ? 'Listo para sustentación' : 'Cerrado')}" /></span>
+          <span class="texto-sec small"><c:out value="${fasesAprobadas}" /> de 6 fases aprobadas · Fase <c:out value="${py.fase_actual}" /> · <c:out value="${nombreFaseActual}" /></span>
         </div>
+        <div class="progreso-fases mb-3" role="img" aria-label="${fasesAprobadas} de 6 fases aprobadas">
+          <c:forEach var="f" items="${fases.rows}"><span class="paso ${f.estado == 'APROBADA' ? 'hecho' : (f.estado == 'PENDIENTE' ? '' : 'actual')}"></span></c:forEach>
+        </div>
+
+        <c:choose>
+          <c:when test="${soyResponsable}"><div class="alert alert-info py-2 small"><i class="bi bi-person-check me-1"></i>Eres el <strong>responsable</strong>: solo tú entregas los documentos.</div></c:when>
+          <c:when test="${sessionScope.rol == 'ESTUDIANTE'}"><div class="alert alert-info py-2 small"><i class="bi bi-eye me-1"></i>Eres <strong>compañero</strong>: puedes ver el proyecto, pero solo el responsable entrega los documentos.</div></c:when>
+          <c:when test="${soyDirector}"><div class="alert alert-info py-2 small"><i class="bi bi-person-check me-1"></i>Eres el <strong>director</strong> de este proyecto.</div></c:when>
+          <c:when test="${soyEvaluador}"><div class="alert alert-info py-2 small"><i class="bi bi-clipboard-check me-1"></i>Eres el <strong>evaluador</strong> de este proyecto.</div></c:when>
+        </c:choose>
+
+        <div class="dato-etiqueta">Estudiantes</div><div class="dato-valor"><c:out value="${fn:contains(py.integrantes, ',') ? py.integrantes : py.estudiantes}" /></div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="dato-etiqueta">Director</div>
+            <div class="dato-valor"><c:out value="${empty py.director ? 'Sin asignar' : py.director}" /><c:if test="${not empty py.director_correo}"><div class="texto-sec small fw-normal"><a href="mailto:${fn:escapeXml(py.director_correo)}"><c:out value="${py.director_correo}" /></a></div></c:if></div>
+          </div>
+          <div class="col-sm-6">
+            <div class="dato-etiqueta">Evaluador</div>
+            <div class="dato-valor"><c:out value="${empty py.evaluador ? 'Sin asignar' : py.evaluador}" /><c:if test="${not empty py.evaluador_correo}"><div class="texto-sec small fw-normal"><a href="mailto:${fn:escapeXml(py.evaluador_correo)}"><c:out value="${py.evaluador_correo}" /></a></div></c:if></div>
+          </div>
+          <div class="col-sm-6"><div class="dato-etiqueta">Fecha de inicio</div><div class="dato-valor"><c:out value="${py.inicio_texto}" /></div></div>
+          <div class="col-sm-6"><div class="dato-etiqueta">Último movimiento</div><div class="dato-valor"><c:out value="${empty py.ultimo_movimiento ? '—' : py.ultimo_movimiento}" /></div></div>
+        </div>
+
+        <details class="mt-1">
+          <summary class="fw-semibold" style="color: var(--verde-esmeralda); cursor: pointer">Ver descripción, objetivo y alcance</summary>
+          <div class="mt-3">
+            <div class="dato-etiqueta">Descripción</div><div class="dato-valor" style="white-space: pre-line"><c:out value="${empty py.descripcion ? '—' : py.descripcion}" /></div>
+            <div class="dato-etiqueta">Objetivo</div><div class="dato-valor" style="white-space: pre-line"><c:out value="${empty py.objetivo ? '—' : py.objetivo}" /></div>
+            <div class="dato-etiqueta">Alcance</div><div class="dato-valor" style="white-space: pre-line"><c:out value="${empty py.alcance ? '—' : py.alcance}" /></div>
+          </div>
+        </details>
       </div>
       <div class="modal-footer border-0 pt-0">
         <a class="btn btn-outline-uts" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Ver historial de versiones</a>

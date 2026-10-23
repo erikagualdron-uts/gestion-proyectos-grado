@@ -245,6 +245,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Una fase aprobada sin documentos dice "Fase aprobada sin documentos registrados" (antes decía que esperaba el primer documento).
 - Los datos de prueba incluyen un comprobante de pago aprobado en la Fase 1 de PG-0001.
 
+### Detalles del proyecto (23/10/2026)
+- En el seguimiento se quitaron los botones de historial y PQRS de la cabecera; el historial se abre desde "Detalles del proyecto".
+- La ventana de detalles muestra el estado como etiqueta, "N de 6 fases aprobadas" con barra, el rol de quien mira (responsable, compañero, director o evaluador), estudiantes con responsable y compañero, director y evaluador con su correo institucional, fecha de inicio, último movimiento y, plegable, descripción, objetivo y alcance.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
