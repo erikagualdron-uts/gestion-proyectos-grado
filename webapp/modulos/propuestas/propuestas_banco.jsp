@@ -114,12 +114,15 @@
   </div>
 </div>
 
+<%-- Las tarjetas de resumen no se muestran al estudiante: solo tiene una propuesta activa y el estado ya se ve en la tabla --%>
+<c:if test="${sessionScope.rol != 'ESTUDIANTE'}">
 <div class="row g-3 mb-4">
   <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></div></div>
   <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></div></div>
   <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aplazado"><i class="bi bi-pause-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aplazadas}" default="0" /></div><div class="resumen-etiqueta">Aplazadas</div></div></div></div>
   <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></div></div>
 </div>
+</c:if>
 
 <form method="get" action="${ctx}/modulos/propuestas/propuestas_banco.jsp" class="row g-3 align-items-end mb-3">
   <input type="hidden" name="pp" value="${pp}">

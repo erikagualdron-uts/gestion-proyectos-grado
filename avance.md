@@ -144,3 +144,6 @@
 
 **Pruebas hechas en el despliegue (peticiones HTTP):** ciclo completo de las seis fases hasta "Apto para graduación" (con aplazados en las fases 1, 2 y 3, rejilla y Turnitin); compañero y otros roles que intentan entregar o calificar; enlaces inválidos; entrega mientras el documento está en revisión; evaluador y comité antes de que el director apruebe el envío (también por POST directo); documento cambiado o inexistente; rechazo que cierra el proyecto y bloqueo de nuevas entregas y decisiones; permisos del seguimiento por rol (estudiante ajeno, docente no asignado); tablas de Director y Evaluador con filtro por fase y búsqueda; historial de versiones y revisiones en la base.
 **Pendiente / mejoras posibles:** que el coordinador vea en su asignación un indicador de proyectos "por validar".
+
+### Ajuste de diseño (22/10/2026)
+- En "Mis propuestas" el estudiante ya no ve las cuatro tarjetas de resumen (solo tiene una propuesta activa y el estado se ve en la tabla). Se conservan el buscador y el filtro de estado para cumplir RF-29 y RF-30. Los demás roles siguen viendo las tarjetas.
