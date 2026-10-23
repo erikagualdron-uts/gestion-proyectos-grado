@@ -45,9 +45,11 @@
     var tipo = form.querySelector('[name="tipo"]');
     var soporte = form.querySelector('[name="soporte"]');
     var ayuda = form.querySelector('[data-ayuda-soporte]');
+    var etiqueta = form.querySelector('[data-etiqueta-soporte]');
     function revisar() {
       var prorroga = tipo.value === 'PRORROGA';
       soporte.required = prorroga;
+      if (etiqueta) { etiqueta.classList.toggle('requerido', prorroga); }
       if (ayuda) { ayuda.textContent = prorroga ? 'Obligatorio: enlace al soporte de pago de la prórroga.' : 'Opcional: enlace a un soporte (documento, captura, etc.).'; }
     }
     tipo.addEventListener('change', revisar);

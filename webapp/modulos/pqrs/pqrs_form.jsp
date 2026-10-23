@@ -7,7 +7,7 @@
 <%@ include file="/WEB-INF/includes/seguridad.jsp" %>
 <%-- Radicar una PQRS (RF-53, RF-54). Solo el estudiante responsable; el compañero solo consulta. --%>
 <c:set var="titulo" value="Radicar PQRS" scope="request" />
-<c:set var="menuActivo" value="/modulos/propuestas/propuestas_banco.jsp" scope="request" />
+<c:set var="menuActivo" value="/modulos/pqrs/pqrs.jsp" scope="request" />
 <c:set var="volverA" value="/modulos/pqrs/pqrs.jsp" scope="request" />
 
 <sql:query var="membresia" dataSource="${bd}">
@@ -33,7 +33,7 @@
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
 
 <h1 class="titulo-pagina">Radicar PQRS</h1>
-<p class="descripcion-pagina">Envía una prórroga, un cambio de director, una petición, una queja, un reclamo o una sugerencia. El comité te responderá aquí mismo.</p>
+<p class="descripcion-pagina">Envía una prórroga, un cambio de director, una petición, una queja, un reclamo o una sugerencia. Verás la respuesta en la lista de PQRS.</p>
 
 <div class="row">
   <div class="col-12 col-xl-8">
@@ -43,27 +43,30 @@
         <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
         <input type="hidden" name="accion" value="radicar">
         <div class="mb-3">
-          <label for="tipo" class="form-label">Tipo de solicitud</label>
-          <select class="form-select" id="tipo" name="tipo" required>
+          <label for="tipo" class="form-label requerido">Tipo de solicitud</label>
+          <select class="form-select" id="tipo" name="tipo" required data-ayudas="PRORROGA=Pide más tiempo para una fase; necesita el soporte de pago.|CAMBIO_DIRECTOR=Pide reemplazar a tu director; el coordinador elige al nuevo docente.|PETICION=Solicita algo concreto al comité o a la coordinación.|QUEJA=Expresa una inconformidad con el servicio o con una persona.|RECLAMO=Reclama por un derecho o por una decisión que consideras injusta.|SUGERENCIA=Propone una mejora al proceso.">
             <c:set var="tiposForm" value="PRORROGA=Prórroga;CAMBIO_DIRECTOR=Cambio de director;PETICION=Petición;QUEJA=Queja;RECLAMO=Reclamo;SUGERENCIA=Sugerencia" />
             <c:forEach var="t" items="${fn:split(tiposForm, ';')}">
               <c:set var="tp" value="${fn:split(t, '=')}" />
               <option value="${tp[0]}" ${sessionScope.vqTipo == tp[0] ? 'selected' : ''} ${(proyecto.rowCount == 0 and (tp[0] == 'PRORROGA' or tp[0] == 'CAMBIO_DIRECTOR')) ? 'disabled' : ''}>${tp[1]}${(proyecto.rowCount == 0 and (tp[0] == 'PRORROGA' or tp[0] == 'CAMBIO_DIRECTOR')) ? ' (requiere un proyecto)' : ''}</option>
             </c:forEach>
           </select>
+          <div class="form-text" data-ayuda-de="tipo"></div>
         </div>
         <div class="mb-3">
-          <label for="asunto" class="form-label">Asunto</label>
-          <input type="text" class="form-control" id="asunto" name="asunto" maxlength="150" minlength="5" value="<c:out value='${sessionScope.vqAsunto}' />" required>
+          <label for="asunto" class="form-label requerido">Asunto</label>
+          <input type="text" class="form-control" id="asunto" name="asunto" maxlength="150" minlength="5" placeholder="Ej.: Solicito una prórroga para la Fase 4" value="<c:out value='${sessionScope.vqAsunto}' />" required>
+          <div class="form-text">Resume la solicitud en una frase (mínimo 5 caracteres).</div>
           <div class="invalid-feedback">Escribe el asunto (mínimo 5 caracteres).</div>
         </div>
         <div class="mb-3">
-          <label for="descripcion" class="form-label">Descripción</label>
-          <textarea class="form-control" id="descripcion" name="descripcion" rows="5" maxlength="2000" minlength="10" required><c:out value="${sessionScope.vqDescripcion}" /></textarea>
+          <label for="descripcion" class="form-label requerido">Descripción</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" rows="5" maxlength="2000" minlength="10" placeholder="Cuéntale al comité qué necesitas y por qué" required><c:out value="${sessionScope.vqDescripcion}" /></textarea>
+          <div class="form-text">Explica tu solicitud con detalle (mínimo 10 caracteres).</div>
           <div class="invalid-feedback">Describe tu solicitud (mínimo 10 caracteres).</div>
         </div>
         <div class="mb-4">
-          <label for="soporte" class="form-label">Enlace del soporte</label>
+          <label for="soporte" class="form-label" data-etiqueta-soporte>Enlace del soporte</label>
           <input type="url" class="form-control" id="soporte" name="soporte" maxlength="500" placeholder="https://..." value="<c:out value='${sessionScope.vqSoporte}' />">
           <div class="form-text" data-ayuda-soporte>Opcional: enlace a un soporte (documento, captura, etc.).</div>
           <div class="invalid-feedback">Ingresa un enlace que empiece por http:// o https://.</div>

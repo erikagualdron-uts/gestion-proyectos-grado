@@ -364,6 +364,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Separación de los mensajes (23/10/2026)
 - Los mensajes de éxito, error o aviso quedaban pegados al botón "Volver"; ahora llevan más separación arriba y abajo en todas las pantallas.
 
+### Formulario de radicar PQRS (23/10/2026)
+- El menú resalta "PQRS" (antes seguía marcando "Mis propuestas"); cada tipo de solicitud se explica al elegirlo; asteriscos en los obligatorios (el soporte lo lleva solo en la prórroga), ejemplos y notas de longitud mínima; el subtítulo dice que la respuesta se ve en la lista de PQRS.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
