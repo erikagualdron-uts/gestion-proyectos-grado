@@ -229,6 +229,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - La observación del coordinador solo aparece si existe, destacada en amarillo (aplazada) o rojo (rechazada).
 - Tiene pie con "Cerrar" y, si ya es proyecto, "Ver seguimiento".
 
+### Ajustes del seguimiento terminado (23/10/2026)
+- Con el proyecto listo para sustentación se quitó el aviso verde repetido; la fase 6 muestra un resumen (director, evaluador, fases aprobadas con su fecha y acceso al historial) y el mensaje se dirige al estudiante en segunda persona.
+- La leyenda de colores solo aparece mientras haya fases pendientes.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

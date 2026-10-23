@@ -127,7 +127,7 @@
 <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
   <div>
     <h1 class="titulo-pagina">Seguimiento del proyecto</h1>
-    <p class="descripcion-pagina mb-3">Verde: fase superada o actual. Gris: fase pendiente.</p>
+    <p class="descripcion-pagina mb-3"><c:choose><c:when test="${py.estado_general == 'APTO_GRADUACION'}">Resumen del recorrido del proyecto <c:out value="${py.codigo}" />.</c:when><c:otherwise>Verde: fase superada o actual. Gris: fase pendiente.</c:otherwise></c:choose></p>
   </div>
   <div class="d-flex flex-wrap gap-2 mb-3">
     <a class="btn btn-outline-uts" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Historial de versiones</a>
@@ -137,7 +137,6 @@
 </div>
 
 <c:choose>
-  <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><div class="alert alert-success" role="alert"><i class="bi bi-mortarboard me-1"></i><strong>Listo para sustentación.</strong> Se aprobaron todas las fases del proyecto <c:out value="${py.codigo}" />.</div></c:when>
   <c:when test="${py.estado_general == 'CERRADO'}"><div class="alert alert-danger" role="alert"><i class="bi bi-x-octagon me-1"></i><strong>Proyecto cerrado.</strong> El proceso se cerró por una decisión de rechazo.</div></c:when>
 </c:choose>
 
@@ -175,7 +174,30 @@
     <c:otherwise>
       <c:choose>
         <c:when test="${faseSel == 6}">
-          <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-mortarboard"></i></span><h3>Listo para sustentación</h3><p>Se aprobaron todas las fases. En esta fase no se entregan documentos: el estudiante ya puede preparar la sustentación de su trabajo de grado.</p></div></div>
+          <div class="px-4 pb-4">
+            <div class="d-flex align-items-start gap-3 mb-3">
+              <span class="icono-circulo flex-shrink-0" style="width:48px;height:48px;border-radius:50%;background:var(--verde-claro);color:var(--verde-esmeralda);display:inline-flex;align-items:center;justify-content:center;font-size:1.3rem"><i class="bi bi-mortarboard"></i></span>
+              <div>
+                <h3 class="fs-6 fw-bold mb-1">Listo para sustentación</h3>
+                <p class="texto-sec mb-0">Se aprobaron todas las fases. En esta fase no se entregan documentos: <c:out value="${sessionScope.rol == 'ESTUDIANTE' ? 'ya puedes preparar la sustentación de tu trabajo de grado.' : 'el estudiante ya puede preparar la sustentación de su trabajo de grado.'}" /></p>
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="dato-etiqueta">Director</div><div class="dato-valor"><c:out value="${empty py.director ? 'Sin asignar' : py.director}" /></div>
+                <div class="dato-etiqueta">Evaluador</div><div class="dato-valor"><c:out value="${empty py.evaluador ? 'Sin asignar' : py.evaluador}" /></div>
+                <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Ver historial de versiones</a>
+              </div>
+              <div class="col-md-6">
+                <div class="dato-etiqueta">Fases aprobadas</div>
+                <ul class="list-unstyled mb-0">
+                  <c:forEach var="f" items="${fases.rows}">
+                    <c:if test="${f.estado == 'APROBADA'}"><li class="py-1"><i class="bi bi-check-circle-fill me-2" style="color: var(--verde-esmeralda)"></i>Fase <c:out value="${f.numero}" /> · <c:out value="${f.nombre}" /><c:if test="${not empty f.fin}"> <span class="texto-sec">· <c:out value="${f.fin}" /></span></c:if></li></c:if>
+                  </c:forEach>
+                </ul>
+              </div>
+            </div>
+          </div>
         </c:when>
         <c:when test="${documentos.rowCount == 0}">
           <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-file-earmark"></i></span><h3>Aún no hay documentos</h3><p>Cuando se entregue el primero, aparecerá aquí con su enlace.</p></div></div>
