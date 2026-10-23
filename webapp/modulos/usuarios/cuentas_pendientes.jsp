@@ -84,11 +84,11 @@
               <td><c:out value="${s.registro}" /></td>
               <td><span class="insignia insignia-pendiente">Pendiente</span></td>
               <td class="acciones">
-                <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalVerCuenta" aria-label="Visualizar la solicitud de ${fn:escapeXml(s.nombre_completo)}"
+                <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalVerCuenta" title="Ver la solicitud de ${fn:escapeXml(s.nombre_completo)}" aria-label="Visualizar la solicitud de ${fn:escapeXml(s.nombre_completo)}"
                         data-nombre="${fn:escapeXml(s.nombre_completo)}" data-documento="${fn:escapeXml(s.tipo_documento)} ${fn:escapeXml(s.numero_documento)}"
                         data-correo="${fn:escapeXml(s.correo)}" data-registro="${s.registro}"><i class="bi bi-eye"></i></button>
-                <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalGestionarCuenta" aria-label="Gestionar la solicitud de ${fn:escapeXml(s.nombre_completo)}"
-                        data-id="${s.id_usuario}" data-nombre="${fn:escapeXml(s.nombre_completo)}" data-correo="${fn:escapeXml(s.correo)}"><i class="bi bi-pencil"></i></button>
+                <button type="button" class="btn btn-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalGestionarCuenta" title="Aprobar o rechazar la solicitud de ${fn:escapeXml(s.nombre_completo)}" aria-label="Aprobar o rechazar la solicitud de ${fn:escapeXml(s.nombre_completo)}"
+                        data-id="${s.id_usuario}" data-nombre="${fn:escapeXml(s.nombre_completo)}" data-correo="${fn:escapeXml(s.correo)}"><i class="bi bi-check2-square"></i></button>
               </td>
             </tr>
           </c:forEach>
@@ -107,10 +107,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body pt-0">
+        <div class="mb-3"><span class="insignia insignia-pendiente">Pendiente de aprobación</span></div>
         <div class="dato-etiqueta">Nombre completo</div><div class="dato-valor" data-llenar="nombre"></div>
         <div class="dato-etiqueta">Documento</div><div class="dato-valor" data-llenar="documento"></div>
         <div class="dato-etiqueta">Correo institucional</div><div class="dato-valor" data-llenar="correo"></div>
         <div class="dato-etiqueta">Fecha de solicitud</div><div class="dato-valor" data-llenar="registro"></div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-uts" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -119,7 +123,7 @@
 <div class="modal fade" id="modalGestionarCuenta" tabindex="-1" aria-labelledby="tituloGestionarCuenta" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form method="post" action="${ctx}/proceso/cuenta_decision_proc.jsp" data-decisiones novalidate>
+      <form method="post" action="${ctx}/proceso/cuenta_decision_proc.jsp" data-decisiones data-mensaje-rechazo="¿Rechazar esta solicitud de cuenta? La persona no podrá ingresar al sistema. Esta decisión queda registrada." novalidate>
         <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
         <input type="hidden" name="id" value="" data-llenar-valor="id">
         <div class="modal-header border-0">
@@ -136,14 +140,20 @@
               <option value="TECNOLOGICO">Tecnológico</option>
               <option value="PROFESIONAL">Profesional</option>
             </select>
+            <div class="form-text">Según el programa en el que está el estudiante: Tecnológico o Profesional.</div>
             <div class="invalid-feedback">Selecciona el nivel del estudiante.</div>
           </div>
           <div class="mb-1">
             <label for="observacion" class="form-label">Observación (obligatoria para rechazar)</label>
-            <textarea class="form-control" id="observacion" name="observacion" rows="3" maxlength="400"></textarea>
+            <textarea class="form-control" id="observacion" name="observacion" rows="3" maxlength="400" placeholder="Ej.: El documento no corresponde a un estudiante de la universidad"></textarea>
+            <div class="form-text">Queda registrada para el administrador; el estudiante solo verá que su solicitud fue rechazada.</div>
             <div class="invalid-feedback">Escribe el motivo del rechazo.</div>
           </div>
         </div>
+        <ul class="small texto-sec mx-3 mb-3 ps-4">
+          <li><strong>Aprobar:</strong> la cuenta queda activa y el estudiante podrá ingresar de inmediato con el nivel elegido.</li>
+          <li><strong>Rechazar:</strong> no podrá ingresar y verá un mensaje pidiéndole comunicarse con el administrador.</li>
+        </ul>
         <div class="modal-footer border-0 pt-0">
           <button type="submit" name="decision" value="RECHAZAR" class="btn btn-rechazar"><i class="bi bi-x-circle me-1"></i>Rechazar</button>
           <button type="submit" name="decision" value="APROBAR" class="btn btn-uts"><i class="bi bi-check-circle me-1"></i>Aprobar</button>

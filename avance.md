@@ -367,6 +367,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Formulario de radicar PQRS (23/10/2026)
 - El menú resalta "PQRS" (antes seguía marcando "Mis propuestas"); cada tipo de solicitud se explica al elegirlo; asteriscos en los obligatorios (el soporte lo lleva solo en la prórroga), ejemplos y notas de longitud mínima; el subtítulo dice que la respuesta se ve en la lista de PQRS.
 
+### Solicitudes de cuenta (23/10/2026)
+- El lápiz se reemplazó por el botón verde de decisión con texto flotante; el detalle muestra el estado y tiene "Cerrar"; la ventana de gestionar explica el nivel, qué hace Aprobar y Rechazar (y que el estudiante no ve la observación), trae un ejemplo en la observación y una confirmación de rechazo específica para cuentas.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
