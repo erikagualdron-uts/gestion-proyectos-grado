@@ -213,6 +213,11 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - El panel "Tu proyecto" muestra una barra de seis pasos y "Fase X de 6"; con el proyecto terminado el título es "Listo para sustentación" (sin repetirlo en la etiqueta).
 - El aviso de notificaciones sin leer pasó arriba, para todos los roles.
 
+### Ajustes del banco de ideas (23/10/2026)
+- Si el estudiante ya tiene una propuesta activa, desaparecen los botones "Elegir idea" (antes quedaban deshabilitados) y el aviso es informativo, con enlace a "Ver mi propuesta".
+- La paginación se oculta cuando todas las ideas caben en una página.
+- Se corrigió el texto de prueba de la idea ID-0004.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

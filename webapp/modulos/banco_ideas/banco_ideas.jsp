@@ -70,8 +70,9 @@
 </div>
 
 <c:if test="${sessionScope.rol == 'ESTUDIANTE' and activa.rowCount > 0}">
-  <div class="alert alert-warning" role="alert">
-    <i class="bi bi-exclamation-triangle me-1"></i>Ya participas en la propuesta <strong><c:out value="${activa.rows[0].codigo}" /></strong>; no puedes elegir otra idea mientras esté activa.
+  <div class="alert alert-info d-flex flex-wrap align-items-center justify-content-between gap-2" role="alert">
+    <span><i class="bi bi-info-circle me-1"></i>Ya participas en la propuesta <strong><c:out value="${activa.rows[0].codigo}" /></strong>. Mientras esté activa no puedes elegir otra idea, pero puedes consultar el banco.</span>
+    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/propuestas/propuestas_banco.jsp">Ver mi propuesta</a>
   </div>
 </c:if>
 
@@ -109,12 +110,12 @@
               <button type="button" class="btn btn-outline-uts btn-sm" data-bs-toggle="modal" data-bs-target="#modalIdea" aria-label="Visualizar la idea ${fn:escapeXml(i.codigo)}"
                       data-codigo="${fn:escapeXml(i.codigo)}" data-titulo="${fn:escapeXml(i.titulo)}" data-descripcion="${fn:escapeXml(i.descripcion)}"
                       data-objetivo="${fn:escapeXml(i.objetivo)}" data-alcance="${fn:escapeXml(i.alcance)}" data-docente="${fn:escapeXml(i.docente)}"><i class="bi bi-eye me-1"></i>Ver</button>
-              <c:if test="${sessionScope.rol == 'ESTUDIANTE'}">
+              <c:if test="${sessionScope.rol == 'ESTUDIANTE' and activa.rowCount == 0}">
                 <form method="post" action="${ctx}/proceso/propuesta_proc.jsp" data-confirmar="¿Elegir la idea ${fn:escapeXml(i.codigo)} para tu propuesta? Quedará pendiente de aprobación.">
                   <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
                   <input type="hidden" name="accion" value="elegir">
                   <input type="hidden" name="id" value="${i.id_idea}">
-                  <button type="submit" class="btn btn-uts btn-sm" ${activa.rowCount > 0 ? 'disabled' : ''}><i class="bi bi-check2-circle me-1"></i>Elegir idea</button>
+                  <button type="submit" class="btn btn-uts btn-sm"><i class="bi bi-check2-circle me-1"></i>Elegir idea</button>
                 </form>
               </c:if>
             </div>
@@ -122,7 +123,7 @@
         </div>
       </c:forEach>
     </div>
-    <jsp:include page="/WEB-INF/includes/paginacion.jsp" />
+    <c:if test="${totalRegistros > 6}"><jsp:include page="/WEB-INF/includes/paginacion.jsp" /></c:if>
   </c:otherwise>
 </c:choose>
 

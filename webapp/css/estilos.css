@@ -49,6 +49,7 @@ textarea.form-control { height: auto; }
 .alert { border-radius: 10px; font-size: .9rem; }
 .alert-success { background: var(--ok-fondo); border-color: #bfe5cf; color: var(--ok-texto); }
 .alert-danger  { background: var(--rechazado-fondo); border-color: #f2c3bf; color: var(--rechazado-texto); }
+.alert-info    { background: var(--verde-claro); border-color: #cfe5da; color: var(--verde-bosque); }
 .alert-warning { background: var(--aplazado-fondo); border-color: #f1dc9a; color: var(--aplazado-texto); }
 
 /* ---------- Pantallas públicas (login y registro) ---------- */
