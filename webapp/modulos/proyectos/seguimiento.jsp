@@ -84,7 +84,7 @@
   SELECT r.rol_revisor, r.decision, r.observaciones, u.nombre_completo AS revisor, d.nombre AS documento, d.version_num,
          IF(d.vigente = 1, 'SI', 'NO') AS vigente_txt, DATE_FORMAT(r.fecha_revision, '%d/%m/%Y %H:%i') AS fecha
   FROM revision r JOIN usuario u ON u.id_usuario = r.id_revisor LEFT JOIN documento d ON d.id_documento = r.id_documento
-  WHERE r.id_proyecto_fase = ? ORDER BY r.fecha_revision DESC, r.id_revision DESC
+  WHERE r.id_proyecto_fase = ? ORDER BY r.fecha_revision, r.id_revision
   <sql:param value="${pf.id_proyecto_fase}" />
 </sql:query>
 
@@ -96,8 +96,18 @@
 
 <%-- Última observación que devolvió o rechazó la versión vigente --%>
 <c:forEach var="r" items="${revisiones.rows}">
-  <c:if test="${(r.decision == 'APLAZADO' or r.decision == 'RECHAZADO') and r.vigente_txt == 'SI' and empty ultimaObservacion}"><c:set var="ultimaObservacion" value="${r}" /></c:if>
+  <c:if test="${(r.decision == 'APLAZADO' or r.decision == 'RECHAZADO') and r.vigente_txt == 'SI'}"><c:set var="ultimaObservacion" value="${r}" /></c:if>
 </c:forEach>
+
+<c:set var="primerDocRevision" value="" /><c:set var="variosDocsRevision" value="${false}" />
+<c:forEach var="r" items="${revisiones.rows}">
+  <c:choose>
+    <c:when test="${empty primerDocRevision}"><c:set var="primerDocRevision" value="${r.documento}" /></c:when>
+    <c:when test="${r.documento != primerDocRevision}"><c:set var="variosDocsRevision" value="${true}" /></c:when>
+  </c:choose>
+</c:forEach>
+<%-- Nombre de la fase actual (para el detalle del proyecto) --%>
+<c:forEach var="f" items="${fases.rows}"><c:if test="${f.numero == py.fase_actual}"><c:set var="nombreFaseActual" value="${f.nombre}" /></c:if></c:forEach>
 
 <c:set var="esFaseActual" value="${faseSel == py.fase_actual and py.estado_general == 'EN_CURSO'}" />
 <c:set var="faseEnCurso" value="${pf.estado == 'EN_CURSO'}" />
@@ -160,8 +170,8 @@
     <h2>Detalles · Fase <c:out value="${faseSel}" /> <c:out value="${pf.nombre}" /></h2>
     <c:choose>
       <c:when test="${pf.estado == 'APROBADA'}"><span class="insignia insignia-aprobado">Aprobada<c:if test="${not empty pf.fin}"> el <c:out value="${pf.fin}" /></c:if></span></c:when>
-      <c:when test="${pf.estado == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazado<c:if test="${not empty ultimaObservacion}"> · observación del <c:out value="${fn:toLowerCase(ultimaObservacion.rol_revisor == 'COMITE' ? 'comité' : ultimaObservacion.rol_revisor)}" />: <c:out value="${fn:substring(ultimaObservacion.observaciones, 0, 70)}" /></c:if></span></c:when>
-      <c:when test="${pf.estado == 'RECHAZADA'}"><span class="insignia insignia-rechazado">Rechazada<c:if test="${not empty ultimaObservacion}"> · <c:out value="${fn:substring(ultimaObservacion.observaciones, 0, 70)}" /></c:if></span></c:when>
+      <c:when test="${pf.estado == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazada · pendiente de corrección</span></c:when>
+      <c:when test="${pf.estado == 'RECHAZADA'}"><span class="insignia insignia-rechazado">Rechazada</span></c:when>
       <c:when test="${pf.estado == 'EN_CURSO'}"><span class="insignia insignia-pendiente">En curso</span></c:when>
       <c:otherwise><span class="insignia insignia-pendiente">Pendiente</span></c:otherwise>
     </c:choose>
@@ -172,6 +182,29 @@
       <div class="p-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-hourglass-split"></i></span><h3>Fase aún no habilitada</h3><p>Se habilita cuando se apruebe la fase anterior.</p></div></div>
     </c:when>
     <c:otherwise>
+      <%-- Observación completa cuando la fase fue aplazada o rechazada --%>
+      <c:if test="${(pf.estado == 'APLAZADA' or pf.estado == 'RECHAZADA') and not empty ultimaObservacion}">
+        <div class="mx-4 mb-3 alert ${pf.estado == 'APLAZADA' ? 'alert-warning' : 'alert-danger'}" role="alert">
+          <div class="fw-bold mb-1"><i class="bi bi-chat-left-text me-1"></i>Observación del <c:out value="${ultimaObservacion.rol_revisor == 'DIRECTOR' ? 'director' : (ultimaObservacion.rol_revisor == 'EVALUADOR' ? 'evaluador' : 'comité')}" /> (<c:out value="${ultimaObservacion.revisor}" />)</div>
+          <div style="white-space: pre-line"><c:out value="${ultimaObservacion.observaciones}" /></div>
+          <c:if test="${pf.estado == 'APLAZADA' and soyResponsable and esFaseActual}"><div class="mt-2">Corrige el documento y envía una nueva versión con el formulario de abajo.</div></c:if>
+        </div>
+      </c:if>
+      <%-- Quién falta por decidir --%>
+      <c:set var="faltan" value="" />
+      <c:if test="${esFaseActual and faseEnCurso and not empty docVigente}">
+        <c:if test="${faseSel == 1 and docVigente.com_ok == 0}"><c:set var="faltan" value="el coordinador" /></c:if>
+        <c:if test="${(faseSel == 2 or faseSel == 4) and docVigente.dir_ok == 0}"><c:set var="faltan" value="el director" /></c:if>
+        <c:if test="${faseSel == 3 or faseSel == 5}">
+          <c:if test="${docVigente.dir_ok == 0}"><c:set var="faltan" value="${faltan += (empty faltan ? 'el director' : ', el director')}" /></c:if>
+          <c:if test="${docVigente.eva_ok == 0}"><c:set var="faltan" value="${faltan += (empty faltan ? 'el evaluador' : ', el evaluador')}" /></c:if>
+          <c:if test="${docVigente.com_ok == 0}"><c:set var="faltan" value="${faltan += (empty faltan ? 'el comité' : ', el comité')}" /></c:if>
+        </c:if>
+      </c:if>
+      <c:if test="${not empty faltan}">
+        <div class="px-4 pb-3 texto-sec"><i class="bi bi-hourglass-split me-1"></i>Falta la decisión de: <strong><c:out value="${faltan}" /></strong>.</div>
+      </c:if>
+
       <c:choose>
         <c:when test="${faseSel == 6}">
           <div class="px-4 pb-4">
@@ -200,23 +233,23 @@
           </div>
         </c:when>
         <c:when test="${documentos.rowCount == 0}">
-          <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-file-earmark"></i></span><h3>Aún no hay documentos</h3><p>Cuando se entregue el primero, aparecerá aquí con su enlace.</p></div></div>
+          <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-file-earmark"></i></span><h3>Aún no hay documentos</h3><p><c:out value="${soyResponsable and esFaseActual ? 'Entrega tu documento con el formulario de abajo y aparecerá aquí con su enlace.' : 'Cuando se entregue el primero, aparecerá aquí con su enlace.'}" /></p></div></div>
         </c:when>
         <c:otherwise>
           <div class="table-responsive">
             <table class="table tabla-uts">
-              <thead><tr><th>Documento</th><th>Versión</th><th>Estado</th><th>Entregó</th><th>Enlace</th></tr></thead>
+              <thead><tr><th>Documento</th><th>Versión</th><th>Estado</th><th>Subido por</th><th>Enlace</th></tr></thead>
               <tbody>
                 <c:forEach var="d" items="${documentos.rows}">
                   <c:set var="esApoyo" value="${d.nombre == 'Rejilla de evaluación' or d.nombre == 'Turnitin'}" />
                   <c:set var="completo" value="${faseSel == 1 ? d.com_ok > 0 : ((faseSel == 2 or faseSel == 4) ? d.dir_ok > 0 : (d.dir_ok > 0 and d.eva_ok > 0 and d.com_ok > 0))}" />
                   <c:set var="estadoDoc" value="${d.n_rech > 0 ? 'Rechazado' : (d.n_apl > 0 ? 'Aplazado' : (completo ? 'Aprobado' : 'Pendiente'))}" />
                   <tr class="${d.vigente_txt == 'SI' ? '' : 'doc-anterior'}">
-                    <td><div class="fw-semibold"><c:out value="${d.nombre}" /></div><c:if test="${not empty d.comentario}"><div class="texto-sec"><c:out value="${d.comentario}" /></div></c:if></td>
+                    <td><div class="fw-semibold"><c:out value="${d.nombre}" /></div><c:if test="${not empty d.comentario}"><div class="texto-sec"><c:out value="${fn:startsWith(d.comentario, 'Documento aprobado en la fase anterior') ? 'Aprobado en la fase anterior' : d.comentario}" /></div></c:if></td>
                     <td>v<c:out value="${d.version_num}" /> <c:choose><c:when test="${d.vigente_txt == 'SI'}"><span class="texto-sec">· vigente</span></c:when><c:otherwise><span class="texto-sec">· anterior</span></c:otherwise></c:choose></td>
                     <td>
                       <c:choose>
-                        <c:when test="${esApoyo}"><span class="texto-sec">Adjunto</span></c:when>
+                        <c:when test="${esApoyo}"><span class="texto-sec">Adjunto del <c:out value="${d.nombre == 'Turnitin' ? 'director' : 'evaluador'}" /></span></c:when>
                         <c:otherwise><span class="insignia insignia-${estadoDoc == 'Aprobado' ? 'aprobado' : (estadoDoc == 'Aplazado' ? 'aplazado' : (estadoDoc == 'Rechazado' ? 'rechazado' : 'pendiente'))}"><c:out value="${estadoDoc}" /></span></c:otherwise>
                       </c:choose>
                     </td>
@@ -234,14 +267,14 @@
         <div class="px-4 pt-4"><h3 class="h6 titulo" style="color: var(--verde-bosque)">Revisiones</h3></div>
         <div class="table-responsive pb-2">
           <table class="table tabla-uts">
-            <thead><tr><th>Revisor</th><th>Decisión</th><th>Observaciones</th><th>Documento</th><th>Fecha</th></tr></thead>
+            <thead><tr><th>Revisor</th><th>Decisión</th><th>Observaciones</th><th><c:out value="${variosDocsRevision ? 'Documento' : 'Versión'}" /></th><th>Fecha</th></tr></thead>
             <tbody>
               <c:forEach var="r" items="${revisiones.rows}">
                 <tr>
                   <td><div class="fw-semibold"><c:out value="${r.revisor}" /></div><div class="texto-sec"><c:out value="${r.rol_revisor == 'DIRECTOR' ? 'Director' : (r.rol_revisor == 'EVALUADOR' ? 'Evaluador' : 'Comité')}" /></div></td>
                   <td><span class="insignia insignia-${r.decision == 'APROBADO' ? 'aprobado' : (r.decision == 'APLAZADO' ? 'aplazado' : 'rechazado')}"><c:out value="${r.decision == 'APROBADO' ? 'Aprobado' : (r.decision == 'APLAZADO' ? 'Aplazado' : 'Rechazado')}" /></span></td>
-                  <td style="min-width: 220px; white-space: pre-line"><c:out value="${empty r.observaciones ? '—' : r.observaciones}" /></td>
-                  <td><c:out value="${r.documento}" /> v<c:out value="${r.version_num}" /></td>
+                  <td style="min-width: 220px; white-space: pre-line"><c:choose><c:when test="${empty r.observaciones}"><span class="texto-sec">Sin observaciones</span></c:when><c:otherwise><c:out value="${r.observaciones}" /></c:otherwise></c:choose></td>
+                  <td><c:if test="${variosDocsRevision}"><c:out value="${r.documento}" /> </c:if>v<c:out value="${r.version_num}" /></td>
                   <td><c:out value="${r.fecha}" /></td>
                 </tr>
               </c:forEach>
@@ -305,9 +338,9 @@
         <div class="dato-etiqueta">Título</div><div class="dato-valor"><c:out value="${py.titulo}" /></div>
         <div class="dato-etiqueta">Estudiantes</div><div class="dato-valor"><c:out value="${py.estudiantes}" /></div>
         <div class="row">
-          <div class="col-6"><div class="dato-etiqueta">Director</div><div class="dato-valor"><c:out value="${empty py.director ? 'Por asignar' : py.director}" /></div></div>
-          <div class="col-6"><div class="dato-etiqueta">Evaluador</div><div class="dato-valor"><c:out value="${empty py.evaluador ? 'Por asignar' : py.evaluador}" /></div></div>
-          <div class="col-6"><div class="dato-etiqueta">Fase actual</div><div class="dato-valor"><c:out value="${py.fase_actual}" /></div></div>
+          <div class="col-6"><div class="dato-etiqueta">Director</div><div class="dato-valor"><c:out value="${empty py.director ? 'Sin asignar' : py.director}" /></div></div>
+          <div class="col-6"><div class="dato-etiqueta">Evaluador</div><div class="dato-valor"><c:out value="${empty py.evaluador ? 'Sin asignar' : py.evaluador}" /></div></div>
+          <div class="col-6"><div class="dato-etiqueta">Fase actual</div><div class="dato-valor">Fase <c:out value="${py.fase_actual}" /> · <c:out value="${nombreFaseActual}" /></div></div>
           <div class="col-6"><div class="dato-etiqueta">Estado</div><div class="dato-valor"><c:out value="${py.estado_general == 'EN_CURSO' ? 'En curso' : (py.estado_general == 'APTO_GRADUACION' ? 'Listo para sustentación' : 'Cerrado')}" /></div></div>
         </div>
       </div>

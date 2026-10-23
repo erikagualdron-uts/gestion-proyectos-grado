@@ -79,9 +79,9 @@
       <div class="etiqueta-sup">Tu proyecto</div>
       <div class="fw-bold fs-5 titulo"><c:choose><c:when test="${py.estado_general == 'APTO_GRADUACION'}">Listo para sustentación</c:when><c:otherwise>Fase <c:out value="${py.numero}" /> · <c:out value="${py.fase}" /></c:otherwise></c:choose></div>
       <div class="texto-sec mt-1">
-        <i class="bi bi-person-check me-1"></i>Director: <strong><c:out value="${empty py.director ? 'Por asignar' : py.director}" /></strong>
+        <i class="bi bi-person-check me-1"></i>Director: <strong><c:out value="${empty py.director ? 'Sin asignar' : py.director}" /></strong>
         <span class="mx-1">·</span>
-        <i class="bi bi-clipboard-check me-1"></i>Evaluador: <strong><c:out value="${empty py.evaluador ? 'Por asignar' : py.evaluador}" /></strong>
+        <i class="bi bi-clipboard-check me-1"></i>Evaluador: <strong><c:out value="${empty py.evaluador ? 'Sin asignar' : py.evaluador}" /></strong>
       </div>
     </div>
     <div class="d-flex flex-wrap align-items-center gap-3">

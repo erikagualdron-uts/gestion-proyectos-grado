@@ -233,6 +233,13 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Con el proyecto listo para sustentación se quitó el aviso verde repetido; la fase 6 muestra un resumen (director, evaluador, fases aprobadas con su fecha y acceso al historial) y el mensaje se dirige al estudiante en segunda persona.
 - La leyenda de colores solo aparece mientras haya fases pendientes.
 
+### Mejoras del seguimiento (23/10/2026)
+- Revisiones en orden cronológico (director, evaluador, comité), "Sin observaciones" en gris y la columna de documento solo cuando hay varios documentos (si no, "Versión").
+- Columna "Subido por"; adjuntos indican "Adjunto del director/evaluador"; el comentario de los documentos copiados dice "Aprobado en la fase anterior" (el texto guardado no cambió).
+- Fase aplazada o rechazada: la observación completa se muestra en un cuadro amarillo o rojo con su autor, y la etiqueta ya no la corta.
+- Fase en revisión: línea "Falta la decisión de: ..." (coordinador, director, evaluador o comité según la fase).
+- Mensaje de "sin documentos" según quién mira; "Detalles del proyecto" muestra la fase con su nombre y "Sin asignar" en todo el sistema.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
