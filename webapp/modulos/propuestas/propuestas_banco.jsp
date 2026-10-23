@@ -207,7 +207,7 @@
                   <c:when test="${f.id_proyecto > 0}">
                     <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${f.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(f.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(f.codigo)}"><i class="bi bi-list-check"></i></a>
                   </c:when>
-                  <c:otherwise><span class="btn-icono-vacio" aria-hidden="true"></span></c:otherwise>
+                  <c:when test="${sessionScope.rol != 'ESTUDIANTE'}"><span class="btn-icono-vacio" aria-hidden="true"></span></c:when>
                 </c:choose>
                 <c:choose>
                   <c:when test="${esCoordinador}">

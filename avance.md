@@ -377,6 +377,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Propuesta pendiente del estudiante (23/10/2026)
 - En "Mis propuestas", una propuesta pendiente muestra el botón "Agregar a tu compañero" (icono de persona) solo si todavía no lo tiene, y la aplazada el botón verde "Corregir y reenviar"; el detalle de una propuesta pendiente avisa que el coordinador la está revisando; la pantalla de edición se llama "Agregar compañero" (o "Corregir propuesta" si fue aplazada) y no marca con asterisco los campos que están bloqueados.
 
+### Acciones en Mis propuestas (23/10/2026)
+- En la tabla del estudiante ya no se reserva el hueco del icono de seguimiento (dejaba una separación grande entre el ojo y el botón de agregar compañero); coordinador y docente lo conservan para alinear sus botones.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
