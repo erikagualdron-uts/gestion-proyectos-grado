@@ -118,8 +118,8 @@
   <c:catch var="directorInvalido"><c:set var="idNuevoDirector" value="${empty param.nuevoDirector ? 0 : param.nuevoDirector + 0}" /></c:catch>
   <c:choose>
     <c:when test="${not empty idInvalido or empty param.id or not empty directorInvalido}"><c:set var="errorPqrs" value="La PQRS indicada no es válida." /></c:when>
-    <c:when test="${param.decision != 'APROBAR' and param.decision != 'APLAZAR' and param.decision != 'RECHAZAR'}"><c:set var="errorPqrs" value="Decisión no válida." /></c:when>
-    <c:when test="${param.decision != 'APROBAR' and empty respuesta}"><c:set var="errorPqrs" value="Para aplazar o rechazar escribe la respuesta." /></c:when>
+    <c:when test="${param.decision != 'APROBAR' and param.decision != 'RECHAZAR'}"><c:set var="errorPqrs" value="Decisión no válida: una PQRS se aprueba o se rechaza." /></c:when>
+    <c:when test="${param.decision != 'APROBAR' and empty respuesta}"><c:set var="errorPqrs" value="Para rechazar escribe la respuesta." /></c:when>
     <c:when test="${fn:length(respuesta) > 2000}"><c:set var="errorPqrs" value="La respuesta puede tener máximo 2000 caracteres." /></c:when>
   </c:choose>
   <c:if test="${empty errorPqrs}">
@@ -146,8 +146,8 @@
   </c:if>
 
   <c:if test="${empty errorPqrs}">
-    <c:set var="nuevoEstado" value="${param.decision == 'APROBAR' ? 'APROBADO' : (param.decision == 'APLAZAR' ? 'APLAZADO' : 'RECHAZADO')}" />
-    <c:set var="textoEstado" value="${param.decision == 'APROBAR' ? 'aprobada' : (param.decision == 'APLAZAR' ? 'aplazada' : 'rechazada')}" />
+    <c:set var="nuevoEstado" value="${param.decision == 'APROBAR' ? 'APROBADO' : 'RECHAZADO'}" />
+    <c:set var="textoEstado" value="${param.decision == 'APROBAR' ? 'aprobada' : 'rechazada'}" />
     <c:catch var="falloPqrs">
       <sql:transaction dataSource="${bd}">
         <sql:update var="filas">

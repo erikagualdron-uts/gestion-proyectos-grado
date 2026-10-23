@@ -178,3 +178,39 @@
 - La exportación fallaba con error 500 por el atributo `trimDirectiveWhitespaces` de la página; se probaron variantes con una sola diferencia cada una hasta aislarlo y se quitó.
 
 **Pruebas hechas en el despliegue (peticiones HTTP):** compañero que intenta radicar; radicar con tipo inválido, asunto corto, prórroga sin soporte y soporte inválido; prórroga, cambio de director y queja válidos; visibilidad de PQRS por rol (responsable, compañero, otro estudiante, coordinador, administrador, docente sin acceso); resolver con y sin respuesta, resolver dos veces, cambio de director sin nuevo director, con el evaluador y con un docente válido (se aplica al proyecto); estudiante y docente que intentan resolver; avisos; notificaciones (marcar una, marcar todas, intentar marcar un aviso ajeno); historial por rol (estudiante propio, compañero, administrador, coordinador, otro estudiante y docente ajeno denegados); informe y sus filtros (incluidos filtros inválidos); exportación a Excel.
+
+### Ajuste de PQRS (23/10/2026)
+- En PQRS ya **no existe el estado "Aplazado"**: el coordinador solo **aprueba o rechaza** (la respuesta es obligatoria al rechazar). Motivo: en PQRS no hay flujo de corrección y reenvío, así que "aplazar" dejaba la solicitud sin salida. El valor sigue existiendo en la base (se usa en ideas, propuestas y documentos). Esto difiere de HU-34 del PDF ("aprueba, aplaza o rechaza").
+- El estado vacío del listado distingue entre "Aún no hay PQRS radicadas" y "No hay PQRS que coincidan" con la búsqueda o los filtros.
+
+---
+
+## Diferencias entre el sistema construido y el documento del sistema (PDF)
+Resumen para actualizar la documentación final. Lo que no aparece aquí se implementó como dice el PDF.
+
+| Tema | Lo que dice el PDF | Lo que quedó en el sistema | Motivo |
+|---|---|---|---|
+| Tecnología | Tomcat y JSTL, desplegable en Render o Clever Cloud | Tomcat 9, JSTL 1.2, Java 21 en Clever Cloud; el WAR se genera con `jar` en un hook de pre-build (sin Maven) | Compatible con el XAMPP local (javax) |
+| Base de datos | `gestion_grado` | `gestion_proyectos_grado` (en Clever Cloud la base la nombra la plataforma); script sin `CREATE DATABASE` | Nombre pedido por la estudiante |
+| Carpetas | `webapp/assets/css`, `js`, `img` | `webapp/css`, `webapp/js`, `webapp/img` | Indicado en `CLAUDE.md` y `DISENO.md` |
+| Datos de prueba | Solo `datos_iniciales.sql` | Además `sql/datos_prueba.sql` (un usuario por rol, ideas, propuesta y proyecto) | Poder recorrer el sistema |
+| Correos | Dominio institucional | Estudiantes `@uts.edu.co`; docentes, coordinador y administrador `@correo.uts.edu.co` | Definido por la estudiante |
+| Menú del estudiante | "Propuesta Banco" | "Mis propuestas" (los demás roles ven "Propuestas Banco") | Más claro para el estudiante |
+| Ventanas | `propuesta_detalle.jsp`, `propuesta_decision.jsp`, `pqrs_detalle.jsp`, `detalles_proyecto.jsp` como páginas | Ventanas modales dentro de cada pantalla | `DISENO.md` |
+| Propuesta propia | Título, objetivo y alcance obligatorios | Además descripción opcional (si se omite se copia el título) | La tabla exige descripción |
+| Propuestas por estudiante | No se limita | Una propuesta activa (pendiente, aplazada o aprobada); si se rechaza puede crear otra | "Estudiante libre" (RF-26) |
+| Compañero | Segundo estudiante opcional | Una vez agregado queda **fijo**; debe tener cuenta aprobada; **solo visualiza** | Definido por la estudiante |
+| Responsable | `es_responsable` marca a quien creó la propuesta | Solo el responsable entrega documentos, corrige la propuesta y radica PQRS; si se inactiva, el proyecto no recibe documentos | Definido por la estudiante |
+| Máximo de estudiantes | Uno y un compañero | Igual (2). El formato F-DC-124 admite 3; el F-DC-125 trae 2 autores | Decisión pendiente si se quiere 3 |
+| Fases 3 y 5 | El director envía al evaluador y al comité | El sistema copia el documento aprobado de la fase anterior; el director aprueba el envío; luego deciden evaluador y comité (ambos) | Interpretación del PDF |
+| Fase 6 | Revisión final por evaluador y comité, con informe final | **Estado final automático**: se alcanza al aprobar la fase 5; sin entrega ni revisión | Definido por la estudiante |
+| Estado final | Apto para graduación | Se muestra **"Listo para sustentación"** (el valor interno sigue siendo `APTO_GRADUACION`) | La etapa siguiente es la sustentación |
+| Nombres de documentos | Genéricos | "Anteproyecto (F-DC-124)" e "Informe (F-DC-125)" según los formatos institucionales | Claridad para el estudiante |
+| Rejilla de evaluación | Documento de las fases de revisión | Enlace del evaluador, **obligatorio para aprobar** en la fase 3 (F-DC-124) y en la fase 5 (F-DC-129), una vez por versión | Formatos institucionales |
+| Turnitin | Documento de la fase 5 | Enlace del director, **obligatorio en cualquier decisión** de la fase 5, una vez por versión; no se verifica el porcentaje | Evidencia |
+| Decisión del director | No se detalla | Queda cerrada cuando el evaluador o el comité ya decidieron sobre la versión (fases 3 y 5) | Evitar decisiones contradictorias |
+| Informe de estado | Para el coordinador y para el estudiante (RF-60, RF-61, HU-39) | **Solo para el coordinador**; no hay informe del estudiante | Definido por la estudiante |
+| Exportar el informe | CSV o imprimir (RF-62, deseable) | **Imprimir** (con estilos de impresión) y **exportar a Excel** con formato | Mejor presentación |
+| PQRS | Aprobar, aplazar o rechazar (HU-34) | Solo **aprobar o rechazar**; el cambio de director aprobado se aplica al proyecto | En PQRS no hay reenvío |
+| Seguimiento por fila | Opción en cada fila (RF-33) | Ícono de seguimiento en Propuestas Banco y en las tablas de proyectos; historial desde seguimiento y tablas | Navegación |
+| Notificaciones | Campana con contador | Además listado con filtro "solo sin leer", marcar una o todas | RF-57 |

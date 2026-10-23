@@ -13,7 +13,7 @@
 <c:set var="q" value="${fn:trim(param.q)}" />
 <c:set var="qLike" value="%${q}%" />
 <c:set var="filtroTipo" value="${fn:contains(',PRORROGA,CAMBIO_DIRECTOR,PETICION,QUEJA,RECLAMO,SUGERENCIA,', ',' += param.tipo += ',') ? param.tipo : ''}" />
-<c:set var="filtroEstado" value="${fn:contains(',PENDIENTE,APROBADO,APLAZADO,RECHAZADO,', ',' += param.estado += ',') ? param.estado : ''}" />
+<c:set var="filtroEstado" value="${fn:contains(',PENDIENTE,APROBADO,RECHAZADO,', ',' += param.estado += ',') ? param.estado : ''}" />
 <c:set var="pp" value="${param.pp == '10' ? 10 : (param.pp == '20' ? 20 : 5)}" />
 <c:catch var="pagInvalida"><c:set var="pagPedida" value="${empty param.pag ? 1 : param.pag + 0}" /></c:catch>
 <c:if test="${not empty pagInvalida or pagPedida < 1}"><c:set var="pagPedida" value="1" /></c:if>
@@ -35,7 +35,7 @@
 
 <sql:query var="resumen" dataSource="${bd}">
   SELECT SUM(q.estado = 'PENDIENTE') AS pendientes, SUM(q.estado = 'APROBADO') AS aprobadas,
-         SUM(q.estado = 'APLAZADO') AS aplazadas, SUM(q.estado = 'RECHAZADO') AS rechazadas
+         SUM(q.estado = 'RECHAZADO') AS rechazadas
   ${desdePqrs}
   <sql:param value="${sessionScope.rol}" /><sql:param value="${sessionScope.usuarioId}" /><sql:param value="${sessionScope.usuarioId}" />
 </sql:query>
@@ -97,7 +97,7 @@
     <h1 class="titulo-pagina">PQRS</h1>
     <p class="descripcion-pagina mb-3">
       <c:choose>
-        <c:when test="${esCoordinador}">Resuelve las solicitudes: prórrogas, cambios de director, peticiones, quejas, reclamos y sugerencias.</c:when>
+        <c:when test="${esCoordinador}">Resuelve las solicitudes (aprobar o rechazar con respuesta): prórrogas, cambios de director, peticiones, quejas, reclamos y sugerencias.</c:when>
         <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">Consulta el estado y la respuesta de tus solicitudes, o radica una nueva.</c:when>
         <c:otherwise>Consulta las solicitudes radicadas y su estado.</c:otherwise>
       </c:choose>
@@ -113,10 +113,9 @@
 </c:if>
 
 <div class="row g-3 mb-4">
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aplazado"><i class="bi bi-pause-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aplazadas}" default="0" /></div><div class="resumen-etiqueta">Aplazadas</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></div></div>
+  <div class="col-12 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></div></div>
+  <div class="col-6 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></div></div>
+  <div class="col-6 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></div></div>
 </div>
 
 <form method="get" action="${ctx}/modulos/pqrs/pqrs.jsp" class="row g-3 align-items-end mb-3">
@@ -139,7 +138,6 @@
       <option value="">Todos</option>
       <option value="PENDIENTE" ${filtroEstado == 'PENDIENTE' ? 'selected' : ''}>Pendiente</option>
       <option value="APROBADO" ${filtroEstado == 'APROBADO' ? 'selected' : ''}>Aprobado</option>
-      <option value="APLAZADO" ${filtroEstado == 'APLAZADO' ? 'selected' : ''}>Aplazado</option>
       <option value="RECHAZADO" ${filtroEstado == 'RECHAZADO' ? 'selected' : ''}>Rechazado</option>
     </select>
   </div>
@@ -150,8 +148,16 @@
   <c:when test="${solicitudes.rowCount == 0}">
     <div class="vacio">
       <span class="icono-circulo"><i class="bi bi-chat"></i></span>
-      <h3>No hay PQRS para mostrar</h3>
-      <p><c:out value="${sessionScope.rol == 'ESTUDIANTE' ? 'Cuando radiques una solicitud aparecerá aquí con su estado y respuesta.' : 'Cambia la búsqueda o los filtros.'}" /></p>
+      <c:choose>
+        <c:when test="${empty q and empty filtroTipo and empty filtroEstado}">
+          <h3>Aún no hay PQRS radicadas</h3>
+          <p><c:out value="${sessionScope.rol == 'ESTUDIANTE' ? 'Cuando radiques una solicitud aparecerá aquí con su estado y respuesta.' : (esCoordinador ? 'Cuando un estudiante radique una solicitud, aparecerá aquí para que la resuelvas.' : 'Cuando se radique una solicitud, aparecerá aquí.')}" /></p>
+        </c:when>
+        <c:otherwise>
+          <h3>No hay PQRS que coincidan</h3>
+          <p>Cambia la búsqueda o los filtros.</p>
+        </c:otherwise>
+      </c:choose>
     </div>
   </c:when>
   <c:otherwise>
@@ -242,14 +248,13 @@
               <div class="invalid-feedback">Selecciona el nuevo director.</div>
             </div>
             <div class="mb-1">
-              <label for="observacion" class="form-label">Respuesta (obligatoria para aplazar o rechazar)</label>
+              <label for="observacion" class="form-label">Respuesta (obligatoria para rechazar)</label>
               <textarea class="form-control" id="observacion" name="observacion" rows="4" maxlength="2000"></textarea>
               <div class="invalid-feedback">Escribe la respuesta.</div>
             </div>
           </div>
           <div class="modal-footer border-0 pt-0">
             <button type="submit" name="decision" value="RECHAZAR" class="btn btn-rechazar"><i class="bi bi-x-circle me-1"></i>Rechazar</button>
-            <button type="submit" name="decision" value="APLAZAR" class="btn btn-aplazar"><i class="bi bi-pause-circle me-1"></i>Aplazar</button>
             <button type="submit" name="decision" value="APROBAR" class="btn btn-uts"><i class="bi bi-check-circle me-1"></i>Aprobar</button>
           </div>
         </form>
