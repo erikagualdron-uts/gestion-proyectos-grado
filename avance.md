@@ -392,6 +392,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Menú de tres puntos en todas las tablas con acciones (23/10/2026)
 - Propuestas Banco, PQRS, Asignación de proyectos, Director y Evaluador, Usuarios y Solicitudes de cuenta usan ahora el mismo patrón: el ojo (o el acceso al seguimiento) y un menú de tres puntos con lo que se puede hacer en esa fila; lo que no aplica se explica dentro del menú en lugar de dejar botones apagados o huecos. El Panel de control (pestaña Proyectos) y la administración de enlaces tienen una sola acción por fila y se dejaron como estaban.
 
+### Pruebas finales y README (23/10/2026)
+- Recorrido con los cuatro roles en el despliegue: todas las pantallas de cada rol cargan sin error; las pantallas de otros roles responden "Acceso denegado"; sin sesión se vuelve al ingreso; los procesos rechazan peticiones sin token anti-CSRF o por GET; un estudiante no puede ver el seguimiento de un proyecto ajeno.
+- README actualizado (qué hace cada rol, instalación, variables de entorno, hora de Colombia, base documental, usuarios de prueba y seguridad). Los PDF de formatos institucionales se agregaron al `.gitignore`.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
