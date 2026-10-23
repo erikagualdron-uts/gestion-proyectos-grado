@@ -130,7 +130,7 @@
         </div>
       </header>
       <c:if test="${pageContext.request.servletPath != '/inicio.jsp'}">
-        <a class="btn btn-outline-uts btn-sm mt-2" href="${ctx}${empty volverA ? '/inicio.jsp' : volverA}"><i class="bi bi-arrow-left me-1"></i>Volver</a>
+        <a class="enlace-volver" href="${ctx}${empty volverA ? '/inicio.jsp' : volverA}"><i class="bi bi-chevron-left"></i>Volver</a>
       </c:if>
       <jsp:include page="/WEB-INF/includes/mensaje.jsp" />
   </c:otherwise>
