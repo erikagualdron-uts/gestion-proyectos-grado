@@ -29,7 +29,7 @@
 <%-- Proyecto del estudiante (si ya tiene uno) --%>
 <c:if test="${sessionScope.rol == 'ESTUDIANTE'}">
   <sql:query var="proyecto" dataSource="${bd}">
-    SELECT p.id_proyecto, f.numero, f.nombre AS fase, pf.estado, d.nombre_completo AS director, ev.nombre_completo AS evaluador
+    SELECT p.id_proyecto, p.estado_general, f.numero, f.nombre AS fase, pf.estado, d.nombre_completo AS director, ev.nombre_completo AS evaluador
     FROM propuesta_estudiante pe
     JOIN proyecto p ON p.id_propuesta = pe.id_propuesta
     JOIN fase f ON f.id_fase = p.fase_actual
@@ -64,7 +64,7 @@
   <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
     <div>
       <div class="etiqueta-sup">Tu proyecto</div>
-      <div class="fw-bold fs-5 titulo">Fase <c:out value="${py.numero}" /> · <c:out value="${py.fase}" /></div>
+      <div class="fw-bold fs-5 titulo"><c:choose><c:when test="${py.estado_general == 'APTO_GRADUACION'}">Todas las fases aprobadas</c:when><c:otherwise>Fase <c:out value="${py.numero}" /> · <c:out value="${py.fase}" /></c:otherwise></c:choose></div>
       <div class="texto-sec mt-1">
         <i class="bi bi-person-check me-1"></i>Director: <strong><c:out value="${empty py.director ? 'Por asignar' : py.director}" /></strong>
         <span class="mx-1">·</span>
@@ -73,6 +73,8 @@
     </div>
     <div class="d-flex flex-wrap align-items-center gap-3">
       <c:choose>
+        <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado">Listo para sustentación</span></c:when>
+        <c:when test="${py.estado_general == 'CERRADO'}"><span class="insignia insignia-rechazado">Proyecto cerrado</span></c:when>
         <c:when test="${py.estado == 'APROBADA'}"><span class="insignia insignia-aprobado">Aprobado</span></c:when>
         <c:when test="${py.estado == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazado · corregir y reenviar</span></c:when>
         <c:when test="${py.estado == 'RECHAZADA'}"><span class="insignia insignia-rechazado">Rechazado</span></c:when>

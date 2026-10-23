@@ -161,3 +161,4 @@
 - **Fase 6 (Revisión final):** ya no tiene entrega ni revisión. Se alcanza sola cuando el evaluador y el comité aprueban la fase 5, y deja el proyecto **"Listo para sustentación"**. La tarjeta 6 se conserva como estado final.
 - Decisión: el informe de similitud (Turnitin) se exige solo al director en la fase 5; en la fase 3 no se pide.
 - En el seguimiento, el aviso final dice "Se aprobaron todas las fases del proyecto" y la tarjeta de la fase 6 muestra "Listo para sustentación" en lugar de "Aprobada".
+- En el Inicio del estudiante, el panel "Tu proyecto" muestra "Todas las fases aprobadas" y la insignia "Listo para sustentación" cuando el proyecto terminó, y "Proyecto cerrado" cuando se rechazó.
