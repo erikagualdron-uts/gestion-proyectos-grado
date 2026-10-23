@@ -236,6 +236,6 @@ img.iniciales { object-fit: cover; }
 .linea-fases.mini { padding: 14px 0 0; gap: 8px; }
 .linea-fases.mini .fase-arriba { margin-bottom: 6px; }
 .linea-fases.mini .fase-arriba::after { width: calc(100% + 8px); }
-.linea-fases.mini small { font-size: .72rem; color: var(--texto-sec); text-align: center; line-height: 1.2; }
+.linea-fases.mini small { font-size: .82rem; color: var(--texto-sec); text-align: center; line-height: 1.2; }
 .linea-fases.mini .fase-col.actual small { color: var(--verde-bosque); font-weight: 700; }
 @media (max-width: 575px) { .linea-fases.mini { grid-template-columns: repeat(6, 1fr); } .linea-fases.mini small { display: none; } }
