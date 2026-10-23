@@ -87,6 +87,11 @@
     });
   });
 
+  // Botón "Imprimir": abre la impresión del navegador (también permite guardar como PDF)
+  document.querySelectorAll('[data-imprimir]').forEach(function (boton) {
+    boton.addEventListener('click', function () { window.print(); });
+  });
+
   // Confirmaciones antes de enviar (data-confirmar="mensaje")
   document.querySelectorAll('form[data-confirmar]').forEach(function (form) {
     form.addEventListener('submit', function (evento) {

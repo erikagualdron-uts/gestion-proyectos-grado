@@ -206,3 +206,15 @@ img.iniciales { object-fit: cover; }
   .usuario .nombre { display: none; }
   .tarjeta-form { padding: 28px 22px; }
 }
+
+/* ---------- Impresión (informes) ---------- */
+@media print {
+  .menu-lateral, .topbar, .no-imprimir, .pagination, nav[aria-label="Paginación"], .btn, .alert, label.texto-sec { display: none !important; }
+  .contenido { margin-left: 0 !important; padding: 0 !important; }
+  body { background: #fff !important; }
+  .tarjeta, .tabla-envoltorio { box-shadow: none !important; border: 1px solid #C9D3CE !important; }
+  .tabla-uts thead th { background: #14684B !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .insignia { border: 1px solid #C9D3CE; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .titulo-pagina { font-size: 22px; margin-top: 0; }
+  @page { margin: 14mm; }
+}

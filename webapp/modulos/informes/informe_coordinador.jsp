@@ -46,7 +46,7 @@
   <c:param name="q" value="${q}" /><c:param name="fase" value="${filtroFase}" /><c:param name="estado" value="${filtroEstado}" />
   <c:param name="director" value="${filtroDirector}" /><c:param name="evaluador" value="${filtroEvaluador}" />
 </c:url>
-<c:url var="urlCsv" value="/modulos/informes/informe_csv.jsp">
+<c:url var="urlExcel" value="/modulos/informes/informe_excel.jsp">
   <c:param name="q" value="${q}" /><c:param name="fase" value="${filtroFase}" /><c:param name="estado" value="${filtroEstado}" />
   <c:param name="director" value="${filtroDirector}" /><c:param name="evaluador" value="${filtroEvaluador}" />
 </c:url>
@@ -62,7 +62,10 @@
     <h1 class="titulo-pagina">Informes de estado</h1>
     <p class="descripcion-pagina mb-3">Seguimiento general de los proyectos: fase, estado, director, evaluador y último movimiento.</p>
   </div>
-  <a class="btn btn-outline-uts mb-3" href="${urlCsv}"><i class="bi bi-download me-1"></i>Exportar CSV</a>
+  <div class="d-flex flex-wrap gap-2 mb-3 no-imprimir">
+    <button type="button" class="btn btn-outline-uts" data-imprimir><i class="bi bi-printer me-1"></i>Imprimir</button>
+    <a class="btn btn-uts" href="${urlExcel}"><i class="bi bi-file-earmark-excel me-1"></i>Exportar a Excel</a>
+  </div>
 </div>
 
 <div class="row g-3 mb-4">
@@ -72,7 +75,7 @@
   <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aplazado"><i class="bi bi-person-dash"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].sin_asignar}" default="0" /></div><div class="resumen-etiqueta">Sin director o evaluador</div></div></div></div>
 </div>
 
-<form method="get" action="${ctx}/modulos/informes/informe_coordinador.jsp" class="row g-3 align-items-end mb-3">
+<form method="get" action="${ctx}/modulos/informes/informe_coordinador.jsp" class="row g-3 align-items-end mb-3 no-imprimir">
   <input type="hidden" name="pp" value="${pp}">
   <input type="hidden" name="pag" value="1">
   <div class="col-12 col-lg">
@@ -119,7 +122,7 @@
   <c:otherwise>
     <div class="tabla-envoltorio table-responsive">
       <table class="table tabla-uts">
-        <thead><tr><th>Proyecto</th><th>Fase</th><th>Estado</th><th>Director</th><th>Evaluador</th><th>Último movimiento</th><th class="text-end">Acciones</th></tr></thead>
+        <thead><tr><th>Proyecto</th><th>Fase</th><th>Estado</th><th>Director</th><th>Evaluador</th><th>Último movimiento</th><th class="text-end no-imprimir">Acciones</th></tr></thead>
         <tbody>
           <c:forEach var="p" items="${proyectos.rows}">
             <tr>
@@ -129,7 +132,7 @@
               <td><c:out value="${empty p.director ? 'Sin asignar' : p.director}" /></td>
               <td><c:out value="${empty p.evaluador ? 'Sin asignar' : p.evaluador}" /></td>
               <td><c:choose><c:when test="${empty p.ultimo_fecha}">—</c:when><c:otherwise><div><c:out value="${p.ultimo_movimiento}" /></div><div class="texto-sec"><c:out value="${p.ultimo_fecha}" /></div></c:otherwise></c:choose></td>
-              <td class="acciones">
+              <td class="acciones no-imprimir">
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/historial/historial.jsp?id=${p.id_proyecto}" aria-label="Ver el historial de ${fn:escapeXml(p.codigo)}"><i class="bi bi-clock-history"></i></a>
               </td>
