@@ -113,7 +113,17 @@
   document.querySelectorAll('form[data-asignacion]').forEach(function (form) {
     var director = form.querySelector('[name="director"]');
     var evaluador = form.querySelector('[name="evaluador"]');
+    // El docente elegido en una lista no se ofrece en la otra
+    function excluirEn(lista, valor) {
+      Array.prototype.forEach.call(lista.options, function (opcion) {
+        var fuera = valor !== '' && opcion.value === valor;
+        opcion.disabled = fuera;
+        opcion.hidden = fuera;
+      });
+    }
     function revisar() {
+      excluirEn(evaluador, director.value);
+      excluirEn(director, evaluador.value);
       var iguales = director.value !== '' && director.value === evaluador.value;
       evaluador.setCustomValidity(iguales ? 'Deben ser distintos' : '');
       evaluador.classList.toggle('is-invalid', iguales);

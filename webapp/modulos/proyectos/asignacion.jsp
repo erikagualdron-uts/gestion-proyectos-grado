@@ -62,7 +62,10 @@
 
 <%-- Docentes activos que se pueden asignar --%>
 <sql:query var="docentes" dataSource="${bd}">
-  SELECT u.id_usuario, u.nombre_completo FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
+  SELECT u.id_usuario, u.nombre_completo,
+         (SELECT COUNT(*) FROM proyecto pr WHERE pr.id_director = u.id_usuario AND pr.estado_general = 'EN_CURSO') AS n_dirige,
+         (SELECT COUNT(*) FROM proyecto pr WHERE pr.id_evaluador = u.id_usuario AND pr.estado_general = 'EN_CURSO') AS n_evalua
+  FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
   WHERE r.nombre = 'DOCENTE' AND u.estado_cuenta = 'APROBADA' AND u.activo = 1
   ORDER BY u.nombre_completo
 </sql:query>
@@ -136,7 +139,8 @@
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(p.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
                 <span class="d-inline-block" ${p.estado_general == 'EN_CURSO' ? 'title="Asignar director y evaluador"' : (p.estado_general == 'CERRADO' ? 'title="Proyecto cerrado: no se puede reasignar"' : 'title="Proyecto terminado: no se puede reasignar"')}><button type="button" class="btn btn-outline-uts btn-icono" ${p.estado_general == 'EN_CURSO' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalAsignar" aria-label="Asignar director y evaluador de ${fn:escapeXml(p.codigo)}"
                         data-id="${p.id_proyecto}" data-codigo="${fn:escapeXml(p.codigo)}" data-titulo="${fn:escapeXml(p.titulo)}" data-estudiantes="${fn:escapeXml(p.estudiantes)}"
-                        data-director="${empty p.id_director ? '' : p.id_director}" data-evaluador="${empty p.id_evaluador ? '' : p.id_evaluador}"><i class="bi bi-pencil"></i></button></span>
+                        data-director="${empty p.id_director ? '' : p.id_director}" data-evaluador="${empty p.id_evaluador ? '' : p.id_evaluador}"
+                        data-avanzado="${p.fase_actual > 1 ? 'SI' : ''}" data-fase-texto="Fase ${p.fase_actual} · ${fn:escapeXml(p.fase)}"><i class="bi bi-pencil"></i></button></span>
               </td>
             </tr>
           </c:forEach>
@@ -160,6 +164,9 @@
         <div class="modal-body pt-0">
           <div class="dato-etiqueta">Proyecto</div><div class="dato-valor" data-llenar="titulo"></div>
           <div class="dato-etiqueta">Estudiantes</div><div class="dato-valor" data-llenar="estudiantes"></div>
+          <div class="alert alert-warning small" data-mostrar-si="avanzado:SI" hidden>
+            <i class="bi bi-exclamation-triangle me-1"></i>Este proyecto ya está en la <strong data-llenar="faseTexto"></strong>. Si cambias al director o al evaluador, lo ya revisado queda a nombre de quien lo hizo y lo pendiente lo revisará la nueva persona.
+          </div>
           <c:choose>
             <c:when test="${docentes.rowCount < 2}">
               <div class="alert alert-warning" role="alert"><i class="bi bi-exclamation-triangle me-1"></i>Se necesitan al menos dos docentes activos para asignar director y evaluador.</div>
@@ -169,15 +176,16 @@
             <label for="director" class="form-label">Director</label>
             <select class="form-select" id="director" name="director" data-llenar-valor="director">
               <option value="">Sin asignar</option>
-              <c:forEach var="d" items="${docentes.rows}"><option value="${d.id_usuario}"><c:out value="${d.nombre_completo}" /></option></c:forEach>
+              <c:forEach var="d" items="${docentes.rows}"><option value="${d.id_usuario}"><c:out value="${d.nombre_completo}" /> · dirige ${d.n_dirige}, evalúa ${d.n_evalua}</option></c:forEach>
             </select>
           </div>
           <div class="mb-1">
             <label for="evaluador" class="form-label">Evaluador</label>
             <select class="form-select" id="evaluador" name="evaluador" data-llenar-valor="evaluador">
               <option value="">Sin asignar</option>
-              <c:forEach var="d" items="${docentes.rows}"><option value="${d.id_usuario}"><c:out value="${d.nombre_completo}" /></option></c:forEach>
+              <c:forEach var="d" items="${docentes.rows}"><option value="${d.id_usuario}"><c:out value="${d.nombre_completo}" /> · dirige ${d.n_dirige}, evalúa ${d.n_evalua}</option></c:forEach>
             </select>
+            <div class="form-text">Deben ser docentes distintos. Puedes dejar uno sin asignar y completarlo después.</div>
             <div class="invalid-feedback">El director y el evaluador deben ser docentes distintos.</div>
           </div>
         </div>

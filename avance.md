@@ -293,6 +293,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Lista de PQRS del coordinador (23/10/2026)
 - Las solicitudes pendientes salen primero; las tarjetas de resumen filtran la tabla; el tipo tiene su propia columna; bajo "Aprobada/Rechazada" se muestra la fecha de resolución y el lápiz de lo ya resuelto explica por qué está apagado. Subtítulo más corto.
 
+### Ventana de asignación (23/10/2026)
+- El docente elegido como director ya no se ofrece como evaluador (y al revés); cada docente muestra cuántos proyectos en curso dirige y evalúa; si el proyecto ya pasó de la Fase 1, un aviso explica que lo ya revisado queda a nombre de quien lo hizo y lo pendiente lo revisa la nueva persona (así funciona: los permisos de calificar dependen de la asignación vigente).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
