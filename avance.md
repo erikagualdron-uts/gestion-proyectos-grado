@@ -380,6 +380,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Acciones en Mis propuestas (23/10/2026)
 - En la tabla del estudiante ya no se reserva el hueco del icono de seguimiento (dejaba una separación grande entre el ojo y el botón de agregar compañero); coordinador y docente lo conservan para alinear sus botones.
 
+### Acciones de Propuestas Banco sin huecos (23/10/2026)
+- Se quitó el icono de seguimiento de la tabla (queda en el pie de la ventana de detalle) y los espacios reservados. Cada fila lleva, si corresponde, un botón con texto a la izquierda ("Decidir" para el coordinador; "Corregir" o "Agregar compañero" para el estudiante) y el ojo siempre al final, así las acciones quedan pegadas al borde derecho sin huecos.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

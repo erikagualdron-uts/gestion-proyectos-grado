@@ -197,39 +197,28 @@
               </td>
               <td><span class="insignia insignia-${f.estado == 'APROBADO' ? 'aprobado' : (f.estado == 'APLAZADO' ? 'aplazado' : (f.estado == 'RECHAZADO' ? 'rechazado' : 'pendiente'))}"><c:out value="${estadoTexto}" /></span><c:if test="${f.estado == 'APROBADO' and not empty f.fase_texto}"><div class="texto-sec small mt-1"><c:out value="${f.fase_texto}" /></div></c:if></td>
               <td class="acciones">
+                <%-- La acción propia de cada fila (si la hay) va a la izquierda; el ojo siempre queda al final, así no hay huecos --%>
+                <c:choose>
+                  <c:when test="${esCoordinador and f.estado == 'PENDIENTE'}">
+                    <button type="button" class="btn btn-uts btn-sm" data-bs-toggle="modal" data-bs-target="#modalGestionar"
+                                title="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}" aria-label="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}"
+                                data-id="${f.id}" data-accion-url="${ctx}/proceso/${f.tipo == 'IDEA' ? 'idea_proc.jsp' : 'propuesta_proc.jsp'}"
+                                data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-autor="${fn:escapeXml(f.autor)}"
+                                data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-check2-square me-1"></i>Decidir</button>
+                  </c:when>
+                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'APLAZADO' and f.id_responsable == sessionScope.usuarioId}">
+                    <a class="btn btn-uts btn-sm" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Corregir y reenviar ${fn:escapeXml(f.codigo)}" aria-label="Corregir y reenviar ${fn:escapeXml(f.codigo)}"><i class="bi bi-pencil me-1"></i>Corregir</a>
+                  </c:when>
+                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'PENDIENTE' and f.id_responsable == sessionScope.usuarioId and not fn:contains(f.integrantes_texto, 'compañero')}">
+                    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}" aria-label="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}"><i class="bi bi-person-plus me-1"></i>Agregar compañero</a>
+                  </c:when>
+                </c:choose>
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalDetalle" title="Visualizar ${fn:escapeXml(f.codigo)}" aria-label="Visualizar ${fn:escapeXml(f.codigo)}"
                         data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-descripcion="${fn:escapeXml(f.descripcion)}"
                         data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}" data-autor="${fn:escapeXml(empty f.integrantes_texto ? f.autor : f.integrantes_texto)}"
                         data-fase="${f.estado == 'APROBADO' ? fn:escapeXml(f.fase_texto) : ''}" data-seguimiento-url="${f.id_proyecto > 0 ? ctx += '/modulos/proyectos/seguimiento.jsp?id=' += f.id_proyecto : ''}"
                         data-origen="${fn:escapeXml(f.origen_texto)}" data-estado="${estadoTexto}" data-fecha="${f.fecha_texto}"
                         data-observacion="${fn:escapeXml(f.observacion)}"><i class="bi bi-eye"></i></button>
-                <c:choose>
-                  <c:when test="${f.id_proyecto > 0}">
-                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${f.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(f.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(f.codigo)}"><i class="bi bi-list-check"></i></a>
-                  </c:when>
-                  <c:when test="${sessionScope.rol != 'ESTUDIANTE'}"><span class="btn-icono-vacio" aria-hidden="true"></span></c:when>
-                </c:choose>
-                <c:choose>
-                  <c:when test="${esCoordinador}">
-                    <c:choose>
-                      <c:when test="${f.estado == 'PENDIENTE'}">
-                        <button type="button" class="btn btn-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalGestionar"
-                                title="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}" aria-label="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}"
-                                data-id="${f.id}" data-accion-url="${ctx}/proceso/${f.tipo == 'IDEA' ? 'idea_proc.jsp' : 'propuesta_proc.jsp'}"
-                                data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-autor="${fn:escapeXml(f.autor)}"
-                                data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-check2-square"></i></button>
-                      </c:when>
-                      <c:otherwise><span class="btn-icono-vacio" aria-hidden="true"></span></c:otherwise>
-                    </c:choose>
-                  </c:when>
-                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'APLAZADO' and f.id_responsable == sessionScope.usuarioId}">
-                    <a class="btn btn-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Corregir y reenviar ${fn:escapeXml(f.codigo)}" aria-label="Corregir y reenviar ${fn:escapeXml(f.codigo)}"><i class="bi bi-pencil"></i></a>
-                  </c:when>
-                  <%-- Pendiente: lo único que se puede hacer es agregar al compañero, y solo si todavía no lo tiene --%>
-                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'PENDIENTE' and f.id_responsable == sessionScope.usuarioId and not fn:contains(f.integrantes_texto, 'compañero')}">
-                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}" aria-label="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}"><i class="bi bi-person-plus"></i></a>
-                  </c:when>
-                </c:choose>
               </td>
             </tr>
           </c:forEach>
