@@ -22,5 +22,5 @@ INSERT INTO enlace_documental (nombre, descripcion, url, icono, orden) VALUES
 -- Administrador inicial (cambiar la contraseña tras el primer ingreso)
 INSERT INTO usuario (id_rol, tipo_documento, numero_documento, nombre_completo,
                      correo, contrasena_hash, sal, estado_cuenta)
-VALUES (1,'CC','0000000000','Administrador del sistema','admin@correo.uts.edu.co',
+VALUES (1,'CC','1000000000','Administrador del sistema','admin@correo.uts.edu.co',
         SHA2(CONCAT('3f9a1c7e5b2d4a60','CambiarClave*1'),256),'3f9a1c7e5b2d4a60','APROBADA');

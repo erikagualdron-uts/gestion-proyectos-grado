@@ -198,6 +198,11 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - El administrador ya **no tiene** Propuestas Banco, PQRS ni Historial de versiones (menú y acceso bloqueado en servidor): son tareas del coordinador y de los demás roles. Queda con Usuarios, Solicitudes de cuenta, Base documental y Mi perfil.
 - Su inicio tiene tres tarjetas (Usuarios, Solicitudes de cuenta y Base documental) con avisos dentro: cuentas por aprobar (o "Al día") y enlaces sin configurar.
 
+### Ajustes de Mi perfil (23/10/2026)
+- El **tipo de documento** queda bloqueado junto con el número y el correo (solo el administrador los cambia desde Usuarios); el aviso es distinto para el administrador.
+- Se quitó el campo "Rol" repetido (el rol sigue bajo el nombre), se aclaró el ejemplo de la foto y "Cambiar contraseña" pasó debajo de los datos, en una fila, con las reglas (8 a 64 caracteres).
+- El documento del administrador inicial pasó de `0000000000` a `1000000000` (dato de prueba).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

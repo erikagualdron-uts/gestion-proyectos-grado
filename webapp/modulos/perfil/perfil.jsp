@@ -13,7 +13,6 @@
 </sql:query>
 <c:set var="perfil" value="${consulta.rows[0]}" />
 <c:set var="vNombre" value="${not empty sessionScope.vpNombre ? sessionScope.vpNombre : perfil.nombre_completo}" />
-<c:set var="vTipo" value="${not empty sessionScope.vpTipo ? sessionScope.vpTipo : perfil.tipo_documento}" />
 <c:set var="vFoto" value="${sessionScope.vpFoto != null ? sessionScope.vpFoto : perfil.foto_url}" />
 
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
@@ -46,11 +45,7 @@
         <div class="row g-3 mb-3">
           <div class="col-sm-5">
             <label for="tipo" class="form-label">Tipo de documento</label>
-            <select class="form-select" id="tipo" name="tipo" required>
-              <c:forEach var="t" items="${fn:split('CC,TI,CE,PASAPORTE,OTRO', ',')}">
-                <option value="${t}" ${vTipo == t ? 'selected' : ''}>${t}</option>
-              </c:forEach>
-            </select>
+            <input type="text" class="form-control campo-bloqueado" id="tipo" value="<c:out value='${perfil.tipo_documento}' />" readonly aria-describedby="ayudaBloqueado">
           </div>
           <div class="col-sm-7">
             <label for="documento" class="form-label">Número de documento</label>
@@ -60,23 +55,17 @@
         <div class="mb-3">
           <label for="correo" class="form-label">Correo institucional</label>
           <input type="email" class="form-control campo-bloqueado" id="correo" value="<c:out value='${perfil.correo}' />" readonly aria-describedby="ayudaBloqueado">
-          <div class="form-text" id="ayudaBloqueado">El documento y el correo están bloqueados. Si necesitas cambiarlos, solicítalo al administrador.</div>
+          <div class="form-text" id="ayudaBloqueado"><c:choose><c:when test="${perfil.rol == 'ADMINISTRADOR'}">El tipo y el número de documento y el correo están bloqueados. Se cambian desde Usuarios.</c:when><c:otherwise>El tipo y el número de documento y el correo están bloqueados. Si necesitas cambiarlos, solicítalo al administrador.</c:otherwise></c:choose></div>
         </div>
-        <div class="row g-3 mb-3">
-          <div class="col-sm-6">
-            <label for="rol" class="form-label">Rol</label>
-            <input type="text" class="form-control campo-bloqueado" id="rol" value="${fn:substring(perfil.rol, 0, 1)}${fn:toLowerCase(fn:substring(perfil.rol, 1, 40))}" readonly>
+        <c:if test="${perfil.rol == 'ESTUDIANTE'}">
+          <div class="mb-3">
+            <label for="nivel" class="form-label">Nivel</label>
+            <input type="text" class="form-control campo-bloqueado" id="nivel" value="${perfil.nivel == 'TECNOLOGICO' ? 'Tecnológico' : (perfil.nivel == 'PROFESIONAL' ? 'Profesional' : 'Sin asignar')}" readonly>
           </div>
-          <c:if test="${perfil.rol == 'ESTUDIANTE'}">
-            <div class="col-sm-6">
-              <label for="nivel" class="form-label">Nivel</label>
-              <input type="text" class="form-control campo-bloqueado" id="nivel" value="${perfil.nivel == 'TECNOLOGICO' ? 'Tecnológico' : (perfil.nivel == 'PROFESIONAL' ? 'Profesional' : 'Sin asignar')}" readonly>
-            </div>
-          </c:if>
-        </div>
+        </c:if>
         <div class="mb-4">
           <label for="foto" class="form-label">Foto de perfil (enlace a la imagen)</label>
-          <input type="url" class="form-control" id="foto" name="foto" maxlength="300" placeholder="https://..." value="<c:out value='${vFoto}' />">
+          <input type="url" class="form-control" id="foto" name="foto" maxlength="300" placeholder="Pega aquí el enlace de tu foto" value="<c:out value='${vFoto}' />">
           <div class="form-text">Pega el enlace de una imagen. Si lo dejas vacío se muestra la imagen por defecto.</div>
           <div class="invalid-feedback">Ingresa un enlace válido que empiece por http:// o https://.</div>
         </div>
@@ -91,13 +80,15 @@
     </div>
   </div>
 
-  <div class="col-12 col-xl-4">
+  <div class="col-12 col-xl-8">
     <div class="tarjeta">
-      <h2 class="h5 titulo mb-3" style="color: var(--verde-bosque)">Cambiar contraseña</h2>
+      <h2 class="h5 titulo mb-1" style="color: var(--verde-bosque)">Cambiar contraseña</h2>
+      <p class="texto-sec mb-3">Usa entre 8 y 64 caracteres. Al cambiarla, se cerrarán las sesiones recordadas en otros equipos.</p>
       <form method="post" action="${ctx}/proceso/perfil_proc.jsp" class="needs-validation" novalidate>
         <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
         <input type="hidden" name="accion" value="clave">
-        <div class="mb-3">
+        <div class="row g-3 mb-3">
+        <div class="col-md-4">
           <label for="claveActual" class="form-label">Contraseña actual</label>
           <div class="campo-clave">
             <input type="password" class="form-control" id="claveActual" name="claveActual" maxlength="64" autocomplete="current-password" required>
@@ -105,7 +96,7 @@
             <div class="invalid-feedback">Ingresa tu contraseña actual.</div>
           </div>
         </div>
-        <div class="mb-3">
+        <div class="col-md-4">
           <label for="clave" class="form-label">Nueva contraseña</label>
           <div class="campo-clave">
             <input type="password" class="form-control" id="clave" name="clave" minlength="8" maxlength="64" autocomplete="new-password" required>
@@ -113,7 +104,7 @@
             <div class="invalid-feedback">Mínimo 8 caracteres.</div>
           </div>
         </div>
-        <div class="mb-4">
+        <div class="col-md-4">
           <label for="confirmar" class="form-label">Confirmar nueva contraseña</label>
           <div class="campo-clave">
             <input type="password" class="form-control" id="confirmar" name="confirmar" maxlength="64" autocomplete="new-password" required>
@@ -121,14 +112,14 @@
             <div class="invalid-feedback">Las contraseñas no coinciden.</div>
           </div>
         </div>
-        <button type="submit" class="btn btn-uts w-100">Cambiar contraseña</button>
+        </div>
+        <button type="submit" class="btn btn-uts px-4">Cambiar contraseña</button>
       </form>
     </div>
   </div>
 </div>
 
 <c:remove var="vpNombre" scope="session" />
-<c:remove var="vpTipo" scope="session" />
 <c:remove var="vpFoto" scope="session" />
 
 <jsp:include page="/WEB-INF/includes/pie.jsp" />
