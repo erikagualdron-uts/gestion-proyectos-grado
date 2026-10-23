@@ -46,6 +46,15 @@
       modal.querySelectorAll('[data-llenar-valor]').forEach(function (campo) {
         campo.value = boton.dataset[campo.getAttribute('data-llenar-valor')] || '';
       });
+      // data-excluir="clave1,clave2": deshabilita las opciones cuyo valor coincide con esos datos del botón
+      modal.querySelectorAll('select[data-excluir]').forEach(function (lista) {
+        var prohibidos = lista.getAttribute('data-excluir').split(',').map(function (c) { return boton.dataset[c]; });
+        Array.prototype.forEach.call(lista.options, function (opcion) {
+          var excluida = opcion.value !== '' && prohibidos.indexOf(opcion.value) !== -1;
+          opcion.disabled = excluida;
+          opcion.hidden = excluida;
+        });
+      });
     });
   });
 

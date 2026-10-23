@@ -52,7 +52,7 @@
 <c:set var="pagActual" value="${pagPedida > totalPaginas ? totalPaginas : pagPedida}" />
 
 <sql:query var="solicitudes" dataSource="${bd}">
-  SELECT q.id_pqrs, q.codigo, q.tipo, q.asunto, q.descripcion, q.enlace_soporte, q.estado, q.respuesta, q.id_proyecto,
+  SELECT pr.id_director, pr.id_evaluador, q.id_pqrs, q.codigo, q.tipo, q.asunto, q.descripcion, q.enlace_soporte, q.estado, q.respuesta, q.id_proyecto,
          s.nombre_completo AS solicitante, p.codigo AS codigo_proyecto, rv.nombre_completo AS resuelto_por, nd.nombre_completo AS nuevo_director,
          DATE_FORMAT(q.fecha_creacion, '%d/%m/%Y %H:%i') AS fecha, DATE_FORMAT(q.fecha_resolucion, '%d/%m/%Y %H:%i') AS fecha_resolucion
   ${desdePqrs} ${filtrosPqrs}
@@ -182,7 +182,7 @@
                 <c:if test="${esCoordinador}">
                   <button type="button" class="btn btn-outline-uts btn-icono" ${s.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalResolver" aria-label="Gestionar ${fn:escapeXml(s.codigo)}"
                           data-id="${s.id_pqrs}" data-tipo="${s.tipo}" data-codigo="${fn:escapeXml(s.codigo)}" data-tipo-texto="${tipoTexto}" data-asunto="${fn:escapeXml(s.asunto)}"
-                          data-descripcion="${fn:escapeXml(s.descripcion)}" data-solicitante="${fn:escapeXml(s.solicitante)}" data-soporte="${fn:escapeXml(s.enlace_soporte)}"><i class="bi bi-pencil"></i></button>
+                          data-descripcion="${fn:escapeXml(s.descripcion)}" data-solicitante="${fn:escapeXml(s.solicitante)}" data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-director-actual="${s.id_director}" data-evaluador-actual="${s.id_evaluador}"><i class="bi bi-pencil"></i></button>
                 </c:if>
               </td>
             </tr>
@@ -241,10 +241,11 @@
             <div class="dato-etiqueta">Enlace del soporte</div><div class="dato-valor" style="word-break: break-all" data-llenar="soporte"></div>
             <div class="mb-3" data-mostrar-si="tipo:CAMBIO_DIRECTOR" hidden>
               <label for="nuevoDirector" class="form-label">Nuevo director <span class="texto-sec">(obligatorio para aprobar el cambio)</span></label>
-              <select class="form-select" id="nuevoDirector" name="nuevoDirector" data-obligatoria-aprobar>
+              <select class="form-select" id="nuevoDirector" name="nuevoDirector" data-obligatoria-aprobar data-excluir="directorActual,evaluadorActual">
                 <option value="">Selecciona un docente</option>
                 <c:forEach var="d" items="${docentes.rows}"><option value="${d.id_usuario}"><c:out value="${d.nombre_completo}" /></option></c:forEach>
               </select>
+              <div class="form-text">No se puede elegir al director actual ni al evaluador del proyecto.</div>
               <div class="invalid-feedback">Selecciona el nuevo director.</div>
             </div>
             <div class="mb-1">
