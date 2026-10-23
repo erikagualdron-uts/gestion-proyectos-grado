@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@ include file="/WEB-INF/includes/conexion.jsp" %>
-<c:set var="rolesPermitidos" value="ESTUDIANTE,COORDINADOR,ADMINISTRADOR" />
+<c:set var="rolesPermitidos" value="ESTUDIANTE,COORDINADOR" />
 <%@ include file="/WEB-INF/includes/seguridad.jsp" %>
 <%-- PQRS (RF-53 a RF-56): el estudiante responsable radica; el coordinador resuelve; el administrador consulta.
      El compañero de una propuesta ve las PQRS del proyecto pero no radica. --%>

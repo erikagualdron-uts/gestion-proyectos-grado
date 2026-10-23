@@ -45,7 +45,7 @@
   <c:redirect url="${sessionScope.rol == 'ESTUDIANTE' ? '/modulos/propuestas/propuestas_banco.jsp' : volverA}" />
 </c:if>
 <c:set var="py" value="${consulta.rows[0]}" />
-<c:set var="permitido" value="${sessionScope.rol == 'COORDINADOR' or sessionScope.rol == 'ADMINISTRADOR' or (sessionScope.rol == 'ESTUDIANTE' and py.es_miembro > 0) or (sessionScope.rol == 'DOCENTE' and (py.id_director == sessionScope.usuarioId or py.id_evaluador == sessionScope.usuarioId))}" />
+<c:set var="permitido" value="${sessionScope.rol == 'COORDINADOR' or (sessionScope.rol == 'ESTUDIANTE' and py.es_miembro > 0) or (sessionScope.rol == 'DOCENTE' and (py.id_director == sessionScope.usuarioId or py.id_evaluador == sessionScope.usuarioId))}" />
 <c:if test="${not permitido}"><c:redirect url="/acceso_denegado.jsp" /></c:if>
 
 <c:set var="soyResponsable" value="${sessionScope.rol == 'ESTUDIANTE' and py.id_responsable == sessionScope.usuarioId}" />

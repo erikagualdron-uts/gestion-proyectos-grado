@@ -194,6 +194,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Ajuste de PQRS: cambio de director (23/10/2026)
 - Al gestionar una PQRS de cambio de director, la lista "Nuevo director" excluye al director actual y al evaluador del proyecto (además de la validación que ya existía en el servidor).
 
+### Ajuste del rol Administrador (23/10/2026)
+- El administrador ya **no tiene** Propuestas Banco, PQRS ni Historial de versiones (menú y acceso bloqueado en servidor): son tareas del coordinador y de los demás roles. Queda con Usuarios, Solicitudes de cuenta, Base documental y Mi perfil.
+- Su inicio reemplaza las tarjetas por un resumen: cuentas por aprobar, estudiantes activos, docentes activos y enlaces de la base documental sin configurar (cada uno lleva a su pantalla).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
@@ -221,6 +225,7 @@ Resumen para actualizar la documentación final. Lo que no aparece aquí se impl
 | Turnitin | Documento de la fase 5 | Enlace del director, **obligatorio en cualquier decisión** de la fase 5, una vez por versión; no se verifica el porcentaje | Evidencia |
 | Decisión del director | No se detalla | Queda cerrada cuando el evaluador o el comité ya decidieron sobre la versión (fases 3 y 5) | Evitar decisiones contradictorias |
 | Informe de estado | Para el coordinador y para el estudiante (RF-60, RF-61, HU-39) | **Solo para el coordinador**; no hay informe del estudiante | Definido por la estudiante |
+| Módulos del administrador | El administrador consulta propuestas, PQRS e historial | Solo gestiona usuarios, cuentas y enlaces de la base documental | Definido por la estudiante |
 | Pantalla de informes | Informe de estado por proyecto | **Panel de control**: resumen con gráficos e informe de proyectos (solo coordinador) | Definido por la estudiante |
 | Exportar el informe | CSV o imprimir (RF-62, deseable) | Solo **imprimir** (con estilos de impresión); no hay exportación a archivo | Definido por la estudiante |
 | PQRS | Aprobar, aplazar o rechazar (HU-34) | Solo **aprobar o rechazar**; el cambio de director aprobado se aplica al proyecto | En PQRS no hay reenvío |

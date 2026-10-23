@@ -3,11 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@ include file="/WEB-INF/includes/conexion.jsp" %>
+<c:set var="rolesPermitidos" value="ESTUDIANTE,DOCENTE,COORDINADOR" />
 <%@ include file="/WEB-INF/includes/seguridad.jsp" %>
 <%-- Historial de versiones del proyecto (RF-58, RF-59): lista cronológica de entregas, decisiones y cambios de estado,
-     solo lectura. Coordinador y administrador ven todos los proyectos; el docente, los suyos; el estudiante, el propio. --%>
+     solo lectura. El coordinador ve todos los proyectos; el docente, los suyos; el estudiante, el propio. --%>
 <c:set var="titulo" value="Historial de versiones" scope="request" />
-<c:set var="menuActivo" value="${sessionScope.rol == 'ADMINISTRADOR' ? '/modulos/historial/historial.jsp' : (sessionScope.rol == 'ESTUDIANTE' ? '/modulos/propuestas/propuestas_banco.jsp' : (sessionScope.rol == 'COORDINADOR' ? '/modulos/proyectos/asignacion.jsp' : '/modulos/docente_director/docente_director.jsp'))}" scope="request" />
+<c:set var="menuActivo" value="${sessionScope.rol == 'ESTUDIANTE' ? '/modulos/propuestas/propuestas_banco.jsp' : (sessionScope.rol == 'COORDINADOR' ? '/modulos/proyectos/asignacion.jsp' : '/modulos/docente_director/docente_director.jsp')}" scope="request" />
 
 <c:catch var="idInvalido"><c:set var="idProyecto" value="${empty param.id ? 0 : param.id + 0}" /></c:catch>
 <c:if test="${not empty idInvalido}"><c:set var="idProyecto" value="${0}" /></c:if>
@@ -40,7 +41,7 @@
     <c:redirect url="/modulos/historial/historial.jsp" />
   </c:if>
   <c:set var="py" value="${consulta.rows[0]}" />
-  <c:set var="permitido" value="${sessionScope.rol == 'COORDINADOR' or sessionScope.rol == 'ADMINISTRADOR' or (sessionScope.rol == 'ESTUDIANTE' and py.es_miembro > 0) or (sessionScope.rol == 'DOCENTE' and (py.id_director == sessionScope.usuarioId or py.id_evaluador == sessionScope.usuarioId))}" />
+  <c:set var="permitido" value="${sessionScope.rol == 'COORDINADOR' or (sessionScope.rol == 'ESTUDIANTE' and py.es_miembro > 0) or (sessionScope.rol == 'DOCENTE' and (py.id_director == sessionScope.usuarioId or py.id_evaluador == sessionScope.usuarioId))}" />
   <c:if test="${not permitido}"><c:redirect url="/acceso_denegado.jsp" /></c:if>
 
   <c:set var="filtroEntidad" value="${fn:contains(',DOCUMENTO,FASE,PROYECTO,PROPUESTA,PQRS,', ',' += param.entidad += ',') ? param.entidad : ''}" />
@@ -80,7 +81,7 @@
 <c:if test="${idProyecto < 1}">
   <c:set var="proyectosVisibles">
     FROM proyecto pr JOIN propuesta p ON p.id_propuesta = pr.id_propuesta
-    WHERE (? IN ('COORDINADOR', 'ADMINISTRADOR')
+    WHERE (? = 'COORDINADOR'
            OR (? = 'DOCENTE' AND (pr.id_director = ? OR pr.id_evaluador = ?))
            OR (? = 'ESTUDIANTE' AND EXISTS (SELECT 1 FROM propuesta_estudiante pe WHERE pe.id_propuesta = p.id_propuesta AND pe.id_estudiante = ?)))
       AND (? = '' OR p.codigo LIKE ? OR p.titulo LIKE ?
@@ -115,8 +116,7 @@
 <c:set var="pagActual" value="${pagActual}" scope="request" />
 <c:set var="pagTotalPaginas" value="${totalPaginas}" scope="request" />
 <c:set var="pagBase" value="${pagBase}" scope="request" />
-<c:if test="${idProyecto > 0 and sessionScope.rol != 'ADMINISTRADOR'}"><c:set var="volverA" value="/modulos/proyectos/seguimiento.jsp?id=${idProyecto}" scope="request" /></c:if>
-<c:if test="${idProyecto > 0 and sessionScope.rol == 'ADMINISTRADOR'}"><c:set var="volverA" value="/modulos/historial/historial.jsp" scope="request" /></c:if>
+<c:if test="${idProyecto > 0}"><c:set var="volverA" value="/modulos/proyectos/seguimiento.jsp?id=${idProyecto}" scope="request" /></c:if>
 
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
 

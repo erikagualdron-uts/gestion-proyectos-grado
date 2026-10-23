@@ -97,6 +97,6 @@ Crear un script `sql/datos_prueba.sql` (solo para demostración) con:
 - Al final, la documentación se arma con el PDF del sistema como base y estos archivos, adaptada a lo que realmente quedó funcionando.
 
 ## 11. Seguridad y privacidad
-- Nunca escribas contraseñas, tokens ni claves en el código, en commits ni en el chat; usa variables de entorno.
+- Nunca escribas contraseñas, tokens ni claves en el código ni en commits; usa variables de entorno. En el chat solo las das si yo te las pido por el chat (por ejemplo, las contraseñas de las cuentas de prueba); nunca las muestres por iniciativa propia.
 - Contraseñas almacenadas con hash y sal (SHA2 de MySQL); nunca en texto plano.
 - Solo solicitar los datos personales necesarios (Ley 1581 de 2012).

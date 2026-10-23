@@ -21,8 +21,7 @@
     <c:set var="tarjetas" value="bi-file-earmark-text|Propuestas Banco|Decide sobre ideas de docentes y propuestas de estudiantes.|/modulos/propuestas/propuestas_banco.jsp;bi-people|Asignación de proyectos|Asigna director y evaluador a cada proyecto aprobado.|/modulos/proyectos/asignacion.jsp;bi-chat|PQRS|Resuelve las solicitudes radicadas por los estudiantes.|/modulos/pqrs/pqrs.jsp;bi-bar-chart|Panel de control|Gráficos y avance de los proyectos.|/modulos/informes/informe_coordinador.jsp;bi-lightbulb|Banco de ideas|Consulta las ideas aprobadas por los docentes.|/modulos/banco_ideas/banco_ideas.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:otherwise>
-    <c:set var="descripcionInicio" value="Estos son los módulos disponibles para la administración." />
-    <c:set var="tarjetas" value="bi-people|Usuarios|Crea y administra coordinadores, docentes y administradores.|/modulos/usuarios/usuarios.jsp;bi-person-check|Solicitudes de cuenta|Aprueba o rechaza las cuentas de estudiantes.|/modulos/usuarios/cuentas_pendientes.jsp;bi-file-earmark-text|Propuestas Banco|Consulta las propuestas y su estado.|/modulos/propuestas/propuestas_banco.jsp;bi-chat|PQRS|Consulta las solicitudes radicadas.|/modulos/pqrs/pqrs.jsp;bi-clock-history|Historial de versiones|Revisa los cambios registrados en el sistema.|/modulos/historial/historial.jsp;bi-journal-text|Base documental|Administra los enlaces de la base documental.|/modulos/base_documental/base_documental.jsp" />
+    <c:set var="descripcionInicio" value="Resumen de las cuentas y de la base documental." />
   </c:otherwise>
 </c:choose>
 
@@ -46,12 +45,18 @@
   SELECT url FROM enlace_documental WHERE nombre LIKE 'Calendario%' AND activo = 1 ORDER BY orden LIMIT 1
 </sql:query>
 
-<%-- Administrador: solicitudes de cuenta por revisar --%>
+<%-- Administrador: resumen de cuentas y enlaces por configurar --%>
 <c:if test="${sessionScope.rol == 'ADMINISTRADOR'}">
-  <sql:query var="pendientesCuenta" dataSource="${bd}">
-    SELECT COUNT(*) AS total FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
-    WHERE r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'PENDIENTE' AND u.activo = 1
+  <sql:query var="resumenAdmin" dataSource="${bd}">
+    SELECT COALESCE(SUM(r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'PENDIENTE'), 0) AS pendientes,
+           COALESCE(SUM(r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'APROBADA'), 0) AS estudiantes,
+           COALESCE(SUM(r.nombre = 'DOCENTE' AND u.estado_cuenta = 'APROBADA'), 0) AS docentes
+    FROM usuario u JOIN rol r ON r.id_rol = u.id_rol WHERE u.activo = 1
   </sql:query>
+  <sql:query var="enlacesPendientes" dataSource="${bd}">
+    SELECT COUNT(*) AS total FROM enlace_documental WHERE activo = 1 AND (url = '#' OR url = '')
+  </sql:query>
+  <c:set var="ra" value="${resumenAdmin.rows[0]}" />
 </c:if>
 
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
@@ -86,6 +91,16 @@
   </div>
 </c:if>
 
+<c:if test="${sessionScope.rol == 'ADMINISTRADOR'}">
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/usuarios/cuentas_pendientes.jsp"><span class="resumen-icono pendiente"><i class="bi bi-person-check"></i></span><div><div class="resumen-numero"><c:out value="${ra.pendientes}" /></div><div class="resumen-etiqueta">Cuentas por aprobar</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/usuarios/usuarios.jsp"><span class="resumen-icono aprobado"><i class="bi bi-mortarboard"></i></span><div><div class="resumen-numero"><c:out value="${ra.estudiantes}" /></div><div class="resumen-etiqueta">Estudiantes activos</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/usuarios/usuarios.jsp"><span class="resumen-icono aprobado"><i class="bi bi-person-workspace"></i></span><div><div class="resumen-numero"><c:out value="${ra.docentes}" /></div><div class="resumen-etiqueta">Docentes activos</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/base_documental/base_documental.jsp"><span class="resumen-icono aplazado"><i class="bi bi-link-45deg"></i></span><div><div class="resumen-numero"><c:out value="${enlacesPendientes.rows[0].total}" /></div><div class="resumen-etiqueta">Enlaces sin configurar</div></div></a></div>
+</div>
+</c:if>
+
+<c:if test="${sessionScope.rol != 'ADMINISTRADOR'}">
 <div class="row g-3 mb-4">
   <c:forEach var="tarjeta" items="${fn:split(tarjetas, ';')}">
     <c:set var="p" value="${fn:split(tarjeta, '|')}" />
@@ -108,15 +123,6 @@
     </div>
   </c:if>
 </div>
-
-<c:if test="${sessionScope.rol == 'ADMINISTRADOR' and pendientesCuenta.rows[0].total > 0}">
-  <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-    <div class="d-flex align-items-center gap-3">
-      <span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span>
-      <div><span class="fw-bold"><c:out value="${pendientesCuenta.rows[0].total}" /> solicitud(es) de cuenta pendiente(s)</span><div class="texto-sec">Estudiantes esperando aprobación.</div></div>
-    </div>
-    <a class="btn btn-uts" href="${ctx}/modulos/usuarios/cuentas_pendientes.jsp">Ver solicitudes</a>
-  </div>
 </c:if>
 
 <c:choose>

@@ -3,10 +3,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <%@ include file="/WEB-INF/includes/conexion.jsp" %>
+<c:set var="rolesPermitidos" value="ESTUDIANTE,DOCENTE,COORDINADOR" />
 <%@ include file="/WEB-INF/includes/seguridad.jsp" %>
 <%--
   Propuestas Banco (RF-22, RF-27, RF-29 a RF-32): ideas de docentes y propuestas de estudiantes en una sola tabla.
-  Coordinador: ve todo, visualiza y gestiona (aprobar, aplazar o rechazar). Docente y administrador: solo visualizan.
+  Coordinador: ve todo, visualiza y gestiona (aprobar, aplazar o rechazar). Docente: solo visualiza.
   Estudiante: ve las suyas y corrige las aplazadas.
 --%>
 <c:set var="titulo" value="${sessionScope.rol == 'ESTUDIANTE' ? 'Mis propuestas' : 'Propuestas Banco'}" scope="request" />
