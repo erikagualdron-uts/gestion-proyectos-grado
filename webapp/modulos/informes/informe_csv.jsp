@@ -15,6 +15,6 @@
   <sql:param value="${filtroDirector}" /><sql:param value="${filtroDirector}" /><sql:param value="${filtroEvaluador}" /><sql:param value="${filtroEvaluador}" />
 </sql:query>
 <c:set var="ignorar" value="${pageContext.response.setHeader('Content-Disposition', 'attachment; filename=\"informe_estado_proyectos.csv\"')}" />
-<c:out value="${Character.toString(65279)}" escapeXml="false" />Código;Título;Estudiantes;Fase;Estado;Director;Evaluador;Último movimiento;Fecha del último movimiento
+<c:out value="${Character.valueOf(65279)}" escapeXml="false" />Código;Título;Estudiantes;Fase;Estado;Director;Evaluador;Último movimiento;Fecha del último movimiento
 <c:forEach var="p" items="${proyectos.rows}">"${fn:replace(p.codigo, '"', '""')}";"${fn:replace(p.titulo, '"', '""')}";"${fn:replace(p.estudiantes, '"', '""')}";"Fase ${p.fase_actual} - ${fn:replace(p.fase, '"', '""')}";"${p.estado_general == 'EN_CURSO' ? 'En curso' : (p.estado_general == 'CERRADO' ? 'Cerrado' : 'Listo para sustentación')}";"${empty p.director ? 'Sin asignar' : fn:replace(p.director, '"', '""')}";"${empty p.evaluador ? 'Sin asignar' : fn:replace(p.evaluador, '"', '""')}";"${fn:replace(p.ultimo_movimiento, '"', '""')}";"${p.ultimo_fecha}"
 </c:forEach>
