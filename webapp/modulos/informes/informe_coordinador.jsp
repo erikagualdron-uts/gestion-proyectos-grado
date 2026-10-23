@@ -399,8 +399,8 @@
                   <td><div class="fw-semibold"><c:out value="${e.accion_texto}" /></div><div class="texto-sec"><c:out value="${e.entidad_texto}" /></div></td>
                   <td><c:out value="${empty e.referencia ? '—' : e.referencia}" /></td>
                   <td>
-                    <c:if test="${not empty e.estado_anterior}"><span class="texto-sec"><c:out value="${fn:replace(fn:toLowerCase(e.estado_anterior), '_', ' ')}" /> →</span></c:if>
-                    <c:if test="${not empty e.estado_nuevo}"><strong><c:out value="${fn:replace(fn:toLowerCase(e.estado_nuevo), '_', ' ')}" /></strong></c:if>
+                    <c:if test="${not empty e.estado_anterior}"><span class="texto-sec"><c:out value="${fn:replace(fn:replace(fn:toLowerCase(e.estado_anterior), '_', ' '), 'apto graduacion', 'listo para sustentación')}" /> →</span></c:if>
+                    <c:if test="${not empty e.estado_nuevo}"><strong><c:out value="${fn:replace(fn:replace(fn:toLowerCase(e.estado_nuevo), '_', ' '), 'apto graduacion', 'listo para sustentación')}" /></strong></c:if>
                     <c:if test="${empty e.estado_anterior and empty e.estado_nuevo}">—</c:if>
                   </td>
                   <td style="min-width: 220px; white-space: pre-line"><c:out value="${empty e.detalle ? '—' : e.detalle}" /></td>

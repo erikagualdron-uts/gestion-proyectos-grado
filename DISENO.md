@@ -44,7 +44,7 @@ El diseño de referencia son 4 pantallas: inicio de sesión, inicio del estudian
 - Bordes redondeados de 10 a 16 px y sombras suaves, de forma consistente.
 - Responsive con la cuadrícula de Bootstrap; en pantallas pequeñas el menú se oculta y las tarjetas pasan a una columna.
 - Mismo orden y mismos textos de botones en todos los módulos.
-- No usar gráficos, animaciones ni librerías extra. Si algo no está aquí, usar el componente de Bootstrap más simple.
+- No usar animaciones ni librerías extra, salvo lo autorizado: Chart.js (CDN) solo en la pestaña Resumen del "Panel y auditoría". Si algo no está aquí, usar el componente de Bootstrap más simple.
 - No inventar estilos nuevos: si una pantalla es nueva, copiar la estructura de una de las cuatro de referencia.
 
 ## Pantallas del sistema y plantilla que copiar

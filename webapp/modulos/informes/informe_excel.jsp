@@ -62,7 +62,7 @@
       <td><c:out value="${e.accion_texto}" /></td>
       <td><c:out value="${e.entidad_texto}" /></td>
       <td><c:out value="${e.referencia}" /></td>
-      <td><c:if test="${not empty e.estado_anterior}"><c:out value="${fn:replace(fn:toLowerCase(e.estado_anterior), '_', ' ')}" /> -> </c:if><c:out value="${fn:replace(fn:toLowerCase(e.estado_nuevo), '_', ' ')}" /></td>
+      <td><c:if test="${not empty e.estado_anterior}"><c:out value="${fn:replace(fn:replace(fn:toLowerCase(e.estado_anterior), '_', ' '), 'apto graduacion', 'listo para sustentación')}" /> -> </c:if><c:out value="${fn:replace(fn:replace(fn:toLowerCase(e.estado_nuevo), '_', ' '), 'apto graduacion', 'listo para sustentación')}" /></td>
       <td><c:out value="${e.detalle}" /></td>
     </tr>
   </c:forEach>
