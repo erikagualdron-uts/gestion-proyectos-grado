@@ -188,7 +188,7 @@
               <tr>
                 <td><div class="fw-semibold"><c:out value="${r.revisor}" /></div><div class="texto-sec"><c:out value="${r.rol_revisor == 'DIRECTOR' ? 'Director' : (r.rol_revisor == 'EVALUADOR' ? 'Evaluador' : 'Comité')}" /></div></td>
                 <td><span class="insignia insignia-${r.decision == 'APROBADO' ? 'aprobado' : (r.decision == 'APLAZADO' ? 'aplazado' : 'rechazado')}"><c:out value="${r.decision == 'APROBADO' ? 'Aprobado' : (r.decision == 'APLAZADO' ? 'Aplazado' : 'Rechazado')}" /></span></td>
-                <td style="white-space: pre-line"><c:out value="${empty r.observaciones ? '—' : r.observaciones}" /></td>
+                <td style="white-space: pre-line"><c:choose><c:when test="${empty r.observaciones}"><span class="texto-sec">Sin observaciones</span></c:when><c:otherwise><c:out value="${r.observaciones}" /></c:otherwise></c:choose></td>
                 <td><c:out value="${r.fecha}" /></td>
               </tr>
             </c:forEach>
@@ -212,10 +212,7 @@
                 <label for="rejilla" class="form-label">Rejilla de evaluación diligenciada (formato <c:out value="${fase == 3 ? 'F-DC-124, sección Rejilla de evaluación' : 'F-DC-129'}" />)
                   <span class="texto-sec"><c:out value="${rejillaObligatoria ? '(enlace, obligatorio para aprobar)' : '(ya adjuntada para esta versión)'}" /></span></label>
                 <input type="url" class="form-control" id="rejilla" name="rejilla" maxlength="500" placeholder="https://..." ${rejillaObligatoria ? 'data-obligatoria-aprobar' : ''}>
-                <div class="form-text"><c:choose>
-                  <c:when test="${fase == 3}">Es la sección "Rejilla de evaluación" del formato F-DC-124 (anteproyecto), con tus marcas SI/NO, el concepto final y la firma.</c:when>
-                  <c:otherwise>Es el formato F-DC-129 (rejilla de evaluación del informe), con tus marcas SI/NO/N/A, el concepto final y la firma.</c:otherwise>
-                </c:choose> Pega el enlace a tu copia diligenciada.</div>
+                <div class="form-text">Pega el enlace a tu copia diligenciada, con tus marcas <c:out value="${fase == 3 ? 'SI/NO' : 'SI/NO/N/A'}" />, el concepto final y la firma.</div>
                 <div class="invalid-feedback">Para aprobar adjunta el enlace de la rejilla diligenciada (http:// o https://).</div>
               </div>
             </c:if>
@@ -230,7 +227,7 @@
             </c:if>
             <div class="mb-3">
               <label for="observacion" class="form-label">Observaciones <span class="texto-sec">(obligatorias para aplazar o rechazar)</span></label>
-              <textarea class="form-control" id="observacion" name="observacion" rows="5" maxlength="2000" placeholder="${fase == 1 ? 'Ej.: El comprobante no se ve completo; sube uno legible.' : 'Ej.: Falta ajustar el alcance según lo conversado.'}"><c:out value="${not empty sessionScope.vrObservacion ? sessionScope.vrObservacion : miRevision.observaciones}" /></textarea>
+              <textarea class="form-control" id="observacion" name="observacion" rows="5" maxlength="2000" placeholder="${fase == 1 ? 'Ej.: El comprobante no se ve completo.' : 'Escribe tus observaciones'}"><c:out value="${not empty sessionScope.vrObservacion ? sessionScope.vrObservacion : miRevision.observaciones}" /></textarea>
               <div class="invalid-feedback">Escribe las observaciones.</div>
             </div>
             <c:if test="${not empty miRevision}"><div class="alert alert-warning small" role="alert">Ya registraste una decisión (<strong><c:out value="${miRevision.decision == 'APROBADO' ? 'aprobado' : (miRevision.decision == 'APLAZADO' ? 'aplazado' : 'rechazado')}" /></strong>). Puedes cambiarla <c:out value="${(rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5)) ? 'hasta que el evaluador o el comité decidan' : 'mientras la fase siga en revisión'}" />; al guardar de nuevo se reemplaza.</div></c:if>
@@ -240,7 +237,18 @@
               <button type="submit" name="decision" value="APROBAR" class="btn btn-uts"><i class="bi bi-check-circle me-1"></i><c:out value="${etiquetaAprobar}" /></button>
             </div>
             <ul class="small texto-sec mt-3 mb-0 ps-3">
-              <li><strong>Aprobar:</strong> <c:out value="${fase == 1 ? 'valida el pago y el proyecto pasa a la Fase 2.' : 'registra tu aprobación; la fase avanza cuando todos los que deben decidir aprueban.'}" /></li>
+              <c:set var="faltanOtros" value="" />
+              <c:if test="${fase == 3 or fase == 5}">
+                <c:if test="${rolRevision != 'DIRECTOR' and decDir != 'APROBADO'}"><c:set var="faltanOtros" value="${faltanOtros += (empty faltanOtros ? 'el director' : ', el director')}" /></c:if>
+                <c:if test="${rolRevision != 'EVALUADOR' and decEva != 'APROBADO'}"><c:set var="faltanOtros" value="${faltanOtros += (empty faltanOtros ? 'el evaluador' : ', el evaluador')}" /></c:if>
+                <c:if test="${rolRevision != 'COMITE' and decCom != 'APROBADO'}"><c:set var="faltanOtros" value="${faltanOtros += (empty faltanOtros ? 'el comité' : ', el comité')}" /></c:if>
+              </c:if>
+              <li><strong>Aprobar:</strong> <c:choose>
+                <c:when test="${fase == 1}">valida el pago y el proyecto pasa a la Fase 2.</c:when>
+                <c:when test="${(fase == 3 or fase == 5) and not empty faltanOtros}">registra tu aprobación. Aún falta la decisión de: <c:out value="${faltanOtros}" />.</c:when>
+                <c:when test="${fase == 3 or fase == 5}">registra tu aprobación; con ella la fase queda aprobada.</c:when>
+                <c:otherwise>aprueba la fase y el proyecto avanza.</c:otherwise>
+              </c:choose></li>
               <li><strong>Aplazar:</strong> el estudiante corrige y envía una nueva versión (la observación es obligatoria).</li>
               <li><strong>Rechazar:</strong> cierra el proyecto. Es un caso extremo y pide confirmación.</li>
             </ul>

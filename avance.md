@@ -339,6 +339,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Confirmación de rechazo al calificar (23/10/2026)
 - Al rechazar un documento, la confirmación dice la consecuencia real: "¿Rechazar y cerrar el proyecto PG-xxxx? Los estudiantes no podrán continuar. Esta decisión es extrema y queda registrada." En cuentas, ideas, propuestas y PQRS se mantiene el mensaje general.
 
+### Calificar: ayudas del evaluador y del director (23/10/2026)
+- En las fases 3 y 5, "Aprobar" dice quién más falta por decidir; la ayuda de la rejilla es una sola línea; el cuadro de observaciones trae un ejemplo corto; en la tabla de revisiones, lo vacío dice "Sin observaciones".
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
