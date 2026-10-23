@@ -187,7 +187,7 @@
 Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/informe_coordinador.jsp`), con dos pestañas:
 - **Resumen:** 4 tarjetas y 5 gráficos con Chart.js (CDN, `js/graficos.js`): proyectos por fase, por estado, carga de docentes como director y evaluador, PQRS por tipo y estado, y actividad de los últimos 30 días. Los datos salen de consultas JSTL y se pasan al navegador en atributos `data-*`; el backend sigue siendo solo JSP + JSTL.
 - **Proyectos:** tabla de estado con filtros por búsqueda, fase, estado, director y evaluador.
-- Se imprime con el botón Imprimir. **Decisión de la estudiante:** se quitó la exportación a Excel y no se implementa la pestaña de auditoría (sobrecargaba la pantalla); el historial por proyecto sigue disponible.
+- **Decisión de la estudiante:** se quitó la exportación a Excel y no se implementa la pestaña de auditoría (sobrecargaba la pantalla); el historial por proyecto sigue disponible.
 - Se actualizó `DISENO.md` (Chart.js autorizado solo en el Resumen).
 - Problema resuelto: las barras invertidas en una expresión regular dentro de un atributo JSP rompían la compilación.
 
@@ -311,6 +311,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - No se envía nada al servidor; el backend sigue siendo solo JSP + JSTL.
 - Ajuste: la primera versión sacaba los gráficos fuera de sus tarjetas (la librería reacomoda el contenido al ancho de la hoja y los gráficos conservaban su tamaño de pantalla). Ahora el área se fija a un ancho de 1000 px mientras se genera el PDF y los gráficos se redibujan a ese ancho.
 
+### Se quitan Imprimir y Descargar PDF (23/10/2026)
+- Decisión de la estudiante: el sistema no ofrece imprimir ni exportar informes. Se eliminó el botón del Panel de control, la librería `html2pdf.js`, `js/pdf.js`, el reemplazo de gráficos por imágenes y los estilos de impresión del panel (los gráficos desbordaban al imprimir y al generar el PDF).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
@@ -343,7 +346,7 @@ Resumen para actualizar la documentación final. Lo que no aparece aquí se impl
 | Notificaciones | Campana con contador y listado de avisos | Campana con contador y menú desplegable con los últimos 20 avisos; sin pantalla de listado | Definido por la estudiante |
 | Consulta por estudiante | Pantalla para buscar el proyecto o anteproyecto de un estudiante (RF-36) | Sin pantalla propia: se busca por nombre o documento en Asignación de proyectos y por nombre en Propuestas Banco | Evitar una pantalla repetida |
 | Pantalla de informes | Informe de estado por proyecto | **Panel de control**: resumen con gráficos e informe de proyectos (solo coordinador) | Definido por la estudiante |
-| Exportar el informe | CSV o imprimir (RF-62, deseable) | Solo **imprimir** (con estilos de impresión); no hay exportación a archivo | Definido por la estudiante |
+| Exportar el informe | CSV o imprimir (RF-62, deseable) | **No se implementa**: el sistema no tiene botones de imprimir, descargar ni exportar | Definido por la estudiante |
 | PQRS | Aprobar, aplazar o rechazar (HU-34) | Solo **aprobar o rechazar**; el cambio de director aprobado se aplica al proyecto | En PQRS no hay reenvío |
 | Seguimiento por fila | Opción en cada fila (RF-33) | Ícono de seguimiento en Propuestas Banco y en las tablas de proyectos; historial desde seguimiento y tablas | Navegación |
 | Notificaciones | Campana con contador | Además listado con filtro "solo sin leer", marcar una o todas | RF-57 |

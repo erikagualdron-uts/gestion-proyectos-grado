@@ -6,12 +6,11 @@
 <c:set var="rolesPermitidos" value="COORDINADOR" />
 <%@ include file="/WEB-INF/includes/seguridad.jsp" %>
 <%@ include file="/WEB-INF/includes/informe_filtros.jsp" %>
-<%-- Panel de control (RF-60, RF-62), solo para el coordinador, en dos pestañas: Resumen (indicadores y gráficos con Chart.js)
-     y Proyectos (informe de estado con filtros). Se imprime desde el navegador. --%>
+<%-- Panel de control (RF-60), solo para el coordinador, en dos pestañas: Resumen (indicadores y gráficos con Chart.js)
+     y Proyectos (informe de estado con filtros). --%>
 <c:set var="titulo" value="Panel de control" scope="request" />
 <c:set var="vista" value="${fn:contains(',resumen,proyectos,', ',' += param.vista += ',') ? param.vista : 'resumen'}" />
 <c:if test="${vista == 'resumen'}"><c:set var="usarGraficos" value="si" scope="request" /></c:if>
-<c:set var="usarPdf" value="si" scope="request" />
 
 <c:set var="pp" value="${param.pp == '10' ? 10 : (param.pp == '20' ? 20 : 5)}" />
 <c:catch var="pagInvalida"><c:set var="pagPedida" value="${empty param.pag ? 1 : param.pag + 0}" /></c:catch>
@@ -131,18 +130,13 @@
     <h1 class="titulo-pagina">Panel de control</h1>
     <p class="descripcion-pagina mb-3">Vista general del sistema: indicadores y gráficos, y estado de cada proyecto.</p>
   </div>
-  <div class="d-flex flex-wrap gap-2 mb-3 no-imprimir">
-    <button type="button" class="btn btn-uts" data-descargar-pdf="area-pdf" data-pdf-nombre="${vista == 'resumen' ? 'panel_de_control_resumen' : 'panel_de_control_proyectos'}" data-pdf-titulo="Panel de control · ${vista == 'resumen' ? 'Resumen' : 'Proyectos'}"><i class="bi bi-file-earmark-pdf me-1"></i>Descargar PDF</button>
-  </div>
 </div>
 
-<ul class="nav pestanas no-imprimir" role="tablist">
+<ul class="nav pestanas" role="tablist">
   <li class="nav-item"><a class="nav-link ${vista == 'resumen' ? 'active' : ''}" href="${ctx}/modulos/informes/informe_coordinador.jsp?vista=resumen"><i class="bi bi-pie-chart me-1"></i>Resumen</a></li>
   <li class="nav-item"><a class="nav-link ${vista == 'proyectos' ? 'active' : ''}" href="${ctx}/modulos/informes/informe_coordinador.jsp?vista=proyectos"><i class="bi bi-folder2-open me-1"></i>Proyectos</a></li>
 </ul>
 
-<div id="area-pdf">
-<div class="pdf-cabecera" hidden></div>
 <c:choose>
   <%-- ======================== RESUMEN ======================== --%>
   <c:when test="${vista == 'resumen'}">
@@ -219,7 +213,7 @@
 
   <%-- ======================== PROYECTOS ======================== --%>
   <c:otherwise>
-    <form method="get" action="${ctx}/modulos/informes/informe_coordinador.jsp" class="row g-3 align-items-end mb-3 no-imprimir">
+    <form method="get" action="${ctx}/modulos/informes/informe_coordinador.jsp" class="row g-3 align-items-end mb-3">
       <input type="hidden" name="vista" value="proyectos">
       <input type="hidden" name="pp" value="${pp}">
       <input type="hidden" name="pag" value="1">
@@ -267,7 +261,7 @@
       <c:otherwise>
         <div class="tabla-envoltorio table-responsive">
           <table class="table tabla-uts">
-            <thead><tr><th>Proyecto</th><th>Fase</th><th>Estado</th><th>Docentes</th><th>Último movimiento</th><th class="text-end no-imprimir">Acciones</th></tr></thead>
+            <thead><tr><th>Proyecto</th><th>Fase</th><th>Estado</th><th>Docentes</th><th>Último movimiento</th><th class="text-end">Acciones</th></tr></thead>
             <tbody>
               <c:forEach var="p" items="${proyectos.rows}">
                 <tr>
@@ -279,7 +273,7 @@
                     <div class="small"><span class="texto-sec">Evaluador:</span> <c:out value="${empty p.evaluador ? 'Sin asignar' : p.evaluador}" /></div>
                   </td>
                   <td><c:choose><c:when test="${empty p.ultimo_fecha}">—</c:when><c:otherwise><div><c:out value="${p.ultimo_movimiento}" /></div><div class="texto-sec"><c:out value="${p.ultimo_fecha}" /></div></c:otherwise></c:choose></td>
-                  <td class="acciones no-imprimir">
+                  <td class="acciones">
                     <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
                   </td>
                 </tr>
@@ -293,6 +287,5 @@
   </c:otherwise>
 
 </c:choose>
-</div>
 
 <jsp:include page="/WEB-INF/includes/pie.jsp" />
