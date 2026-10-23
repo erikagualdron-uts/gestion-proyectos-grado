@@ -323,6 +323,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Tablero de fases en Docente Director y Evaluador (23/10/2026)
 - La línea de tiempo se reemplazó por seis tarjetas con el número de proyectos en grande (verde si hay proyectos, gris si no); cada una filtra la tabla por esa fase y la elegida lleva un marco. Se reacomodan a 3 y 2 por fila en pantallas pequeñas.
 
+### Detalle de la idea en el banco (23/10/2026)
+- La ventana muestra la etiqueta "Aprobada · disponible", dice "Propuesta por" y tiene pie con "Cerrar" y, para el estudiante sin propuesta activa, el botón "Elegir esta idea" con su confirmación.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

@@ -108,7 +108,7 @@
             <p class="texto-sec mb-3"><i class="bi bi-person me-1"></i><c:out value="${i.docente}" /></p>
             <div class="mt-auto d-flex flex-wrap gap-2">
               <button type="button" class="btn btn-outline-uts btn-sm" data-bs-toggle="modal" data-bs-target="#modalIdea" aria-label="Visualizar la idea ${fn:escapeXml(i.codigo)}"
-                      data-codigo="${fn:escapeXml(i.codigo)}" data-titulo="${fn:escapeXml(i.titulo)}" data-descripcion="${fn:escapeXml(i.descripcion)}"
+                      data-id="${i.id_idea}" data-codigo="${fn:escapeXml(i.codigo)}" data-titulo="${fn:escapeXml(i.titulo)}" data-descripcion="${fn:escapeXml(i.descripcion)}"
                       data-objetivo="${fn:escapeXml(i.objetivo)}" data-alcance="${fn:escapeXml(i.alcance)}" data-docente="${fn:escapeXml(i.docente)}"><i class="bi bi-eye me-1"></i>Ver</button>
               <c:if test="${sessionScope.rol == 'ESTUDIANTE' and activa.rowCount == 0}">
                 <form method="post" action="${ctx}/proceso/propuesta_proc.jsp" data-confirmar="¿Elegir la idea ${fn:escapeXml(i.codigo)} para tu propuesta? Quedará pendiente de aprobación.">
@@ -135,10 +135,22 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body pt-0">
-        <div class="dato-etiqueta">Docente</div><div class="dato-valor" data-llenar="docente"></div>
+        <div class="mb-3"><span class="insignia insignia-aprobado"><i class="bi bi-check-circle me-1"></i>Aprobada · disponible</span></div>
+        <div class="dato-etiqueta">Propuesta por</div><div class="dato-valor" data-llenar="docente"></div>
         <div class="dato-etiqueta">Descripción</div><div class="dato-valor" style="white-space: pre-line" data-llenar="descripcion"></div>
         <div class="dato-etiqueta">Objetivo</div><div class="dato-valor" style="white-space: pre-line" data-llenar="objetivo"></div>
         <div class="dato-etiqueta">Alcance</div><div class="dato-valor" style="white-space: pre-line" data-llenar="alcance"></div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <c:if test="${sessionScope.rol == 'ESTUDIANTE' and activa.rowCount == 0}">
+          <form method="post" action="${ctx}/proceso/propuesta_proc.jsp" class="m-0" data-confirmar="¿Elegir esta idea para tu propuesta? Quedará pendiente de aprobación.">
+            <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
+            <input type="hidden" name="accion" value="elegir">
+            <input type="hidden" name="id" value="" data-llenar-valor="id">
+            <button type="submit" class="btn btn-uts"><i class="bi bi-check2-circle me-1"></i>Elegir esta idea</button>
+          </form>
+        </c:if>
+        <button type="button" class="btn btn-outline-uts" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
