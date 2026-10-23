@@ -191,6 +191,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Se actualizó `DISENO.md` (Chart.js autorizado solo en el Resumen).
 - Problema resuelto: las barras invertidas en una expresión regular dentro de un atributo JSP rompían la compilación.
 
+### Ajuste de PQRS: cambio de director (23/10/2026)
+- Al gestionar una PQRS de cambio de director, la lista "Nuevo director" excluye al director actual y al evaluador del proyecto (además de la validación que ya existía en el servidor).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
