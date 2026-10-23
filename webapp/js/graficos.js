@@ -58,4 +58,20 @@
 
     new Chart(lienzo, { type: esDona ? 'doughnut' : 'bar', data: { labels: etiquetas, datasets: conjuntos }, options: opciones });
   });
+
+  // Al imprimir, cada gráfico se reemplaza por una imagen de su estado actual: el lienzo conserva el tamaño de pantalla
+  // y se salía de su tarjeta. Al terminar de imprimir se quitan las imágenes.
+  window.addEventListener('beforeprint', function () {
+    document.querySelectorAll('canvas[data-grafico]').forEach(function (lienzo) {
+      if (lienzo.nextElementSibling && lienzo.nextElementSibling.classList.contains('grafico-imprimir')) { return; }
+      var imagen = document.createElement('img');
+      imagen.className = 'grafico-imprimir';
+      imagen.alt = lienzo.getAttribute('aria-label') || 'Gráfico';
+      imagen.src = lienzo.toDataURL('image/png');
+      lienzo.insertAdjacentElement('afterend', imagen);
+    });
+  });
+  window.addEventListener('afterprint', function () {
+    document.querySelectorAll('img.grafico-imprimir').forEach(function (imagen) { imagen.remove(); });
+  });
 })();

@@ -303,6 +303,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Ventanas de PQRS del coordinador (23/10/2026)
 - En el detalle, "Nuevo director" solo aparece cuando ya existe. En "Resolver": se muestra el proyecto (código y título), el soporte como enlace solo si hay, el director actual y el evaluador del proyecto en los cambios de director, y cada docente de la lista con su carga ("dirige 1, evalúa 0").
 
+### Impresión del Panel de control (23/10/2026)
+- Los gráficos se imprimían desbordados y encimados porque el lienzo conserva su tamaño de pantalla; ahora, al imprimir, cada gráfico se reemplaza por una imagen ajustada a su tarjeta y se restaura al terminar.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
