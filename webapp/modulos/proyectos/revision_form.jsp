@@ -45,7 +45,7 @@
 
 <c:set var="nombrePrincipal" value="${nombresDocumento[fase - 1]}" />
 <sql:query var="documentos" dataSource="${bd}">
-  SELECT d.id_documento, d.nombre, d.version_num, d.enlace_url, IF(d.vigente = 1, 'SI', 'NO') AS vigente_txt, u.nombre_completo AS subido,
+  SELECT d.id_documento, d.nombre, d.version_num, d.enlace_url, d.comentario, IF(d.vigente = 1, 'SI', 'NO') AS vigente_txt, u.nombre_completo AS subido,
          DATE_FORMAT(d.fecha_subida, '%d/%m/%Y %H:%i') AS fecha
   FROM documento d JOIN usuario u ON u.id_usuario = d.id_subido_por
   WHERE d.id_proyecto_fase = ? AND d.vigente = 1 ORDER BY d.nombre
@@ -66,6 +66,15 @@
     <c:if test="${r.rol_revisor == 'DIRECTOR' and r.decision == 'APROBADO'}"><c:set var="directorAprobo" value="${true}" /></c:if>
   </c:forEach>
 </c:if>
+
+<%-- Observaciones que recibieron las versiones anteriores del documento (para comprobar que se corrigieron) --%>
+<sql:query var="anteriores" dataSource="${bd}">
+  SELECT r.rol_revisor, r.decision, r.observaciones, d.version_num, u.nombre_completo AS revisor, DATE_FORMAT(r.fecha_revision, '%d/%m/%Y %H:%i') AS fecha
+  FROM revision r JOIN documento d ON d.id_documento = r.id_documento JOIN usuario u ON u.id_usuario = r.id_revisor
+  WHERE d.id_proyecto_fase = ? AND d.nombre = ? AND d.vigente = 0 AND r.decision <> 'APROBADO' AND r.observaciones IS NOT NULL
+  ORDER BY r.fecha_revision DESC, r.id_revision DESC
+  <sql:param value="${py.id_proyecto_fase}" /><sql:param value="${nombrePrincipal}" />
+</sql:query>
 
 <%-- ¿Le toca revisar en esta fase? --%>
 <c:set var="faseCorresponde" value="${rolRevision == 'COMITE' ? (fase == 1 or fase == 3 or fase == 5 or fase == 6) : (rolRevision == 'DIRECTOR' ? (fase == 2 or fase == 3 or fase == 4 or fase == 5) : (fase == 3 or fase == 5 or fase == 6))}" />
@@ -88,19 +97,41 @@
 <div class="row g-4">
   <div class="col-12 col-xl-7">
     <div class="tarjeta mb-4">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <span class="insignia insignia-aprobado">Fase <c:out value="${fase}" /> · <c:out value="${py.fase}" /></span>
+        <span class="insignia insignia-${py.estado_fase == 'EN_CURSO' ? 'pendiente' : (py.estado_fase == 'APLAZADA' ? 'aplazado' : 'aprobado')}"><c:out value="${py.estado_fase == 'EN_CURSO' ? 'En revisión' : (py.estado_fase == 'APLAZADA' ? 'Aplazada' : 'Cerrada')}" /></span>
+      </div>
       <div class="dato-etiqueta">Proyecto</div><div class="dato-valor"><c:out value="${py.titulo}" /></div>
       <div class="dato-etiqueta">Estudiantes</div><div class="dato-valor"><c:out value="${py.estudiantes}" /></div>
       <c:choose>
         <c:when test="${not empty docVigente}">
           <div class="dato-etiqueta">Documento por revisar</div>
           <div class="dato-valor"><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · entregó <c:out value="${docVigente.subido}" /> (<c:out value="${docVigente.fecha}" />)</div>
-          <c:forEach var="d" items="${documentos.rows}">
-            <div class="mb-2"><a class="btn btn-outline-uts btn-sm" href="<c:out value='${d.enlace_url}' />" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right me-1"></i>Abrir <c:out value="${d.nombre}" /> v<c:out value="${d.version_num}" /></a></div>
-          </c:forEach>
+          <c:if test="${not empty docVigente.comentario}">
+            <div class="dato-etiqueta">Comentario del estudiante</div>
+            <div class="dato-valor" style="white-space: pre-line"><c:out value="${docVigente.comentario}" /></div>
+          </c:if>
+          <div class="d-flex flex-wrap gap-2">
+            <c:forEach var="d" items="${documentos.rows}">
+              <a class="btn ${d.id_documento == docVigente.id_documento ? 'btn-uts' : 'btn-outline-uts'} btn-sm" href="<c:out value='${d.enlace_url}' />" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right me-1"></i><c:choose><c:when test="${d.id_documento == docVigente.id_documento}">Abrir documento</c:when><c:otherwise>Abrir <c:out value="${d.nombre}" /></c:otherwise></c:choose></a>
+            </c:forEach>
+          </div>
         </c:when>
         <c:otherwise><div class="texto-sec">No hay documento en esta fase todavía.</div></c:otherwise>
       </c:choose>
     </div>
+
+    <c:if test="${anteriores.rowCount > 0}">
+      <div class="alert alert-warning" role="alert">
+        <div class="fw-bold mb-2"><i class="bi bi-clock-history me-1"></i>Observaciones de versiones anteriores</div>
+        <c:forEach var="a" items="${anteriores.rows}">
+          <div class="mb-2"><span class="fw-semibold"><c:out value="${a.rol_revisor == 'DIRECTOR' ? 'Director' : (a.rol_revisor == 'EVALUADOR' ? 'Evaluador' : 'Comité')}" /> sobre la v<c:out value="${a.version_num}" /></span>
+            (<c:out value="${a.decision == 'APLAZADO' ? 'aplazado' : 'rechazado'}" />, <c:out value="${a.fecha}" />):
+            <span style="white-space: pre-line"><c:out value="${a.observaciones}" /></span></div>
+        </c:forEach>
+        <div class="small">Comprueba que la nueva versión corrige lo anterior.</div>
+      </div>
+    </c:if>
 
     <c:if test="${not empty docVigente and revisiones.rowCount > 0}">
       <div class="tabla-envoltorio table-responsive">
