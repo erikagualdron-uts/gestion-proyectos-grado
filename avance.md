@@ -159,4 +159,4 @@
 - Los documentos se llaman ahora "Anteproyecto (F-DC-124)" e "Informe (F-DC-125)", para que el estudiante sepa qué formato usar.
 - **Rejilla del evaluador:** obligatoria para aprobar en la **fase 3** (formato F-DC-124, sección de rejilla) y en la **fase 5** (formato F-DC-129), una vez por versión.
 - **Fase 6 (Revisión final):** ya no tiene entrega ni revisión. Se alcanza sola cuando el evaluador y el comité aprueban la fase 5, y deja el proyecto **"Listo para sustentación"**. La tarjeta 6 se conserva como estado final.
-- Pendiente de confirmar: si el informe de similitud (Turnitin) también debe ser obligatorio para el director en la fase 3 (el F-DC-124 lo incluye como Anexo A).
+- Decisión: el informe de similitud (Turnitin) se exige solo al director en la fase 5; en la fase 3 no se pide.
