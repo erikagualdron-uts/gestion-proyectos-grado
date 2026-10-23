@@ -21,7 +21,8 @@
     <c:set var="tarjetas" value="bi-file-earmark-text|Propuestas Banco|Decide sobre ideas de docentes y propuestas de estudiantes.|/modulos/propuestas/propuestas_banco.jsp;bi-people|Asignación de proyectos|Asigna director y evaluador a cada proyecto aprobado.|/modulos/proyectos/asignacion.jsp;bi-chat|PQRS|Resuelve las solicitudes radicadas por los estudiantes.|/modulos/pqrs/pqrs.jsp;bi-bar-chart|Panel de control|Gráficos y avance de los proyectos.|/modulos/informes/informe_coordinador.jsp;bi-lightbulb|Banco de ideas|Consulta las ideas aprobadas por los docentes.|/modulos/banco_ideas/banco_ideas.jsp;bi-journal-text|Base documental|Calendario, formatos y reglamentos de la universidad.|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:otherwise>
-    <c:set var="descripcionInicio" value="Resumen de las cuentas y de la base documental." />
+    <c:set var="descripcionInicio" value="Estos son los módulos disponibles para la administración." />
+    <c:set var="tarjetas" value="bi-people|Usuarios|Crea y administra coordinadores, docentes y administradores.|/modulos/usuarios/usuarios.jsp;bi-person-check|Solicitudes de cuenta|Aprueba o rechaza las cuentas de estudiantes.|/modulos/usuarios/cuentas_pendientes.jsp;bi-journal-text|Base documental|Administra los enlaces de la base documental.|/modulos/base_documental/base_documental.jsp" />
   </c:otherwise>
 </c:choose>
 
@@ -45,13 +46,11 @@
   SELECT url FROM enlace_documental WHERE nombre LIKE 'Calendario%' AND activo = 1 ORDER BY orden LIMIT 1
 </sql:query>
 
-<%-- Administrador: resumen de cuentas y enlaces por configurar --%>
+<%-- Administrador: avisos de las tarjetas (cuentas por aprobar y enlaces sin configurar) --%>
 <c:if test="${sessionScope.rol == 'ADMINISTRADOR'}">
   <sql:query var="resumenAdmin" dataSource="${bd}">
-    SELECT COALESCE(SUM(r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'PENDIENTE'), 0) AS pendientes,
-           COALESCE(SUM(r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'APROBADA'), 0) AS estudiantes,
-           COALESCE(SUM(r.nombre = 'DOCENTE' AND u.estado_cuenta = 'APROBADA'), 0) AS docentes
-    FROM usuario u JOIN rol r ON r.id_rol = u.id_rol WHERE u.activo = 1
+    SELECT COUNT(*) AS pendientes FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
+    WHERE r.nombre = 'ESTUDIANTE' AND u.estado_cuenta = 'PENDIENTE' AND u.activo = 1
   </sql:query>
   <sql:query var="enlacesPendientes" dataSource="${bd}">
     SELECT COUNT(*) AS total FROM enlace_documental WHERE activo = 1 AND (url = '#' OR url = '')
@@ -91,16 +90,6 @@
   </div>
 </c:if>
 
-<c:if test="${sessionScope.rol == 'ADMINISTRADOR'}">
-<div class="row g-3 mb-4">
-  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/usuarios/cuentas_pendientes.jsp"><span class="resumen-icono pendiente"><i class="bi bi-person-check"></i></span><div><div class="resumen-numero"><c:out value="${ra.pendientes}" /></div><div class="resumen-etiqueta">Cuentas por aprobar</div></div></a></div>
-  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/usuarios/usuarios.jsp"><span class="resumen-icono aprobado"><i class="bi bi-mortarboard"></i></span><div><div class="resumen-numero"><c:out value="${ra.estudiantes}" /></div><div class="resumen-etiqueta">Estudiantes activos</div></div></a></div>
-  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/usuarios/usuarios.jsp"><span class="resumen-icono aprobado"><i class="bi bi-person-workspace"></i></span><div><div class="resumen-numero"><c:out value="${ra.docentes}" /></div><div class="resumen-etiqueta">Docentes activos</div></div></a></div>
-  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none" href="${ctx}/modulos/base_documental/base_documental.jsp"><span class="resumen-icono aplazado"><i class="bi bi-link-45deg"></i></span><div><div class="resumen-numero"><c:out value="${enlacesPendientes.rows[0].total}" /></div><div class="resumen-etiqueta">Enlaces sin configurar</div></div></a></div>
-</div>
-</c:if>
-
-<c:if test="${sessionScope.rol != 'ADMINISTRADOR'}">
 <div class="row g-3 mb-4">
   <c:forEach var="tarjeta" items="${fn:split(tarjetas, ';')}">
     <c:set var="p" value="${fn:split(tarjeta, '|')}" />
@@ -109,6 +98,15 @@
         <span class="icono-caja"><i class="bi ${p[0]}"></i></span>
         <h3><c:out value="${p[1]}" /></h3>
         <p><c:out value="${p[2]}" /></p>
+        <c:if test="${sessionScope.rol == 'ADMINISTRADOR' and p[1] == 'Solicitudes de cuenta'}">
+          <c:choose>
+            <c:when test="${ra.pendientes > 0}"><span class="insignia insignia-pendiente mt-3"><c:out value="${ra.pendientes}" /> por aprobar</span></c:when>
+            <c:otherwise><span class="insignia insignia-aprobado mt-3">Al día</span></c:otherwise>
+          </c:choose>
+        </c:if>
+        <c:if test="${sessionScope.rol == 'ADMINISTRADOR' and p[1] == 'Base documental' and enlacesPendientes.rows[0].total > 0}">
+          <span class="insignia insignia-aplazado mt-3"><c:out value="${enlacesPendientes.rows[0].total}" /> enlace(s) sin configurar</span>
+        </c:if>
       </a>
     </div>
   </c:forEach>
@@ -123,7 +121,6 @@
     </div>
   </c:if>
 </div>
-</c:if>
 
 <c:choose>
   <c:when test="${notifCount > 0}">

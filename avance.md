@@ -196,7 +196,7 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 
 ### Ajuste del rol Administrador (23/10/2026)
 - El administrador ya **no tiene** Propuestas Banco, PQRS ni Historial de versiones (menú y acceso bloqueado en servidor): son tareas del coordinador y de los demás roles. Queda con Usuarios, Solicitudes de cuenta, Base documental y Mi perfil.
-- Su inicio reemplaza las tarjetas por un resumen: cuentas por aprobar, estudiantes activos, docentes activos y enlaces de la base documental sin configurar (cada uno lleva a su pantalla).
+- Su inicio tiene tres tarjetas (Usuarios, Solicitudes de cuenta y Base documental) con avisos dentro: cuentas por aprobar (o "Al día") y enlaces sin configurar.
 
 ---
 
