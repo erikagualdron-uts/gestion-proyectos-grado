@@ -66,6 +66,9 @@
     <c:if test="${r.rol_revisor == rolRevision}"><c:set var="miRevision" value="${r}" /></c:if>
     <c:if test="${r.rol_revisor == 'DIRECTOR' and r.decision == 'APROBADO'}"><c:set var="directorAprobo" value="${true}" /></c:if>
     <c:if test="${r.rol_revisor != 'DIRECTOR'}"><c:set var="otrosDecidieron" value="${true}" /></c:if>
+    <c:if test="${r.rol_revisor == 'DIRECTOR'}"><c:set var="decDir" value="${r.decision}" /></c:if>
+    <c:if test="${r.rol_revisor == 'EVALUADOR'}"><c:set var="decEva" value="${r.decision}" /></c:if>
+    <c:if test="${r.rol_revisor == 'COMITE'}"><c:set var="decCom" value="${r.decision}" /></c:if>
   </c:forEach>
 </c:if>
 
@@ -126,6 +129,19 @@
         <span class="insignia insignia-aprobado">Fase <c:out value="${fase}" /> · <c:out value="${py.fase}" /></span>
         <span class="insignia insignia-${py.estado_fase == 'EN_CURSO' ? 'pendiente' : (py.estado_fase == 'APLAZADA' ? 'aplazado' : 'aprobado')}"><c:out value="${py.estado_fase == 'EN_CURSO' ? 'En revisión' : (py.estado_fase == 'APLAZADA' ? 'Aplazada' : 'Cerrada')}" /></span>
       </div>
+      <c:if test="${not empty docVigente}">
+        <c:set var="rolesFase" value="${fase == 1 ? 'COMITE' : ((fase == 2 or fase == 4) ? 'DIRECTOR' : (fase == 6 ? 'EVALUADOR,COMITE' : 'DIRECTOR,EVALUADOR,COMITE'))}" />
+        <div class="dato-etiqueta">Revisión de esta versión</div>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <c:forEach var="rr" items="${fn:split(rolesFase, ',')}">
+            <c:set var="decRol" value="${rr == 'DIRECTOR' ? decDir : (rr == 'EVALUADOR' ? decEva : decCom)}" />
+            <span class="insignia insignia-${decRol == 'APROBADO' ? 'aprobado' : (decRol == 'APLAZADO' ? 'aplazado' : (decRol == 'RECHAZADO' ? 'rechazado' : 'pendiente'))}">
+              <c:out value="${rr == 'DIRECTOR' ? 'Director' : (rr == 'EVALUADOR' ? 'Evaluador' : 'Comité')}" />:
+              <c:out value="${decRol == 'APROBADO' ? 'aprobó' : (decRol == 'APLAZADO' ? 'aplazó' : (decRol == 'RECHAZADO' ? 'rechazó' : 'pendiente'))}" />
+            </span>
+          </c:forEach>
+        </div>
+      </c:if>
       <div class="dato-etiqueta">Proyecto</div><div class="dato-valor"><c:out value="${py.titulo}" /></div>
       <div class="dato-etiqueta">Estudiantes</div><div class="dato-valor"><c:out value="${py.estudiantes}" /></div>
       <c:choose>
@@ -191,11 +207,6 @@
             <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
             <input type="hidden" name="id" value="${idProyecto}">
             <input type="hidden" name="documento" value="${docVigente.id_documento}">
-            <div class="mb-3">
-              <label for="observacion" class="form-label">Observaciones <span class="texto-sec">(obligatorias para aplazar o rechazar)</span></label>
-              <textarea class="form-control" id="observacion" name="observacion" rows="5" maxlength="2000"><c:out value="${not empty sessionScope.vrObservacion ? sessionScope.vrObservacion : miRevision.observaciones}" /></textarea>
-              <div class="invalid-feedback">Escribe las observaciones.</div>
-            </div>
             <c:if test="${rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5 or fase == 6)}">
               <div class="mb-3">
                 <label for="rejilla" class="form-label">Rejilla de evaluación diligenciada (formato F-DC-124)
@@ -214,7 +225,12 @@
                 <div class="invalid-feedback">Adjunta el enlace del informe de similitud (http:// o https://).</div>
               </div>
             </c:if>
-            <c:if test="${not empty miRevision}"><div class="alert alert-warning small" role="alert">Ya registraste una decisión (<strong><c:out value="${miRevision.decision}" /></strong>). Al guardar de nuevo se reemplaza.</div></c:if>
+            <div class="mb-3">
+              <label for="observacion" class="form-label">Observaciones <span class="texto-sec">(obligatorias para aplazar o rechazar)</span></label>
+              <textarea class="form-control" id="observacion" name="observacion" rows="5" maxlength="2000"><c:out value="${not empty sessionScope.vrObservacion ? sessionScope.vrObservacion : miRevision.observaciones}" /></textarea>
+              <div class="invalid-feedback">Escribe las observaciones.</div>
+            </div>
+            <c:if test="${not empty miRevision}"><div class="alert alert-warning small" role="alert">Ya registraste una decisión (<strong><c:out value="${miRevision.decision == 'APROBADO' ? 'aprobado' : (miRevision.decision == 'APLAZADO' ? 'aplazado' : 'rechazado')}" /></strong>). Puedes cambiarla <c:out value="${(rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5)) ? 'hasta que el evaluador o el comité decidan' : 'mientras la fase siga en revisión'}" />; al guardar de nuevo se reemplaza.</div></c:if>
             <div class="d-flex flex-wrap gap-2 justify-content-end">
               <button type="submit" name="decision" value="RECHAZAR" class="btn btn-rechazar"><i class="bi bi-x-circle me-1"></i>Rechazar</button>
               <button type="submit" name="decision" value="APLAZAR" class="btn btn-aplazar"><i class="bi bi-pause-circle me-1"></i>Aplazar</button>
