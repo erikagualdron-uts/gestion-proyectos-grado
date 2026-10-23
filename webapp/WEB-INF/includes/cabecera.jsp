@@ -7,7 +7,7 @@
     titulo         título de la pestaña
     paginaPublica  true para login/registro (panel verde a la izquierda, sin menú)
     menuActivo     (opcional) ruta del ítem del menú que debe verse activo
-    volverA        (opcional) ruta a la que lleva el botón "Volver" (por defecto, el inicio)
+    volverA        (opcional) ruta de la pantalla anterior; se muestra como nivel intermedio de las migas de pan (Inicio › anterior › esta)
 --%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" scope="request" />
 <!DOCTYPE html>
@@ -61,9 +61,30 @@
           <button class="btn btn-outline-uts btn-icono d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral" aria-label="Abrir menú">
             <i class="bi bi-list"></i>
           </button>
-          <span class="rol">
-            <c:out value="${fn:substring(sessionScope.rol, 0, 1)}" /><c:out value="${fn:toLowerCase(fn:substring(sessionScope.rol, 1, 40))}" /><c:if test="${sessionScope.rol == 'ESTUDIANTE' and not empty sessionScope.nivel}"> · Nivel <c:out value="${sessionScope.nivel == 'TECNOLOGICO' ? 'Tecnológico' : 'Profesional'}" /></c:if>
-          </span>
+          <c:choose>
+            <c:when test="${pageContext.request.servletPath == '/inicio.jsp'}">
+              <span class="rol">
+                <c:out value="${fn:substring(sessionScope.rol, 0, 1)}" /><c:out value="${fn:toLowerCase(fn:substring(sessionScope.rol, 1, 40))}" /><c:if test="${sessionScope.rol == 'ESTUDIANTE' and not empty sessionScope.nivel}"> · Nivel <c:out value="${sessionScope.nivel == 'TECNOLOGICO' ? 'Tecnológico' : 'Profesional'}" /></c:if>
+              </span>
+            </c:when>
+            <c:otherwise>
+              <c:choose>
+                <c:when test="${fn:endsWith(volverA, '/banco_ideas.jsp')}"><c:set var="padreNombre" value="Banco de ideas" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/base_documental.jsp')}"><c:set var="padreNombre" value="Base documental" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/pqrs.jsp')}"><c:set var="padreNombre" value="PQRS" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/propuestas_banco.jsp')}"><c:set var="padreNombre" value="${sessionScope.rol == 'ESTUDIANTE' ? 'Mis propuestas' : 'Propuestas Banco'}" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/usuarios.jsp')}"><c:set var="padreNombre" value="Usuarios" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/asignacion.jsp')}"><c:set var="padreNombre" value="Asignación de proyectos" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/docente_director.jsp')}"><c:set var="padreNombre" value="Docente Director" /></c:when>
+                <c:otherwise><c:set var="padreNombre" value="" /></c:otherwise>
+              </c:choose>
+              <nav class="migas" aria-label="Ruta de navegación">
+                <a href="${ctx}/inicio.jsp">Inicio</a>
+                <c:if test="${not empty padreNombre}"><i class="bi bi-chevron-right"></i><a href="${ctx}${volverA}"><c:out value="${padreNombre}" /></a></c:if>
+                <i class="bi bi-chevron-right"></i><span class="actual"><c:out value="${titulo}" /></span>
+              </nav>
+            </c:otherwise>
+          </c:choose>
         </div>
         <div class="derecha">
           <div class="dropdown">
@@ -129,9 +150,6 @@
           </div>
         </div>
       </header>
-      <c:if test="${pageContext.request.servletPath != '/inicio.jsp'}">
-        <a class="enlace-volver" href="${ctx}${empty volverA ? '/inicio.jsp' : volverA}"><i class="bi bi-chevron-left"></i>Volver</a>
-      </c:if>
       <jsp:include page="/WEB-INF/includes/mensaje.jsp" />
   </c:otherwise>
 </c:choose>
