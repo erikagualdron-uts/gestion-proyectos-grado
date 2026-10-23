@@ -80,7 +80,6 @@
     <h1 class="titulo-pagina">Asignación de proyectos</h1>
     <p class="descripcion-pagina mb-3">Asigna el director y el evaluador de cada proyecto. Deben ser docentes distintos.</p>
   </div>
-  <a class="btn btn-outline-uts mb-3" href="${ctx}/modulos/proyectos/buscar_estudiante.jsp"><i class="bi bi-person-lines-fill me-1"></i>Consultar estudiante</a>
 </div>
 
 <div class="row g-3 mb-4">
@@ -95,7 +94,7 @@
   <input type="hidden" name="pag" value="1">
   <div class="col-12 col-md">
     <label for="q" class="form-label">Buscar</label>
-    <input type="search" class="form-control" id="q" name="q" value="<c:out value='${q}' />" placeholder="Código, título, estudiante, director o evaluador" maxlength="120">
+    <input type="search" class="form-control" id="q" name="q" value="<c:out value='${q}' />" placeholder="Código, título, estudiante (nombre o documento), director o evaluador" maxlength="120">
   </div>
   <div class="col-6 col-md-auto">
     <label for="asignacion" class="form-label">Asignación</label>

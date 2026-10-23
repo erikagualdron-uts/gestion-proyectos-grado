@@ -109,7 +109,7 @@
 - **Información para el estudiante** (RF-37): el inicio muestra su director y su evaluador (o "Por asignar").
 - **Seguimiento por fila** (RF-33): en Propuestas Banco y en las tablas de proyectos aparece la opción de ver el seguimiento (la pantalla de seguimiento se construye en el módulo 4).
 
-**Pantallas:** `proyectos/asignacion.jsp`, `proyectos/buscar_estudiante.jsp`. **Proceso:** `asignacion_proc.jsp`.
+**Pantallas:** `proyectos/asignacion.jsp` (la pantalla `buscar_estudiante.jsp` se eliminó después). **Proceso:** `asignacion_proc.jsp`.
 **Requerimientos:** RF-33 (enlace), RF-34, RF-35, RF-36, RF-37. **Historias:** HU-20 y HU-21.
 
 **Problemas resueltos**
@@ -284,6 +284,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Los proyectos sin director o sin evaluador salen primero; las tarjetas de resumen filtran la tabla ("Completos" pasó a "Con director y evaluador").
 - La fase usa el mismo lenguaje del resto del sistema (en curso, "Listo para sustentación", "Proyecto cerrado"); el lápiz de un proyecto terminado o cerrado sale apagado con texto flotante que explica por qué; "Buscar estudiante" pasó a "Consultar estudiante".
 
+### Se quita "Buscar estudiante" (23/10/2026)
+- Decisión de la estudiante: se eliminó la pantalla `proyectos/buscar_estudiante.jsp` y su botón en Asignación de proyectos. La consulta por estudiante (RF-36) se resuelve con el buscador de Asignación de proyectos (nombre o documento del estudiante, código, título, director o evaluador) y el de Propuestas Banco (nombre del estudiante).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
@@ -314,6 +317,7 @@ Resumen para actualizar la documentación final. Lo que no aparece aquí se impl
 | Módulos del administrador | El administrador consulta propuestas, PQRS e historial | Solo gestiona usuarios, cuentas y enlaces de la base documental | Definido por la estudiante |
 | Historial de versiones | Pantalla de historial con línea de tiempo por proyecto (RF-58, RF-59) | **No existe como pantalla**: las versiones y revisiones se ven en el seguimiento de cada fase; la tabla `historial_version` sigue registrando los eventos | Definido por la estudiante |
 | Notificaciones | Campana con contador y listado de avisos | Campana con contador y menú desplegable con los últimos 20 avisos; sin pantalla de listado | Definido por la estudiante |
+| Consulta por estudiante | Pantalla para buscar el proyecto o anteproyecto de un estudiante (RF-36) | Sin pantalla propia: se busca por nombre o documento en Asignación de proyectos y por nombre en Propuestas Banco | Evitar una pantalla repetida |
 | Pantalla de informes | Informe de estado por proyecto | **Panel de control**: resumen con gráficos e informe de proyectos (solo coordinador) | Definido por la estudiante |
 | Exportar el informe | CSV o imprimir (RF-62, deseable) | Solo **imprimir** (con estilos de impresión); no hay exportación a archivo | Definido por la estudiante |
 | PQRS | Aprobar, aplazar o rechazar (HU-34) | Solo **aprobar o rechazar**; el cambio de director aprobado se aplica al proyecto | En PQRS no hay reenvío |
