@@ -103,7 +103,9 @@
       if (observacion) { observacion.required = (decision === 'RECHAZAR' || decision === 'APLAZAR'); }
       form.classList.add('was-validated');
       if (!form.checkValidity()) { evento.preventDefault(); return; }
-      if (decision === 'RECHAZAR' && !window.confirm('¿Seguro que deseas rechazar? Esta decisión es extrema y queda registrada.')) {
+      // El mensaje puede traer la consecuencia concreta (data-mensaje-rechazo en el formulario)
+      var mensajeRechazo = form.getAttribute('data-mensaje-rechazo') || '¿Seguro que deseas rechazar? Esta decisión es extrema y queda registrada.';
+      if (decision === 'RECHAZAR' && !window.confirm(mensajeRechazo)) {
         evento.preventDefault();
       }
     });

@@ -336,6 +336,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Pantalla de calificar (23/10/2026)
 - En la Fase 1 la pantalla se llama "Validar pago" y dice "Validas el pago como coordinador" (en las demás fases sigue "Calificar documento"); bajo los botones se explica qué hace Aprobar, Aplazar y Rechazar; el cuadro de observaciones trae un ejemplo.
 
+### Confirmación de rechazo al calificar (23/10/2026)
+- Al rechazar un documento, la confirmación dice la consecuencia real: "¿Rechazar y cerrar el proyecto PG-xxxx? Los estudiantes no podrán continuar. Esta decisión es extrema y queda registrada." En cuentas, ideas, propuestas y PQRS se mantiene el mensaje general.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

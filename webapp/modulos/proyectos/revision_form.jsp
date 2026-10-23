@@ -203,7 +203,7 @@
       <c:choose>
         <c:when test="${puedeRevisar}">
           <h2 class="h5 titulo mb-3" style="color: var(--verde-bosque)"><c:out value="${empty miRevision ? 'Registrar mi decisión' : 'Editar mi decisión'}" /></h2>
-          <form method="post" action="${ctx}/proceso/revision_proc.jsp" data-decisiones novalidate>
+          <form method="post" action="${ctx}/proceso/revision_proc.jsp" data-decisiones data-mensaje-rechazo="¿Rechazar y cerrar el proyecto ${fn:escapeXml(py.codigo)}? Los estudiantes no podrán continuar. Esta decisión es extrema y queda registrada." novalidate>
             <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
             <input type="hidden" name="id" value="${idProyecto}">
             <input type="hidden" name="documento" value="${docVigente.id_documento}">
