@@ -53,7 +53,7 @@
           FROM propuesta_estudiante pe JOIN usuario e ON e.id_usuario = pe.id_estudiante
           WHERE pe.id_propuesta = p.id_propuesta) AS estudiantes
   ${desdeProyectos}
-  ORDER BY pr.id_proyecto DESC
+  ORDER BY (pr.id_director IS NULL OR pr.id_evaluador IS NULL) DESC, pr.id_proyecto DESC
   LIMIT ? OFFSET ?
   <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" />
   <sql:param value="${filtroAsignacion}" /><sql:param value="${filtroAsignacion}" /><sql:param value="${filtroAsignacion}" /><sql:param value="${filtroAsignacion}" />
@@ -80,14 +80,14 @@
     <h1 class="titulo-pagina">Asignación de proyectos</h1>
     <p class="descripcion-pagina mb-3">Asigna el director y el evaluador de cada proyecto. Deben ser docentes distintos.</p>
   </div>
-  <a class="btn btn-outline-uts mb-3" href="${ctx}/modulos/proyectos/buscar_estudiante.jsp"><i class="bi bi-search me-1"></i>Buscar estudiante</a>
+  <a class="btn btn-outline-uts mb-3" href="${ctx}/modulos/proyectos/buscar_estudiante.jsp"><i class="bi bi-person-lines-fill me-1"></i>Consultar estudiante</a>
 </div>
 
 <div class="row g-3 mb-4">
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono pendiente"><i class="bi bi-folder2-open"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].total}" default="0" /></div><div class="resumen-etiqueta">Proyectos</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono rechazado"><i class="bi bi-person-x"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].sin_director}" default="0" /></div><div class="resumen-etiqueta">Sin director</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aplazado"><i class="bi bi-person-dash"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].sin_evaluador}" default="0" /></div><div class="resumen-etiqueta">Sin evaluador</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aprobado"><i class="bi bi-people"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].completos}" default="0" /></div><div class="resumen-etiqueta">Completos</div></div></div></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroAsignacion == '' ? 'resumen-activa' : ''}" href="${ctx}/modulos/proyectos/asignacion.jsp" title="Ver todos los proyectos"><span class="resumen-icono pendiente"><i class="bi bi-folder2-open"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].total}" default="0" /></div><div class="resumen-etiqueta">Proyectos</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroAsignacion == 'SIN_DIRECTOR' ? 'resumen-activa' : ''}" href="${ctx}/modulos/proyectos/asignacion.jsp?asignacion=SIN_DIRECTOR" title="Ver solo los proyectos sin director"><span class="resumen-icono rechazado"><i class="bi bi-person-x"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].sin_director}" default="0" /></div><div class="resumen-etiqueta">Sin director</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroAsignacion == 'SIN_EVALUADOR' ? 'resumen-activa' : ''}" href="${ctx}/modulos/proyectos/asignacion.jsp?asignacion=SIN_EVALUADOR" title="Ver solo los proyectos sin evaluador"><span class="resumen-icono aplazado"><i class="bi bi-person-dash"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].sin_evaluador}" default="0" /></div><div class="resumen-etiqueta">Sin evaluador</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroAsignacion == 'COMPLETOS' ? 'resumen-activa' : ''}" href="${ctx}/modulos/proyectos/asignacion.jsp?asignacion=COMPLETOS" title="Ver solo los proyectos con director y evaluador"><span class="resumen-icono aprobado"><i class="bi bi-people"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].completos}" default="0" /></div><div class="resumen-etiqueta">Con director y evaluador</div></div></a></div>
 </div>
 
 <form method="get" action="${ctx}/modulos/proyectos/asignacion.jsp" class="row g-3 align-items-end mb-3">
@@ -103,7 +103,7 @@
       <option value="">Todos</option>
       <option value="SIN_DIRECTOR" ${filtroAsignacion == 'SIN_DIRECTOR' ? 'selected' : ''}>Sin director</option>
       <option value="SIN_EVALUADOR" ${filtroAsignacion == 'SIN_EVALUADOR' ? 'selected' : ''}>Sin evaluador</option>
-      <option value="COMPLETOS" ${filtroAsignacion == 'COMPLETOS' ? 'selected' : ''}>Completos</option>
+      <option value="COMPLETOS" ${filtroAsignacion == 'COMPLETOS' ? 'selected' : ''}>Con director y evaluador</option>
     </select>
   </div>
   <div class="col-12 col-md-auto"><button type="submit" class="btn btn-uts w-100"><i class="bi bi-search me-1"></i>Buscar</button></div>
@@ -126,14 +126,18 @@
             <tr>
               <td class="fw-bold"><c:out value="${p.codigo}" /></td>
               <td style="min-width: 240px"><div><c:out value="${p.titulo}" /></div><div class="texto-sec"><c:out value="${p.estudiantes}" /></div></td>
-              <td><span class="insignia insignia-aprobado">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></span></td>
+              <td><c:choose>
+                <c:when test="${p.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado">Listo para sustentación</span></c:when>
+                <c:when test="${p.estado_general == 'CERRADO'}"><span class="insignia insignia-rechazado">Proyecto cerrado</span></c:when>
+                <c:otherwise><span class="insignia insignia-pendiente">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></span></c:otherwise>
+              </c:choose></td>
               <td><c:choose><c:when test="${empty p.director}"><span class="insignia insignia-rechazado">Sin asignar</span></c:when><c:otherwise><c:out value="${p.director}" /></c:otherwise></c:choose></td>
               <td><c:choose><c:when test="${empty p.evaluador}"><span class="insignia insignia-aplazado">Sin asignar</span></c:when><c:otherwise><c:out value="${p.evaluador}" /></c:otherwise></c:choose></td>
               <td class="acciones">
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                <button type="button" class="btn btn-outline-uts btn-icono" ${p.estado_general == 'EN_CURSO' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalAsignar" aria-label="Asignar director y evaluador de ${fn:escapeXml(p.codigo)}"
+                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(p.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
+                <span class="d-inline-block" ${p.estado_general == 'EN_CURSO' ? 'title="Asignar director y evaluador"' : (p.estado_general == 'CERRADO' ? 'title="Proyecto cerrado: no se puede reasignar"' : 'title="Proyecto terminado: no se puede reasignar"')}><button type="button" class="btn btn-outline-uts btn-icono" ${p.estado_general == 'EN_CURSO' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalAsignar" aria-label="Asignar director y evaluador de ${fn:escapeXml(p.codigo)}"
                         data-id="${p.id_proyecto}" data-codigo="${fn:escapeXml(p.codigo)}" data-titulo="${fn:escapeXml(p.titulo)}" data-estudiantes="${fn:escapeXml(p.estudiantes)}"
-                        data-director="${empty p.id_director ? '' : p.id_director}" data-evaluador="${empty p.id_evaluador ? '' : p.id_evaluador}"><i class="bi bi-pencil"></i></button>
+                        data-director="${empty p.id_director ? '' : p.id_director}" data-evaluador="${empty p.id_evaluador ? '' : p.id_evaluador}"><i class="bi bi-pencil"></i></button></span>
               </td>
             </tr>
           </c:forEach>

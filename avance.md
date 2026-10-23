@@ -280,6 +280,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Bajo cada título se indica la relación entre ideas y propuestas ("Propuesta desde la idea ID-0001", "Idea de docente · Elegida en PG-0001").
 - El autor muestra al responsable en la primera línea y al compañero debajo; los iconos de acciones quedan alineados; el lápiz de lo ya decidido sale apagado con texto flotante "Ya decidida".
 
+### Asignación de proyectos (23/10/2026)
+- Los proyectos sin director o sin evaluador salen primero; las tarjetas de resumen filtran la tabla ("Completos" pasó a "Con director y evaluador").
+- La fase usa el mismo lenguaje del resto del sistema (en curso, "Listo para sustentación", "Proyecto cerrado"); el lápiz de un proyecto terminado o cerrado sale apagado con texto flotante que explica por qué; "Buscar estudiante" pasó a "Consultar estudiante".
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
