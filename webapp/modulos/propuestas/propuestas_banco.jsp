@@ -107,7 +107,6 @@
     </p>
   </div>
   <div class="d-flex flex-wrap gap-2 mb-3">
-    <c:if test="${sessionScope.rol == 'ESTUDIANTE'}"><a class="btn btn-outline-uts" href="${ctx}/modulos/pqrs/pqrs.jsp"><i class="bi bi-chat me-1"></i>PQRS</a></c:if>
     <c:if test="${sessionScope.rol == 'DOCENTE'}"><a class="btn btn-uts" href="${ctx}/modulos/banco_ideas/idea_form.jsp"><i class="bi bi-plus-lg me-1"></i>Proponer idea</a></c:if>
     <c:if test="${sessionScope.rol == 'ESTUDIANTE' and activa.rowCount == 0}">
       <a class="btn btn-outline-uts" href="${ctx}/modulos/banco_ideas/banco_ideas.jsp"><i class="bi bi-lightbulb me-1"></i>Elegir del banco</a>
