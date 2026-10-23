@@ -267,3 +267,8 @@ img.iniciales { object-fit: cover; }
 .punto-nuevo { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--verde-esmeralda); }
 /* Los avisos largos se recortan a tres líneas (el texto completo se ve al abrirlos) */
 .notif-msg { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Secciones del menú de notificaciones: nuevas y anteriores */
+.notif-grupo { padding: 8px 16px; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--texto-sec); background: var(--fondo); border-bottom: 1px solid var(--borde); position: sticky; top: 0; z-index: 1; }
+.notif-item:not(.nueva) { padding-top: 9px; padding-bottom: 9px; }
+.notif-item:not(.nueva) .notif-icono { width: 30px; height: 30px; font-size: .85rem; background: #EEF2F0; color: var(--texto-sec); }

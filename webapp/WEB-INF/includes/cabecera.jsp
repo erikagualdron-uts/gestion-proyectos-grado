@@ -89,21 +89,31 @@
                     <div class="notif-vacio"><i class="bi bi-bell-slash"></i><div>Aún no tienes notificaciones.</div></div>
                   </c:when>
                   <c:otherwise>
-                    <c:forEach var="av" items="${avisosCampana.rows}">
-                      <c:set var="iconoAviso" value="${fn:startsWith(av.tipo, 'PQRS') ? 'bi-chat-dots' : (fn:startsWith(av.tipo, 'IDEA') ? 'bi-lightbulb' : (fn:startsWith(av.tipo, 'PROPUESTA') or av.tipo == 'COMPANERO_AGREGADO' ? 'bi-file-earmark-text' : (av.tipo == 'ASIGNACION' ? 'bi-people' : (av.tipo == 'REVISION' or av.tipo == 'ENTREGA' ? 'bi-clipboard-check' : 'bi-bell'))))}" />
-                      <form method="post" action="${ctx}/proceso/notificacion_proc.jsp" class="m-0">
-                        <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
-                        <input type="hidden" name="accion" value="abrir">
-                        <input type="hidden" name="id" value="${av.id_notificacion}">
-                        <button type="submit" class="notif-item ${av.leida_txt == 'NO' ? 'nueva' : ''}">
-                          <span class="notif-icono"><i class="bi ${iconoAviso}"></i></span>
-                          <span class="notif-texto">
-                            <span class="notif-msg"><c:out value="${av.mensaje}" /></span>
-                            <span class="notif-meta"><c:if test="${not empty av.codigo_proyecto}"><c:out value="${av.codigo_proyecto}" /> · </c:if><c:out value="${av.fecha}" /></span>
-                          </span>
-                          <c:if test="${av.leida_txt == 'NO'}"><span class="punto-nuevo" title="Sin leer"></span></c:if>
-                        </button>
-                      </form>
+                    <c:set var="nuevasLista" value="${0}" />
+                    <c:forEach var="av" items="${avisosCampana.rows}"><c:if test="${av.leida_txt == 'NO'}"><c:set var="nuevasLista" value="${nuevasLista + 1}" /></c:if></c:forEach>
+                    <%-- Primero las nuevas y después las anteriores (ya leídas) --%>
+                    <c:forEach var="grupo" items="${fn:split('NO,SI', ',')}">
+                      <c:if test="${grupo == 'NO' ? nuevasLista > 0 : avisosCampana.rowCount - nuevasLista > 0}">
+                        <div class="notif-grupo"><c:out value="${grupo == 'NO' ? 'Nuevas' : 'Anteriores'}" /></div>
+                      </c:if>
+                      <c:forEach var="av" items="${avisosCampana.rows}">
+                        <c:if test="${av.leida_txt == grupo}">
+                          <c:set var="iconoAviso" value="${fn:startsWith(av.tipo, 'PQRS') ? 'bi-chat-dots' : (fn:startsWith(av.tipo, 'IDEA') ? 'bi-lightbulb' : (fn:startsWith(av.tipo, 'PROPUESTA') or av.tipo == 'COMPANERO_AGREGADO' ? 'bi-file-earmark-text' : (av.tipo == 'ASIGNACION' ? 'bi-people' : (av.tipo == 'REVISION' or av.tipo == 'ENTREGA' ? 'bi-clipboard-check' : 'bi-bell'))))}" />
+                          <form method="post" action="${ctx}/proceso/notificacion_proc.jsp" class="m-0">
+                            <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
+                            <input type="hidden" name="accion" value="abrir">
+                            <input type="hidden" name="id" value="${av.id_notificacion}">
+                            <button type="submit" class="notif-item ${av.leida_txt == 'NO' ? 'nueva' : ''}">
+                              <span class="notif-icono"><i class="bi ${iconoAviso}"></i></span>
+                              <span class="notif-texto">
+                                <span class="notif-msg"><c:out value="${av.mensaje}" /></span>
+                                <span class="notif-meta"><c:if test="${not empty av.codigo_proyecto}"><c:out value="${av.codigo_proyecto}" /> · </c:if><c:out value="${av.fecha}" /></span>
+                              </span>
+                              <c:if test="${av.leida_txt == 'NO'}"><span class="punto-nuevo" title="Sin leer"></span></c:if>
+                            </button>
+                          </form>
+                        </c:if>
+                      </c:forEach>
                     </c:forEach>
                   </c:otherwise>
                 </c:choose>

@@ -267,6 +267,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Decisión de la estudiante: las notificaciones se ven solo en un menú de la campana (ya no hay pantalla propia). Muestra los últimos 20 avisos con icono por categoría, lo no leído resaltado con un punto verde, y "Marcar todas como leídas".
 - Al hacer clic en un aviso se marca como leído y se abre el módulo correcto (PQRS, propuestas, banco de ideas o seguimiento del proyecto). Se eliminó `modulos/notificaciones/notificaciones.jsp` y el aviso repetido del inicio.
 
+### Secciones en la campana (23/10/2026)
+- El menú de notificaciones separa "Nuevas" (resaltadas, arriba) de "Anteriores" (leídas, en gris y más compactas). Los avisos leídos no se borran; los más antiguos salen solos porque solo se muestran los últimos 20.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
