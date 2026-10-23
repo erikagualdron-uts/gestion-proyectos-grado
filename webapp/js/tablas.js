@@ -37,7 +37,21 @@
       // data-mostrar-si="clave:valor": muestra el bloque solo si el botón trae ese dato
       modal.querySelectorAll('[data-mostrar-si]').forEach(function (bloque) {
         var par = bloque.getAttribute('data-mostrar-si').split(':');
-        bloque.hidden = (boton.dataset[par[0]] !== par[1]);
+        // valor "*": se muestra solo si el botón trae ese dato con contenido
+        bloque.hidden = (par[1] === '*') ? !boton.dataset[par[0]] : (boton.dataset[par[0]] !== par[1]);
+      });
+      // data-clases="clave|Valor=clase|Valor=clase": cambia la clase del elemento según el dato del botón
+      modal.querySelectorAll('[data-clases]').forEach(function (nodo) {
+        var partes = nodo.getAttribute('data-clases').split('|');
+        var valor = boton.dataset[partes.shift()];
+        var mapa = {};
+        partes.forEach(function (par) { var i = par.indexOf('='); mapa[par.slice(0, i)] = par.slice(i + 1); });
+        Object.keys(mapa).forEach(function (k) { nodo.classList.remove(mapa[k]); });
+        if (mapa[valor]) { nodo.classList.add(mapa[valor]); }
+      });
+      // data-llenar-href="clave": el enlace toma su dirección del botón
+      modal.querySelectorAll('[data-llenar-href]').forEach(function (enlace) {
+        enlace.setAttribute('href', boton.dataset[enlace.getAttribute('data-llenar-href')] || '#');
       });
       modal.querySelectorAll('[data-llenar]').forEach(function (nodo) {
         var valor = boton.dataset[nodo.getAttribute('data-llenar')];

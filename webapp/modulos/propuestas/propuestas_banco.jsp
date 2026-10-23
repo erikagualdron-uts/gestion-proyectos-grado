@@ -186,7 +186,8 @@
               <td class="acciones">
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalDetalle" title="Visualizar ${fn:escapeXml(f.codigo)}" aria-label="Visualizar ${fn:escapeXml(f.codigo)}"
                         data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-descripcion="${fn:escapeXml(f.descripcion)}"
-                        data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}" data-autor="${fn:escapeXml(f.autor)}"
+                        data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}" data-autor="${fn:escapeXml(empty f.integrantes_texto ? f.autor : f.integrantes_texto)}"
+                        data-fase="${f.estado == 'APROBADO' ? fn:escapeXml(f.fase_texto) : ''}" data-seguimiento-url="${f.id_proyecto > 0 ? ctx += '/modulos/proyectos/seguimiento.jsp?id=' += f.id_proyecto : ''}"
                         data-origen="${fn:escapeXml(f.origen_texto)}" data-estado="${estadoTexto}" data-fecha="${f.fecha_texto}"
                         data-observacion="${fn:escapeXml(f.observacion)}"><i class="bi bi-eye"></i></button>
                 <c:if test="${f.id_proyecto > 0}">
@@ -223,15 +224,23 @@
       </div>
       <div class="modal-body pt-0">
         <div class="row">
-          <div class="col-sm-6"><div class="dato-etiqueta">Origen</div><div class="dato-valor" data-llenar="origen"></div></div>
-          <div class="col-sm-3"><div class="dato-etiqueta">Estado</div><div class="dato-valor" data-llenar="estado"></div></div>
-          <div class="col-sm-3"><div class="dato-etiqueta">Fecha</div><div class="dato-valor" data-llenar="fecha"></div></div>
+          <div class="col-sm-5"><div class="dato-etiqueta">Origen</div><div class="dato-valor" data-llenar="origen"></div></div>
+          <div class="col-sm-4"><div class="dato-etiqueta">Estado</div><div class="dato-valor"><span class="insignia" data-clases="estado|Aprobado=insignia-aprobado|Aplazado=insignia-aplazado|Rechazado=insignia-rechazado|Pendiente=insignia-pendiente" data-llenar="estado"></span></div></div>
+          <div class="col-sm-3"><div class="dato-etiqueta">Fecha de registro</div><div class="dato-valor" data-llenar="fecha"></div></div>
         </div>
-        <div class="dato-etiqueta">Autor / integrantes</div><div class="dato-valor" data-llenar="autor"></div>
+        <div data-mostrar-si="fase:*" hidden><div class="dato-etiqueta">Fase actual del proyecto</div><div class="dato-valor" data-llenar="fase"></div></div>
+        <div class="dato-etiqueta">Integrantes</div><div class="dato-valor" data-llenar="autor"></div>
         <div class="dato-etiqueta">Descripción</div><div class="dato-valor" style="white-space: pre-line" data-llenar="descripcion"></div>
         <div class="dato-etiqueta">Objetivo</div><div class="dato-valor" style="white-space: pre-line" data-llenar="objetivo"></div>
         <div class="dato-etiqueta">Alcance</div><div class="dato-valor" style="white-space: pre-line" data-llenar="alcance"></div>
-        <div class="dato-etiqueta">Observación del coordinador</div><div class="dato-valor" style="white-space: pre-line" data-llenar="observacion"></div>
+        <div data-mostrar-si="observacion:*" hidden>
+          <div class="dato-etiqueta">Observación del coordinador</div>
+          <div class="alert alert-secondary mb-0" style="white-space: pre-line" data-clases="estado|Aplazado=alert-warning|Rechazado=alert-danger" data-llenar="observacion"></div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <a class="btn btn-uts" data-llenar-href="seguimientoUrl" data-mostrar-si="seguimientoUrl:*" hidden><i class="bi bi-list-check me-1"></i>Ver seguimiento</a>
+        <button type="button" class="btn btn-outline-uts" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

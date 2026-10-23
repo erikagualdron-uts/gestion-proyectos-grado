@@ -224,6 +224,11 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Cuando hay compañero, la columna de integrantes indica quién es el responsable y quién el compañero.
 - Los íconos de acciones tienen texto flotante; se quitó el botón PQRS de la pantalla del estudiante (está en el menú).
 
+### Ajuste del detalle de propuesta (23/10/2026)
+- La ventana de detalle muestra el estado como etiqueta de color, "Fecha de registro", la fase actual del proyecto y los integrantes con responsable y compañero.
+- La observación del coordinador solo aparece si existe, destacada en amarillo (aplazada) o rojo (rechazada).
+- Tiene pie con "Cerrar" y, si ya es proyecto, "Ver seguimiento".
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
