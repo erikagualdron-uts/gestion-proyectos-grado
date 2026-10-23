@@ -183,14 +183,13 @@
 - En PQRS ya **no existe el estado "Aplazado"**: el coordinador solo **aprueba o rechaza** (la respuesta es obligatoria al rechazar). Motivo: en PQRS no hay flujo de corrección y reenvío, así que "aplazar" dejaba la solicitud sin salida. El valor sigue existiendo en la base (se usa en ideas, propuestas y documentos). Esto difiere de HU-34 del PDF ("aprueba, aplaza o rechaza").
 - El estado vacío del listado distingue entre "Aún no hay PQRS radicadas" y "No hay PQRS que coincidan" con la búsqueda o los filtros.
 
-### Panel y auditoría (23/10/2026)
-Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/informe_coordinador.jsp`), con tres pestañas:
+### Panel de control (23/10/2026)
+Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/informe_coordinador.jsp`), con dos pestañas:
 - **Resumen:** 4 tarjetas y 5 gráficos con Chart.js (CDN, `js/graficos.js`): proyectos por fase, por estado, carga de docentes como director y evaluador, PQRS por tipo y estado, y actividad de los últimos 30 días. Los datos salen de consultas JSTL y se pasan al navegador en atributos `data-*`; el backend sigue siendo solo JSP + JSTL.
-- **Proyectos:** la tabla de estado de antes, con los mismos filtros.
-- **Auditoría:** bitácora general de `historial_version` (usuarios, ideas, propuestas, proyectos, fases, documentos y PQRS) con filtros por fechas, usuario, tipo, acción y búsqueda; paginada y de solo lectura.
-- Imprimir en las tres pestañas; Exportar a Excel de Proyectos y Auditoría (hasta 5000 eventos).
-- Archivos nuevos: `WEB-INF/includes/auditoria_filtros.jsp`, `js/graficos.js`. Se actualizó `DISENO.md` (regla de gráficos).
-- Problemas resueltos: las barras invertidas en una expresión regular dentro de un atributo JSP rompían la compilación (se usó `[0-9]`); MySQL falla al comparar una fecha con `''` (se usan fechas de reemplazo).
+- **Proyectos:** tabla de estado con filtros por búsqueda, fase, estado, director y evaluador.
+- Se imprime con el botón Imprimir. **Decisión de la estudiante:** se quitó la exportación a Excel y no se implementa la pestaña de auditoría (sobrecargaba la pantalla); el historial por proyecto sigue disponible.
+- Se actualizó `DISENO.md` (Chart.js autorizado solo en el Resumen).
+- Problema resuelto: las barras invertidas en una expresión regular dentro de un atributo JSP rompían la compilación.
 
 ---
 
@@ -219,8 +218,8 @@ Resumen para actualizar la documentación final. Lo que no aparece aquí se impl
 | Turnitin | Documento de la fase 5 | Enlace del director, **obligatorio en cualquier decisión** de la fase 5, una vez por versión; no se verifica el porcentaje | Evidencia |
 | Decisión del director | No se detalla | Queda cerrada cuando el evaluador o el comité ya decidieron sobre la versión (fases 3 y 5) | Evitar decisiones contradictorias |
 | Informe de estado | Para el coordinador y para el estudiante (RF-60, RF-61, HU-39) | **Solo para el coordinador**; no hay informe del estudiante | Definido por la estudiante |
-| Pantalla de informes | Informe de estado por proyecto | **Panel y auditoría**: resumen con gráficos, informe de proyectos y bitácora de auditoría general (solo coordinador) | Definido por la estudiante |
-| Exportar el informe | CSV o imprimir (RF-62, deseable) | **Imprimir** (con estilos de impresión) y **exportar a Excel** con formato | Mejor presentación |
+| Pantalla de informes | Informe de estado por proyecto | **Panel de control**: resumen con gráficos e informe de proyectos (solo coordinador) | Definido por la estudiante |
+| Exportar el informe | CSV o imprimir (RF-62, deseable) | Solo **imprimir** (con estilos de impresión); no hay exportación a archivo | Definido por la estudiante |
 | PQRS | Aprobar, aplazar o rechazar (HU-34) | Solo **aprobar o rechazar**; el cambio de director aprobado se aplica al proyecto | En PQRS no hay reenvío |
 | Seguimiento por fila | Opción en cada fila (RF-33) | Ícono de seguimiento en Propuestas Banco y en las tablas de proyectos; historial desde seguimiento y tablas | Navegación |
 | Notificaciones | Campana con contador | Además listado con filtro "solo sin leer", marcar una o todas | RF-57 |

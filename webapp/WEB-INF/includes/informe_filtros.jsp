@@ -1,4 +1,4 @@
-<%-- Filtros y consulta comunes del informe de estado del coordinador (informe_coordinador.jsp e informe_csv.jsp).
+<%-- Filtros y consulta comunes del informe de estado del coordinador (informe_coordinador.jsp).
      Define: q, qLike, filtroFase, filtroEstado, filtroDirector, filtroEvaluador y el texto SQL desdeInforme.
      Parámetros de desdeInforme, en orden: q, qLike x3, fase x2, estado x2, director x2, evaluador x2. --%>
 <c:set var="q" value="${fn:trim(param.q)}" />

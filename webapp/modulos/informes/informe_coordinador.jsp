@@ -6,12 +6,10 @@
 <c:set var="rolesPermitidos" value="COORDINADOR" />
 <%@ include file="/WEB-INF/includes/seguridad.jsp" %>
 <%@ include file="/WEB-INF/includes/informe_filtros.jsp" %>
-<%@ include file="/WEB-INF/includes/auditoria_filtros.jsp" %>
-<%-- Panel de control y auditoría (RF-60, RF-62), solo para el coordinador, en tres pestañas:
-     Resumen (indicadores y gráficos), Proyectos (informe de estado con filtros) y Auditoría (bitácora general de
-     eventos de historial_version). Los gráficos los dibuja Chart.js en el navegador con los datos que entrega el servidor. --%>
-<c:set var="titulo" value="Panel y auditoría" scope="request" />
-<c:set var="vista" value="${fn:contains(',resumen,proyectos,auditoria,', ',' += param.vista += ',') ? param.vista : 'resumen'}" />
+<%-- Panel de control (RF-60, RF-62), solo para el coordinador, en dos pestañas: Resumen (indicadores y gráficos con Chart.js)
+     y Proyectos (informe de estado con filtros). Se imprime desde el navegador. --%>
+<c:set var="titulo" value="Panel de control" scope="request" />
+<c:set var="vista" value="${fn:contains(',resumen,proyectos,', ',' += param.vista += ',') ? param.vista : 'resumen'}" />
 <c:if test="${vista == 'resumen'}"><c:set var="usarGraficos" value="si" scope="request" /></c:if>
 
 <c:set var="pp" value="${param.pp == '10' ? 10 : (param.pp == '20' ? 20 : 5)}" />
@@ -114,51 +112,6 @@
     <c:param name="q" value="${q}" /><c:param name="fase" value="${filtroFase}" /><c:param name="estado" value="${filtroEstado}" />
     <c:param name="director" value="${filtroDirector}" /><c:param name="evaluador" value="${filtroEvaluador}" />
   </c:url>
-  <c:url var="urlExcel" value="/modulos/informes/informe_excel.jsp">
-    <c:param name="vista" value="proyectos" />
-    <c:param name="q" value="${q}" /><c:param name="fase" value="${filtroFase}" /><c:param name="estado" value="${filtroEstado}" />
-    <c:param name="director" value="${filtroDirector}" /><c:param name="evaluador" value="${filtroEvaluador}" />
-  </c:url>
-</c:if>
-
-<%-- ================= Auditoría ================= --%>
-<c:if test="${vista == 'auditoria'}">
-  <sql:query var="usuariosAud" dataSource="${bd}">
-    SELECT DISTINCT u.id_usuario, u.nombre_completo FROM historial_version h JOIN usuario u ON u.id_usuario = h.id_usuario ORDER BY u.nombre_completo
-  </sql:query>
-  <sql:query var="accionesAud" dataSource="${bd}">
-    SELECT DISTINCT h.accion, ${casoAccion} AS texto FROM historial_version h ORDER BY texto
-  </sql:query>
-  <sql:query var="conteo" dataSource="${bd}">
-    SELECT COUNT(*) AS total ${desdeAuditoria}
-    <sql:param value="${aDesde}" /><sql:param value="${aDesdeP}" /><sql:param value="${aHasta}" /><sql:param value="${aHastaP}" />
-    <sql:param value="${aUsuario}" /><sql:param value="${aUsuario}" /><sql:param value="${aEntidad}" /><sql:param value="${aEntidad}" />
-    <sql:param value="${aAccion}" /><sql:param value="${aAccion}" />
-    <sql:param value="${aq}" /><sql:param value="${aqLike}" /><sql:param value="${aqLike}" /><sql:param value="${aqLike}" />
-  </sql:query>
-  <c:set var="totalRegistros" value="${conteo.rows[0].total}" />
-  <c:set var="totalPaginas" value="${fn:substringBefore(((totalRegistros + pp - 1) - ((totalRegistros + pp - 1) mod pp)) div pp, '.')}" />
-  <c:set var="totalPaginas" value="${totalPaginas < 1 ? 1 : totalPaginas}" />
-  <c:set var="pagActual" value="${pagPedida > totalPaginas ? totalPaginas : pagPedida}" />
-  <sql:query var="eventos" dataSource="${bd}">
-    SELECT ${columnasAuditoria} ${desdeAuditoria}
-    ORDER BY h.fecha_evento DESC, h.id_historial DESC LIMIT ? OFFSET ?
-    <sql:param value="${aDesde}" /><sql:param value="${aDesdeP}" /><sql:param value="${aHasta}" /><sql:param value="${aHastaP}" />
-    <sql:param value="${aUsuario}" /><sql:param value="${aUsuario}" /><sql:param value="${aEntidad}" /><sql:param value="${aEntidad}" />
-    <sql:param value="${aAccion}" /><sql:param value="${aAccion}" />
-    <sql:param value="${aq}" /><sql:param value="${aqLike}" /><sql:param value="${aqLike}" /><sql:param value="${aqLike}" />
-    <sql:param value="${pp}" /><sql:param value="${(pagActual - 1) * pp}" />
-  </sql:query>
-  <c:url var="pagBase" value="/modulos/informes/informe_coordinador.jsp">
-    <c:param name="vista" value="auditoria" />
-    <c:param name="desde" value="${aDesde}" /><c:param name="hasta" value="${aHasta}" /><c:param name="usuario" value="${aUsuario}" />
-    <c:param name="entidad" value="${aEntidad}" /><c:param name="accion" value="${aAccion}" /><c:param name="aq" value="${aq}" />
-  </c:url>
-  <c:url var="urlExcel" value="/modulos/informes/informe_excel.jsp">
-    <c:param name="vista" value="auditoria" />
-    <c:param name="desde" value="${aDesde}" /><c:param name="hasta" value="${aHasta}" /><c:param name="usuario" value="${aUsuario}" />
-    <c:param name="entidad" value="${aEntidad}" /><c:param name="accion" value="${aAccion}" /><c:param name="aq" value="${aq}" />
-  </c:url>
 </c:if>
 
 <c:set var="pagPorPagina" value="${pp}" scope="request" />
@@ -170,19 +123,17 @@
 
 <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
   <div>
-    <h1 class="titulo-pagina">Panel y auditoría</h1>
-    <p class="descripcion-pagina mb-3">Vista general del sistema: indicadores, estado de los proyectos y registro de la actividad de los usuarios.</p>
+    <h1 class="titulo-pagina">Panel de control</h1>
+    <p class="descripcion-pagina mb-3">Vista general del sistema: indicadores y gráficos, y estado de cada proyecto.</p>
   </div>
   <div class="d-flex flex-wrap gap-2 mb-3 no-imprimir">
     <button type="button" class="btn btn-outline-uts" data-imprimir><i class="bi bi-printer me-1"></i>Imprimir</button>
-    <c:if test="${vista != 'resumen'}"><a class="btn btn-uts" href="${urlExcel}"><i class="bi bi-file-earmark-excel me-1"></i>Exportar a Excel</a></c:if>
   </div>
 </div>
 
 <ul class="nav pestanas no-imprimir" role="tablist">
   <li class="nav-item"><a class="nav-link ${vista == 'resumen' ? 'active' : ''}" href="${ctx}/modulos/informes/informe_coordinador.jsp?vista=resumen"><i class="bi bi-pie-chart me-1"></i>Resumen</a></li>
   <li class="nav-item"><a class="nav-link ${vista == 'proyectos' ? 'active' : ''}" href="${ctx}/modulos/informes/informe_coordinador.jsp?vista=proyectos"><i class="bi bi-folder2-open me-1"></i>Proyectos</a></li>
-  <li class="nav-item"><a class="nav-link ${vista == 'auditoria' ? 'active' : ''}" href="${ctx}/modulos/informes/informe_coordinador.jsp?vista=auditoria"><i class="bi bi-shield-check me-1"></i>Auditoría</a></li>
 </ul>
 
 <c:choose>
@@ -247,7 +198,7 @@
       <div class="col-12">
         <div class="tarjeta grafico-tarjeta">
           <h2>Actividad de los últimos 30 días</h2>
-          <div class="texto-sec"><c:out value="${totalDias}" /> evento(s) registrados. Cada barra es un día con actividad; el detalle está en la pestaña Auditoría.</div>
+          <div class="texto-sec"><c:out value="${totalDias}" /> evento(s) registrados. Cada barra es un día con actividad.</div>
           <c:choose>
             <c:when test="${porDia.rowCount > 0}">
               <div class="grafico-caja"><canvas data-grafico="barras" data-etiquetas="<c:out value='${etDia}' />" data-series="Eventos=<c:out value='${daDia}' />" data-colores="#0B3D2E" role="img" aria-label="Gráfico de eventos por día"></canvas></div>
@@ -260,7 +211,7 @@
   </c:when>
 
   <%-- ======================== PROYECTOS ======================== --%>
-  <c:when test="${vista == 'proyectos'}">
+  <c:otherwise>
     <form method="get" action="${ctx}/modulos/informes/informe_coordinador.jsp" class="row g-3 align-items-end mb-3 no-imprimir">
       <input type="hidden" name="vista" value="proyectos">
       <input type="hidden" name="pp" value="${pp}">
@@ -331,91 +282,8 @@
         <jsp:include page="/WEB-INF/includes/paginacion.jsp" />
       </c:otherwise>
     </c:choose>
-  </c:when>
-
-  <%-- ======================== AUDITORÍA ======================== --%>
-  <c:otherwise>
-    <form method="get" action="${ctx}/modulos/informes/informe_coordinador.jsp" class="row g-3 align-items-end mb-3 no-imprimir">
-      <input type="hidden" name="vista" value="auditoria">
-      <input type="hidden" name="pp" value="${pp}">
-      <input type="hidden" name="pag" value="1">
-      <div class="col-6 col-lg-2">
-        <label for="desde" class="form-label">Desde</label>
-        <input type="date" class="form-control" id="desde" name="desde" value="<c:out value='${aDesde}' />">
-      </div>
-      <div class="col-6 col-lg-2">
-        <label for="hasta" class="form-label">Hasta</label>
-        <input type="date" class="form-control" id="hasta" name="hasta" value="<c:out value='${aHasta}' />">
-      </div>
-      <div class="col-12 col-lg-3">
-        <label for="usuario" class="form-label">Usuario</label>
-        <select class="form-select" id="usuario" name="usuario" data-autoenviar>
-          <option value="0">Todos</option>
-          <c:forEach var="u" items="${usuariosAud.rows}"><option value="${u.id_usuario}" ${aUsuario == u.id_usuario ? 'selected' : ''}><c:out value="${u.nombre_completo}" /></option></c:forEach>
-        </select>
-      </div>
-      <div class="col-6 col-lg-2">
-        <label for="entidad" class="form-label">Sobre</label>
-        <select class="form-select" id="entidad" name="entidad" data-autoenviar>
-          <option value="">Todo</option>
-          <option value="USUARIO" ${aEntidad == 'USUARIO' ? 'selected' : ''}>Usuarios</option>
-          <option value="IDEA" ${aEntidad == 'IDEA' ? 'selected' : ''}>Ideas</option>
-          <option value="PROPUESTA" ${aEntidad == 'PROPUESTA' ? 'selected' : ''}>Propuestas</option>
-          <option value="PROYECTO" ${aEntidad == 'PROYECTO' ? 'selected' : ''}>Proyectos</option>
-          <option value="FASE" ${aEntidad == 'FASE' ? 'selected' : ''}>Fases</option>
-          <option value="DOCUMENTO" ${aEntidad == 'DOCUMENTO' ? 'selected' : ''}>Documentos</option>
-          <option value="PQRS" ${aEntidad == 'PQRS' ? 'selected' : ''}>PQRS</option>
-        </select>
-      </div>
-      <div class="col-6 col-lg-3">
-        <label for="accion" class="form-label">Acción</label>
-        <select class="form-select" id="accion" name="accion" data-autoenviar>
-          <option value="">Todas</option>
-          <c:forEach var="a" items="${accionesAud.rows}"><option value="${a.accion}" ${aAccion == a.accion ? 'selected' : ''}><c:out value="${a.texto}" /></option></c:forEach>
-        </select>
-      </div>
-      <div class="col-12 col-lg">
-        <label for="aq" class="form-label">Buscar</label>
-        <input type="search" class="form-control" id="aq" name="aq" value="<c:out value='${aq}' />" placeholder="Código, usuario o detalle" maxlength="120">
-      </div>
-      <div class="col-12 col-lg-auto"><button type="submit" class="btn btn-uts w-100"><i class="bi bi-search me-1"></i>Buscar</button></div>
-    </form>
-
-    <p class="texto-sec mb-2"><c:out value="${totalRegistros}" /> evento(s) registrados<c:if test="${not empty aDesde or not empty aHasta or aUsuario > 0 or not empty aEntidad or not empty aAccion or not empty aq}"> con los filtros aplicados</c:if>. La bitácora es de solo lectura: no se puede editar ni borrar.</p>
-
-    <c:choose>
-      <c:when test="${eventos.rowCount == 0}">
-        <div class="vacio"><span class="icono-circulo"><i class="bi bi-shield-check"></i></span><h3>No hay eventos para mostrar</h3><p>Cambia las fechas o los filtros.</p></div>
-      </c:when>
-      <c:otherwise>
-        <div class="tabla-envoltorio table-responsive">
-          <table class="table tabla-uts">
-            <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Referencia</th><th>Estado</th><th>Detalle</th><th class="text-end no-imprimir">Proyecto</th></tr></thead>
-            <tbody>
-              <c:forEach var="e" items="${eventos.rows}">
-                <tr>
-                  <td style="white-space: nowrap"><c:out value="${e.fecha}" /></td>
-                  <td><div class="fw-semibold"><c:out value="${e.usuario}" /></div><div class="texto-sec"><c:out value="${e.rol_texto}" /></div></td>
-                  <td><div class="fw-semibold"><c:out value="${e.accion_texto}" /></div><div class="texto-sec"><c:out value="${e.entidad_texto}" /></div></td>
-                  <td><c:out value="${empty e.referencia ? '—' : e.referencia}" /></td>
-                  <td>
-                    <c:if test="${not empty e.estado_anterior}"><span class="texto-sec"><c:out value="${fn:replace(fn:replace(fn:toLowerCase(e.estado_anterior), '_', ' '), 'apto graduacion', 'listo para sustentación')}" /> →</span></c:if>
-                    <c:if test="${not empty e.estado_nuevo}"><strong><c:out value="${fn:replace(fn:replace(fn:toLowerCase(e.estado_nuevo), '_', ' '), 'apto graduacion', 'listo para sustentación')}" /></strong></c:if>
-                    <c:if test="${empty e.estado_anterior and empty e.estado_nuevo}">—</c:if>
-                  </td>
-                  <td style="min-width: 220px; white-space: pre-line"><c:out value="${empty e.detalle ? '—' : e.detalle}" /></td>
-                  <td class="acciones no-imprimir">
-                    <c:if test="${not empty e.id_proyecto}"><a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/historial/historial.jsp?id=${e.id_proyecto}" aria-label="Ver el historial del proyecto"><i class="bi bi-clock-history"></i></a></c:if>
-                  </td>
-                </tr>
-              </c:forEach>
-            </tbody>
-          </table>
-        </div>
-        <jsp:include page="/WEB-INF/includes/paginacion.jsp" />
-      </c:otherwise>
-    </c:choose>
   </c:otherwise>
+
 </c:choose>
 
 <jsp:include page="/WEB-INF/includes/pie.jsp" />
