@@ -112,18 +112,20 @@
   <div class="alert alert-warning" role="alert"><i class="bi bi-eye me-1"></i>Eres compañero en tu propuesta: puedes consultar las PQRS del proyecto, pero solo el responsable las radica.</div>
 </c:if>
 
+<c:if test="${sessionScope.rol != 'ESTUDIANTE'}">
 <div class="row g-3 mb-4">
   <div class="col-12 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></div></div>
   <div class="col-6 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></div></div>
   <div class="col-6 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></div></div>
 </div>
+</c:if>
 
 <form method="get" action="${ctx}/modulos/pqrs/pqrs.jsp" class="row g-3 align-items-end mb-3">
   <input type="hidden" name="pp" value="${pp}">
   <input type="hidden" name="pag" value="1">
   <div class="col-12 col-md">
     <label for="q" class="form-label">Buscar</label>
-    <input type="search" class="form-control" id="q" name="q" value="<c:out value='${q}' />" placeholder="Código, asunto o solicitante" maxlength="120">
+    <input type="search" class="form-control" id="q" name="q" value="<c:out value='${q}' />" placeholder="${sessionScope.rol == 'ESTUDIANTE' ? 'Código o asunto' : 'Código, asunto o solicitante'}" maxlength="120">
   </div>
   <div class="col-6 col-md-auto">
     <label for="tipo" class="form-label">Tipo</label>
@@ -137,8 +139,8 @@
     <select class="form-select" id="estado" name="estado" data-autoenviar>
       <option value="">Todos</option>
       <option value="PENDIENTE" ${filtroEstado == 'PENDIENTE' ? 'selected' : ''}>Pendiente</option>
-      <option value="APROBADO" ${filtroEstado == 'APROBADO' ? 'selected' : ''}>Aprobado</option>
-      <option value="RECHAZADO" ${filtroEstado == 'RECHAZADO' ? 'selected' : ''}>Rechazado</option>
+      <option value="APROBADO" ${filtroEstado == 'APROBADO' ? 'selected' : ''}>Aprobada</option>
+      <option value="RECHAZADO" ${filtroEstado == 'RECHAZADO' ? 'selected' : ''}>Rechazada</option>
     </select>
   </div>
   <div class="col-12 col-md-auto"><button type="submit" class="btn btn-uts w-100"><i class="bi bi-search me-1"></i>Buscar</button></div>
@@ -163,16 +165,32 @@
   <c:otherwise>
     <div class="tabla-envoltorio table-responsive">
       <table class="table tabla-uts">
-        <thead><tr><th>Código</th><th>Asunto</th><th>Solicitante</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+        <thead><tr><th>Código</th><th>Asunto</th><c:choose><c:when test="${sessionScope.rol == 'ESTUDIANTE'}"><th>Tipo</th><th>Fecha</th></c:when><c:otherwise><th>Solicitante</th></c:otherwise></c:choose><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
         <tbody>
           <c:forEach var="s" items="${solicitudes.rows}">
             <c:set var="tipoTexto" value="${s.tipo == 'PRORROGA' ? 'Prórroga' : (s.tipo == 'CAMBIO_DIRECTOR' ? 'Cambio de director' : (s.tipo == 'PETICION' ? 'Petición' : (s.tipo == 'QUEJA' ? 'Queja' : (s.tipo == 'RECLAMO' ? 'Reclamo' : 'Sugerencia'))))}" />
-            <c:set var="estadoTexto" value="${s.estado == 'APROBADO' ? 'Aprobado' : (s.estado == 'APLAZADO' ? 'Aplazado' : (s.estado == 'RECHAZADO' ? 'Rechazado' : 'Pendiente'))}" />
+            <c:set var="estadoTexto" value="${s.estado == 'APROBADO' ? 'Aprobada' : (s.estado == 'APLAZADO' ? 'Aplazada' : (s.estado == 'RECHAZADO' ? 'Rechazada' : 'Pendiente'))}" />
             <tr>
               <td class="fw-bold"><c:out value="${s.codigo}" /></td>
-              <td style="min-width: 240px"><div><c:out value="${s.asunto}" /></div><div class="texto-sec"><c:out value="${tipoTexto}" /><c:if test="${not empty s.codigo_proyecto}"> · <c:out value="${s.codigo_proyecto}" /></c:if></div></td>
-              <td><div><c:out value="${s.solicitante}" /></div><div class="texto-sec"><c:out value="${s.fecha}" /></div></td>
-              <td><span class="insignia insignia-${s.estado == 'APROBADO' ? 'aprobado' : (s.estado == 'APLAZADO' ? 'aplazado' : (s.estado == 'RECHAZADO' ? 'rechazado' : 'pendiente'))}"><c:out value="${estadoTexto}" /></span></td>
+              <c:choose>
+                <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
+                  <td style="min-width: 220px"><div><c:out value="${s.asunto}" /></div><c:if test="${not empty s.codigo_proyecto}"><div class="texto-sec"><c:out value="${s.codigo_proyecto}" /></div></c:if></td>
+                  <td><c:out value="${tipoTexto}" /></td>
+                  <td style="white-space: nowrap"><c:out value="${s.fecha}" /></td>
+                </c:when>
+                <c:otherwise>
+                  <td style="min-width: 240px"><div><c:out value="${s.asunto}" /></div><div class="texto-sec"><c:out value="${tipoTexto}" /><c:if test="${not empty s.codigo_proyecto}"> · <c:out value="${s.codigo_proyecto}" /></c:if></div></td>
+                  <td><div><c:out value="${s.solicitante}" /></div><div class="texto-sec"><c:out value="${s.fecha}" /></div></td>
+                </c:otherwise>
+              </c:choose>
+              <td><span class="insignia insignia-${s.estado == 'APROBADO' ? 'aprobado' : (s.estado == 'APLAZADO' ? 'aplazado' : (s.estado == 'RECHAZADO' ? 'rechazado' : 'pendiente'))}"><c:out value="${estadoTexto}" /></span>
+                <c:if test="${sessionScope.rol == 'ESTUDIANTE'}">
+                  <div class="texto-sec small mt-1"><c:choose>
+                    <c:when test="${s.estado == 'PENDIENTE'}">Sin respuesta aún</c:when>
+                    <c:otherwise>Respondida el <c:out value="${fn:substring(s.fecha_resolucion, 0, 10)}" /><c:if test="${not empty s.respuesta}"> · con observación</c:if></c:otherwise>
+                  </c:choose></div>
+                </c:if>
+              </td>
               <td class="acciones">
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalPqrs" aria-label="Visualizar ${fn:escapeXml(s.codigo)}"
                         data-codigo="${fn:escapeXml(s.codigo)}" data-tipo-texto="${tipoTexto}" data-asunto="${fn:escapeXml(s.asunto)}" data-descripcion="${fn:escapeXml(s.descripcion)}"
@@ -190,7 +208,7 @@
         </tbody>
       </table>
     </div>
-    <jsp:include page="/WEB-INF/includes/paginacion.jsp" />
+    <c:if test="${totalRegistros > 5}"><jsp:include page="/WEB-INF/includes/paginacion.jsp" /></c:if>
   </c:otherwise>
 </c:choose>
 

@@ -253,6 +253,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Decisión de la estudiante: se eliminó la pantalla `modulos/historial/historial.jsp` y todos sus accesos (tablas del coordinador y de los docentes, panel de control, seguimiento y detalles del proyecto). La tabla `historial_version` se conserva: sigue registrando los eventos (RNF-13) y alimenta el panel de control (último movimiento y actividad).
 - Las versiones de los documentos siguen visibles en el seguimiento de cada fase (versión vigente y anteriores, con sus revisiones).
 
+### Ajustes de la lista de PQRS (23/10/2026)
+- Estados en femenino ("Aprobada", "Rechazada") en la tabla y el filtro.
+- Para el estudiante: columnas Tipo y Fecha en lugar de Solicitante, sin tarjetas de resumen, sin paginación cuando hay 5 solicitudes o menos y una nota bajo el estado ("Sin respuesta aún" o "Respondida el ...").
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
