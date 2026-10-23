@@ -370,6 +370,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Solicitudes de cuenta (23/10/2026)
 - El lápiz se reemplazó por el botón verde de decisión con texto flotante; el detalle muestra el estado y tiene "Cerrar"; la ventana de gestionar explica el nivel, qué hace Aprobar y Rechazar (y que el estudiante no ve la observación), trae un ejemplo en la observación y una confirmación de rechazo específica para cuentas.
 
+### Estudiante nuevo, sin proyecto (23/10/2026)
+- El inicio de un estudiante sin proyecto muestra un cuadro de primeros pasos (sin propuesta: botones al banco y a proponer una idea propia; con propuesta pendiente o aplazada: su estado y un botón a "Mis propuestas") en lugar del aviso de revisiones del director, y un saludo que lo orienta.
+- Formulario de nueva propuesta: asteriscos en los obligatorios, ejemplos en título, objetivo y alcance, aviso de una propuesta activa por estudiante y de que solo el responsable entrega los documentos.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

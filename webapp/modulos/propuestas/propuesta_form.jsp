@@ -62,7 +62,7 @@
 <h1 class="titulo-pagina"><c:out value="${titulo}" /></h1>
 <p class="descripcion-pagina">
   <c:choose>
-    <c:when test="${not editando}">Propón tu propia idea de trabajo de grado. Quedará pendiente de aprobación del coordinador.</c:when>
+    <c:when test="${not editando}">Propón tu propia idea de trabajo de grado. Quedará pendiente de aprobación del coordinador. Solo puedes tener una propuesta activa a la vez.</c:when>
     <c:when test="${propuesta.estado_decision == 'APLAZADO'}">El coordinador aplazó tu propuesta. Corrígela y reenvíala; se conserva la versión anterior.</c:when>
     <c:otherwise>Tu propuesta está pendiente de decisión. Mientras tanto solo puedes agregar a tu compañero (si aún no lo tienes).</c:otherwise>
   </c:choose>
@@ -82,8 +82,8 @@
         <c:if test="${editando}"><input type="hidden" name="id" value="${propuesta.id_propuesta}"></c:if>
 
         <div class="mb-3">
-          <label for="titulo" class="form-label">Título</label>
-          <input type="text" class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="titulo" name="titulo" maxlength="200" minlength="5" value="<c:out value='${vTitulo}' />" ${contenidoEditable ? 'required' : 'readonly'}>
+          <label for="titulo" class="form-label requerido">Título</label>
+          <input type="text" class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="titulo" name="titulo" maxlength="200" minlength="5" placeholder="Ej.: Sistema web para el control de inventario" value="<c:out value='${vTitulo}' />" ${contenidoEditable ? 'required' : 'readonly'}>
           <div class="invalid-feedback">Ingresa el título (mínimo 5 caracteres).</div>
         </div>
         <div class="mb-3">
@@ -91,13 +91,13 @@
           <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="descripcion" name="descripcion" rows="3" maxlength="2000" ${contenidoEditable ? '' : 'readonly'}><c:out value="${vDescripcion}" /></textarea>
         </div>
         <div class="mb-3">
-          <label for="objetivo" class="form-label">Objetivo</label>
-          <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="objetivo" name="objetivo" rows="3" maxlength="2000" ${contenidoEditable ? 'required' : 'readonly'}><c:out value="${vObjetivo}" /></textarea>
+          <label for="objetivo" class="form-label requerido">Objetivo</label>
+          <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="objetivo" name="objetivo" rows="3" maxlength="2000" placeholder="¿Qué quieres lograr con tu trabajo de grado?" ${contenidoEditable ? 'required' : 'readonly'}><c:out value="${vObjetivo}" /></textarea>
           <div class="invalid-feedback">Escribe el objetivo.</div>
         </div>
         <div class="mb-3">
-          <label for="alcance" class="form-label">Alcance</label>
-          <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="alcance" name="alcance" rows="3" maxlength="2000" ${contenidoEditable ? 'required' : 'readonly'}><c:out value="${vAlcance}" /></textarea>
+          <label for="alcance" class="form-label requerido">Alcance</label>
+          <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="alcance" name="alcance" rows="3" maxlength="2000" placeholder="¿Hasta dónde llega el trabajo y qué no incluye?" ${contenidoEditable ? 'required' : 'readonly'}><c:out value="${vAlcance}" /></textarea>
           <div class="invalid-feedback">Escribe el alcance.</div>
         </div>
 
@@ -108,7 +108,7 @@
           <div class="form-text">
             <c:choose>
               <c:when test="${companeroFijo}">Compañero registrado: <strong><c:out value="${companero.rows[0].nombre_completo}" /></strong>. Ya no se puede modificar.</c:when>
-              <c:otherwise>Debe tener cuenta aprobada y no estar en otra propuesta activa. Una vez agregado, no se podrá cambiar.</c:otherwise>
+              <c:otherwise>Debe tener cuenta aprobada y no estar en otra propuesta activa. Una vez agregado, no se podrá cambiar. Tú, como responsable, serás quien entregue los documentos; tu compañero solo podrá consultarlos.</c:otherwise>
             </c:choose>
           </div>
           <div class="invalid-feedback">Entre 5 y 20 letras o números.</div>

@@ -41,6 +41,11 @@
     ORDER BY p.id_proyecto DESC LIMIT 1
     <sql:param value="${sessionScope.usuarioId}" />
   </sql:query>
+  <sql:query var="propuestaActiva" dataSource="${bd}">
+    SELECT pg.codigo, pg.estado_decision FROM propuesta_estudiante pe JOIN propuesta pg ON pg.id_propuesta = pe.id_propuesta
+    WHERE pe.id_estudiante = ? AND pg.estado_decision <> 'RECHAZADO' ORDER BY pg.id_propuesta DESC LIMIT 1
+    <sql:param value="${sessionScope.usuarioId}" />
+  </sql:query>
 </c:if>
 
 <sql:query var="calendario" dataSource="${bd}">
@@ -66,6 +71,9 @@
     <c:when test="${proyecto.rows[0].estado_general == 'APTO_GRADUACION'}"><c:set var="descripcionInicio" value="Todas tus fases están aprobadas: ya puedes preparar tu sustentación." /></c:when>
     <c:when test="${proyecto.rows[0].estado_general == 'EN_CURSO' and proyecto.rows[0].estado == 'APLAZADA'}"><c:set var="descripcionInicio" value="Tu fase fue aplazada: corrige el documento y envía una nueva versión." /></c:when>
   </c:choose>
+</c:if>
+<c:if test="${sessionScope.rol == 'ESTUDIANTE' and proyecto.rowCount == 0 and propuestaActiva.rowCount == 0}">
+  <c:set var="descripcionInicio" value="Empieza eligiendo una idea del banco o proponiendo la tuya." />
 </c:if>
 <h1 class="titulo-pagina">Hola, <c:out value="${sessionScope.primerNombre}" /></h1>
 <p class="descripcion-pagina"><c:out value="${descripcionInicio}" /></p>
@@ -142,7 +150,41 @@
   </c:if>
 </div>
 
-<c:if test="${sessionScope.rol == 'ESTUDIANTE' and notifCount == 0}">
+<c:if test="${sessionScope.rol == 'ESTUDIANTE' and proyecto.rowCount == 0}">
+  <div class="tarjeta">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-start gap-3">
+        <span class="icono-caja mb-0 flex-shrink-0"><i class="bi bi-rocket-takeoff"></i></span>
+        <div>
+          <div class="fw-bold fs-5 titulo" style="color: var(--verde-bosque)">
+            <c:choose>
+              <c:when test="${propuestaActiva.rowCount == 0}">Aún no tienes un proyecto</c:when>
+              <c:when test="${propuestaActiva.rows[0].estado_decision == 'APLAZADO'}">Tu propuesta <c:out value="${propuestaActiva.rows[0].codigo}" /> fue aplazada</c:when>
+              <c:otherwise>Tu propuesta <c:out value="${propuestaActiva.rows[0].codigo}" /> está en revisión</c:otherwise>
+            </c:choose>
+          </div>
+          <div class="texto-sec">
+            <c:choose>
+              <c:when test="${propuestaActiva.rowCount == 0}">Elige una idea del banco o propón la tuya. Cuando el coordinador la apruebe, se crea tu proyecto.</c:when>
+              <c:when test="${propuestaActiva.rows[0].estado_decision == 'APLAZADO'}">Corrígela y reenvíala para que el coordinador la revise de nuevo.</c:when>
+              <c:otherwise>El coordinador debe aprobarla para crear tu proyecto. Te avisaremos con una notificación.</c:otherwise>
+            </c:choose>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        <c:choose>
+          <c:when test="${propuestaActiva.rowCount == 0}">
+            <a class="btn btn-outline-uts" href="${ctx}/modulos/banco_ideas/banco_ideas.jsp"><i class="bi bi-lightbulb me-1"></i>Ver el banco de ideas</a>
+            <a class="btn btn-uts" href="${ctx}/modulos/propuestas/propuesta_form.jsp"><i class="bi bi-plus-lg me-1"></i>Proponer una idea propia</a>
+          </c:when>
+          <c:otherwise><a class="btn btn-uts" href="${ctx}/modulos/propuestas/propuestas_banco.jsp">Ver mi propuesta</a></c:otherwise>
+        </c:choose>
+      </div>
+    </div>
+  </div>
+</c:if>
+<c:if test="${sessionScope.rol == 'ESTUDIANTE' and proyecto.rowCount > 0 and notifCount == 0}">
   <div class="vacio">
     <span class="icono-circulo"><i class="bi bi-file-earmark"></i></span>
     <h3>Aún no hay revisiones nuevas</h3>
