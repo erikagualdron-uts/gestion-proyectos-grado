@@ -10,6 +10,9 @@
   SELECT nombre, descripcion, url, icono FROM enlace_documental WHERE activo = 1 ORDER BY orden, id_enlace
 </sql:query>
 
+<c:set var="hayDisponibles" value="${false}" />
+<c:forEach var="e" items="${enlaces.rows}"><c:if test="${fn:startsWith(e.url, 'http://') or fn:startsWith(e.url, 'https://')}"><c:set var="hayDisponibles" value="${true}" /></c:if></c:forEach>
+
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
 
 <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
@@ -21,6 +24,10 @@
     <a class="btn btn-uts mb-3" href="${ctx}/modulos/base_documental/enlaces_admin.jsp"><i class="bi bi-pencil-square me-1"></i>Administrar enlaces</a>
   </c:if>
 </div>
+
+<c:if test="${enlaces.rowCount > 0 and not hayDisponibles and sessionScope.rol != 'ADMINISTRADOR'}">
+  <div class="alert alert-info" role="alert"><i class="bi bi-info-circle me-1"></i>La universidad aún no ha publicado estos documentos. Vuelve más tarde.</div>
+</c:if>
 
 <c:choose>
   <c:when test="${enlaces.rowCount == 0}">
@@ -35,11 +42,14 @@
       <c:forEach var="e" items="${enlaces.rows}">
         <c:set var="disponible" value="${fn:startsWith(e.url, 'http://') or fn:startsWith(e.url, 'https://')}" />
         <div class="col-12 col-md-6 col-xl-4">
-          <a class="tarjeta tarjeta-modulo" ${disponible ? 'target="_blank" rel="noopener noreferrer"' : 'aria-disabled="true"'} href="${disponible ? e.url : '#'}" ${disponible ? '' : 'style="opacity:.6;pointer-events:none"'}>
+          <a class="tarjeta tarjeta-modulo" ${disponible ? 'target="_blank" rel="noopener noreferrer"' : 'aria-disabled="true" tabindex="-1"'} href="<c:out value='${disponible ? e.url : "#"}' />" ${disponible ? '' : 'style="opacity:.6;pointer-events:none"'}>
             <span class="icono-caja"><i class="bi ${empty e.icono ? 'bi-journal-text' : e.icono}"></i></span>
-            <h3><c:out value="${e.nombre}" /> <c:if test="${disponible}"><i class="bi bi-box-arrow-up-right fs-6 text-secondary"></i></c:if></h3>
+            <h3><c:out value="${e.nombre}" /></h3>
             <p><c:out value="${e.descripcion}" /></p>
-            <c:if test="${not disponible}"><span class="insignia insignia-pendiente mt-2">Enlace por configurar</span></c:if>
+            <c:choose>
+              <c:when test="${disponible}"><span class="d-inline-block mt-2 fw-semibold small" style="color: var(--verde-esmeralda)">Abrir <i class="bi bi-box-arrow-up-right"></i></span></c:when>
+              <c:otherwise><span class="insignia insignia-pendiente mt-2"><c:out value="${sessionScope.rol == 'ADMINISTRADOR' ? 'Enlace por configurar' : 'Aún no disponible'}" /></span></c:otherwise>
+            </c:choose>
           </a>
         </div>
       </c:forEach>
