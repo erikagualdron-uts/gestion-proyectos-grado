@@ -28,7 +28,7 @@
     <div class="mb-3">
       <label for="clave" class="form-label">Contraseña</label>
       <div class="campo-clave">
-        <input type="password" class="form-control" id="clave" name="clave" placeholder="••••••••" maxlength="64" autocomplete="current-password" required>
+        <input type="password" class="form-control" id="clave" name="clave" placeholder="Tu contraseña" maxlength="64" autocomplete="current-password" required>
         <button type="button" class="ver-clave" data-target="clave" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
         <div class="invalid-feedback">Ingresa tu contraseña.</div>
       </div>
