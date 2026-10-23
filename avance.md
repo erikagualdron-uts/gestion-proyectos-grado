@@ -309,6 +309,7 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Panel de control: descarga en PDF (23/10/2026)
 - El botón "Imprimir" del Panel de control se reemplazó por **Descargar PDF**: genera en el navegador (librería html2pdf.js por CDN) un PDF horizontal de la pestaña que se está viendo, con título y fecha, sin controles ni filtros. Motivo: la impresión del navegador desbordaba los gráficos.
 - No se envía nada al servidor; el backend sigue siendo solo JSP + JSTL.
+- Ajuste: la primera versión sacaba los gráficos fuera de sus tarjetas (la librería reacomoda el contenido al ancho de la hoja y los gráficos conservaban su tamaño de pantalla). Ahora el área se fija a un ancho de 1000 px mientras se genera el PDF y los gráficos se redibujan a ese ancho.
 
 ---
 
