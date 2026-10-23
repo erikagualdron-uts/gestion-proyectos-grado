@@ -26,7 +26,8 @@
   (SELECT 'IDEA' AS tipo, i.id_idea AS id, i.codigo, i.titulo, i.descripcion, i.objetivo, i.alcance,
           d.nombre_completo AS autor, i.estado_decision AS estado, i.observacion, i.fecha_creacion AS fecha,
           '' AS miembros, 0 AS id_responsable, 'Idea de docente' AS origen_texto, 0 AS id_proyecto,
-          '' AS integrantes_texto, '' AS fase_texto
+          '' AS integrantes_texto, '' AS fase_texto,
+          IFNULL((SELECT CONCAT('Idea de docente · Elegida en ', p2.codigo) FROM propuesta p2 WHERE p2.id_idea = i.id_idea LIMIT 1), '') AS relacion_texto
    FROM idea_banco i JOIN usuario d ON d.id_usuario = i.id_docente
    UNION ALL
    SELECT 'PROPUESTA', p.id_propuesta, p.codigo, p.titulo, p.descripcion, p.objetivo, p.alcance,
@@ -36,7 +37,8 @@
           IF(COUNT(*) > 1, GROUP_CONCAT(CONCAT(e.nombre_completo, IF(pe.es_responsable = 1, ' (responsable)', ' (compañero)')) ORDER BY pe.es_responsable DESC SEPARATOR ', '),
              MIN(e.nombre_completo)),
           IFNULL(MAX(CASE WHEN pr.id_proyecto IS NULL THEN NULL WHEN pr.estado_general = 'APTO_GRADUACION' THEN 'Listo para sustentación'
-                          WHEN pr.estado_general = 'CERRADO' THEN 'Proyecto cerrado' ELSE CONCAT('Fase ', pr.fase_actual, ' · ', fa.nombre) END), '')
+                          WHEN pr.estado_general = 'CERRADO' THEN 'Proyecto cerrado' ELSE CONCAT('Fase ', pr.fase_actual, ' · ', fa.nombre) END), ''),
+          IFNULL((SELECT CONCAT('Propuesta desde la idea ', i2.codigo) FROM idea_banco i2 WHERE i2.id_idea = p.id_idea), '')
    FROM propuesta p
    JOIN propuesta_estudiante pe ON pe.id_propuesta = p.id_propuesta
    JOIN usuario e ON e.id_usuario = pe.id_estudiante
@@ -69,13 +71,13 @@
 <c:set var="pagActual" value="${pagPedida > totalPaginas ? totalPaginas : pagPedida}" />
 
 <sql:query var="filas" dataSource="${bd}">
-  SELECT tipo, id, codigo, titulo, descripcion, objetivo, alcance, autor, estado, observacion, origen_texto, id_responsable, id_proyecto, integrantes_texto, fase_texto,
+  SELECT tipo, id, codigo, titulo, descripcion, objetivo, alcance, autor, estado, observacion, origen_texto, id_responsable, id_proyecto, integrantes_texto, fase_texto, relacion_texto,
          DATE_FORMAT(fecha, '%d/%m/%Y') AS fecha_texto
   FROM ${origenDatos}
   WHERE (? <> 'ESTUDIANTE' OR (tipo = 'PROPUESTA' AND FIND_IN_SET(?, miembros) > 0))
     AND (? = '' OR codigo LIKE ? OR titulo LIKE ? OR descripcion LIKE ? OR autor LIKE ?)
     AND (? = '' OR estado = ?) AND (? = '' OR tipo = ?)
-  ORDER BY fecha DESC, id DESC
+  ORDER BY (estado = 'PENDIENTE') DESC, fecha DESC, id DESC
   LIMIT ? OFFSET ?
   <sql:param value="${rolConsulta}" /><sql:param value="${sessionScope.usuarioId}" />
   <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" />
@@ -106,7 +108,7 @@
     <h1 class="titulo-pagina"><c:out value="${titulo}" /></h1>
     <p class="descripcion-pagina mb-3">
       <c:choose>
-        <c:when test="${esCoordinador}">Visualiza el detalle y gestiona cada solicitud: aprobar, aplazar o rechazar.</c:when>
+        <c:when test="${esCoordinador}">Decide sobre las ideas de los docentes y las propuestas de los estudiantes.</c:when>
         <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">Consulta el estado de tu propuesta y corrígela si fue aplazada.</c:when>
         <c:otherwise>Consulta las ideas de docentes y las propuestas de estudiantes con su estado.</c:otherwise>
       </c:choose>
@@ -124,10 +126,10 @@
 <%-- Las tarjetas de resumen no se muestran al estudiante: solo tiene una propuesta activa y el estado ya se ve en la tabla --%>
 <c:if test="${sessionScope.rol != 'ESTUDIANTE'}">
 <div class="row g-3 mb-4">
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono aplazado"><i class="bi bi-pause-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aplazadas}" default="0" /></div><div class="resumen-etiqueta">Aplazadas</div></div></div></div>
-  <div class="col-6 col-xl-3"><div class="tarjeta resumen"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></div></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroEstado == 'PENDIENTE' ? 'resumen-activa' : ''}" href="${ctx}/modulos/propuestas/propuestas_banco.jsp?estado=PENDIENTE" title="Ver solo: pendientes"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroEstado == 'APROBADO' ? 'resumen-activa' : ''}" href="${ctx}/modulos/propuestas/propuestas_banco.jsp?estado=APROBADO" title="Ver solo: aprobadas"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroEstado == 'APLAZADO' ? 'resumen-activa' : ''}" href="${ctx}/modulos/propuestas/propuestas_banco.jsp?estado=APLAZADO" title="Ver solo: aplazadas"><span class="resumen-icono aplazado"><i class="bi bi-pause-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aplazadas}" default="0" /></div><div class="resumen-etiqueta">Aplazadas</div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="tarjeta resumen text-decoration-none ${filtroEstado == 'RECHAZADO' ? 'resumen-activa' : ''}" href="${ctx}/modulos/propuestas/propuestas_banco.jsp?estado=RECHAZADO" title="Ver solo: rechazadas"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></a></div>
 </div>
 </c:if>
 
@@ -180,8 +182,17 @@
             <c:set var="estadoTexto" value="${f.estado == 'APROBADO' ? 'Aprobado' : (f.estado == 'APLAZADO' ? 'Aplazado' : (f.estado == 'RECHAZADO' ? 'Rechazado' : 'Pendiente'))}" />
             <tr>
               <td class="fw-bold"><c:out value="${f.codigo}" /></td>
-              <td style="min-width: 240px"><div><c:out value="${f.titulo}" /></div><div class="texto-sec"><c:out value="${f.origen_texto}" /></div></td>
-              <td><c:out value="${empty f.integrantes_texto ? f.autor : f.integrantes_texto}" /></td>
+              <td style="min-width: 240px"><div><c:out value="${f.titulo}" /></div><div class="texto-sec"><c:out value="${empty f.relacion_texto ? f.origen_texto : f.relacion_texto}" /></div></td>
+              <td>
+                <c:choose>
+                  <c:when test="${not empty f.integrantes_texto}">
+                    <c:forEach var="integrante" items="${fn:split(fn:replace(f.integrantes_texto, ', ', '|'), '|')}" varStatus="vi">
+                      <div class="${vi.first ? '' : 'texto-sec small'}"><c:out value="${integrante}" /></div>
+                    </c:forEach>
+                  </c:when>
+                  <c:otherwise><c:out value="${f.autor}" /></c:otherwise>
+                </c:choose>
+              </td>
               <td><span class="insignia insignia-${f.estado == 'APROBADO' ? 'aprobado' : (f.estado == 'APLAZADO' ? 'aplazado' : (f.estado == 'RECHAZADO' ? 'rechazado' : 'pendiente'))}"><c:out value="${estadoTexto}" /></span><c:if test="${f.estado == 'APROBADO' and not empty f.fase_texto}"><div class="texto-sec small mt-1"><c:out value="${f.fase_texto}" /></div></c:if></td>
               <td class="acciones">
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalDetalle" title="Visualizar ${fn:escapeXml(f.codigo)}" aria-label="Visualizar ${fn:escapeXml(f.codigo)}"
@@ -190,16 +201,19 @@
                         data-fase="${f.estado == 'APROBADO' ? fn:escapeXml(f.fase_texto) : ''}" data-seguimiento-url="${f.id_proyecto > 0 ? ctx += '/modulos/proyectos/seguimiento.jsp?id=' += f.id_proyecto : ''}"
                         data-origen="${fn:escapeXml(f.origen_texto)}" data-estado="${estadoTexto}" data-fecha="${f.fecha_texto}"
                         data-observacion="${fn:escapeXml(f.observacion)}"><i class="bi bi-eye"></i></button>
-                <c:if test="${f.id_proyecto > 0}">
-                  <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${f.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(f.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(f.codigo)}"><i class="bi bi-list-check"></i></a>
-                </c:if>
+                <c:choose>
+                  <c:when test="${f.id_proyecto > 0}">
+                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${f.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(f.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(f.codigo)}"><i class="bi bi-list-check"></i></a>
+                  </c:when>
+                  <c:otherwise><span class="btn-icono-vacio" aria-hidden="true"></span></c:otherwise>
+                </c:choose>
                 <c:choose>
                   <c:when test="${esCoordinador}">
-                    <button type="button" class="btn btn-outline-uts btn-icono" ${f.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalGestionar"
+                    <span class="d-inline-block" ${f.estado == 'PENDIENTE' ? '' : 'title="Ya decidida"'}><button type="button" class="btn btn-outline-uts btn-icono" ${f.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalGestionar"
                             title="${f.estado == 'PENDIENTE' ? 'Gestionar' : 'Ya decidida:'} ${fn:escapeXml(f.codigo)}" aria-label="${f.estado == 'PENDIENTE' ? 'Gestionar' : 'Ya decidida:'} ${fn:escapeXml(f.codigo)}"
                             data-id="${f.id}" data-accion-url="${ctx}/proceso/${f.tipo == 'IDEA' ? 'idea_proc.jsp' : 'propuesta_proc.jsp'}"
                             data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-autor="${fn:escapeXml(f.autor)}"
-                            data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-pencil"></i></button>
+                            data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-pencil"></i></button></span>
                   </c:when>
                   <c:when test="${sessionScope.rol == 'ESTUDIANTE' and (f.estado == 'PENDIENTE' or f.estado == 'APLAZADO') and f.id_responsable == sessionScope.usuarioId}">
                     <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="${f.estado == 'APLAZADO' ? 'Corregir y reenviar' : 'Editar compañero de'} ${fn:escapeXml(f.codigo)}" aria-label="${f.estado == 'APLAZADO' ? 'Corregir y reenviar' : 'Editar compañero de'} ${fn:escapeXml(f.codigo)}"><i class="bi bi-pencil"></i></a>

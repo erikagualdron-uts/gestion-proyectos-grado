@@ -275,6 +275,11 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Para quien no administra, las tarjetas sin enlace dicen "Aún no disponible" y, si no hay ninguno, un aviso; las que tienen enlace muestran "Abrir". El enlace de cada tarjeta ahora se escapa con `c:out`.
 - Los enlaces de Dropbox (con clave de acceso compartida) no están en `datos_iniciales.sql` para no publicarlos en el repositorio; se cargan desde "Administrar enlaces".
 
+### Propuestas Banco del coordinador (23/10/2026)
+- Las solicitudes pendientes salen primero; las tarjetas de resumen son filtros (clic para ver solo pendientes, aprobadas, aplazadas o rechazadas).
+- Bajo cada título se indica la relación entre ideas y propuestas ("Propuesta desde la idea ID-0001", "Idea de docente · Elegida en PG-0001").
+- El autor muestra al responsable en la primera línea y al compañero debajo; los iconos de acciones quedan alineados; el lápiz de lo ya decidido sale apagado con texto flotante "Ya decidida".
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
