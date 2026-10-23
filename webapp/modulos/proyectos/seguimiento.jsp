@@ -140,8 +140,6 @@
     <p class="descripcion-pagina mb-3"><strong><c:out value="${py.codigo}" /></strong> · <c:out value="${py.titulo}" /><c:if test="${py.estado_general != 'APTO_GRADUACION'}"><br><span class="small">Verde: fase superada o actual. Gris: fase pendiente.</span></c:if></p>
   </div>
   <div class="d-flex flex-wrap gap-2 mb-3">
-    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Historial de versiones</a>
-    <c:if test="${sessionScope.rol == 'ESTUDIANTE'}"><a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/pqrs/pqrs.jsp"><i class="bi bi-chat me-1"></i>PQRS</a></c:if>
     <button type="button" class="btn btn-outline-uts btn-sm" data-bs-toggle="modal" data-bs-target="#modalProyecto"><i class="bi bi-info-circle me-1"></i>Detalles del proyecto</button>
   </div>
 </div>
@@ -343,6 +341,10 @@
           <div class="col-6"><div class="dato-etiqueta">Fase actual</div><div class="dato-valor">Fase <c:out value="${py.fase_actual}" /> · <c:out value="${nombreFaseActual}" /></div></div>
           <div class="col-6"><div class="dato-etiqueta">Estado</div><div class="dato-valor"><c:out value="${py.estado_general == 'EN_CURSO' ? 'En curso' : (py.estado_general == 'APTO_GRADUACION' ? 'Listo para sustentación' : 'Cerrado')}" /></div></div>
         </div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <a class="btn btn-outline-uts" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Ver historial de versiones</a>
+        <button type="button" class="btn btn-uts" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
