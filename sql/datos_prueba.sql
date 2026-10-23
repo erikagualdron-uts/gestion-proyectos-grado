@@ -59,3 +59,11 @@ INSERT INTO proyecto_fase (id_proyecto, id_fase, estado, fecha_inicio, fecha_fin
   (@proyecto, 4, 'PENDIENTE', NULL, NULL),
   (@proyecto, 5, 'PENDIENTE', NULL, NULL),
   (@proyecto, 6, 'PENDIENTE', NULL, NULL);
+
+-- Comprobante de pago de la Fase 1, ya validado por el coordinador (dato de ejemplo)
+SET @pf1 := (SELECT id_proyecto_fase FROM proyecto_fase WHERE id_proyecto = @proyecto AND id_fase = 1);
+INSERT INTO documento (id_proyecto_fase, nombre, version_num, enlace_url, id_subido_por, vigente, comentario)
+VALUES (@pf1, 'Comprobante de pago', 1, 'https://example.com/comprobante-pago-ejemplo', @estudiante, 1, 'Comprobante de ejemplo');
+INSERT INTO revision (id_proyecto_fase, id_documento, id_revisor, rol_revisor, decision, observaciones)
+VALUES (@pf1, (SELECT id_documento FROM documento WHERE id_proyecto_fase = @pf1 AND nombre = 'Comprobante de pago' AND version_num = 1),
+        @coordinador, 'COMITE', 'APROBADO', NULL);

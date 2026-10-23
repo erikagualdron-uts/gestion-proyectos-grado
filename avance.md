@@ -240,6 +240,11 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Fase en revisión: línea "Falta la decisión de: ..." (coordinador, director, evaluador o comité según la fase).
 - Mensaje de "sin documentos" según quién mira; "Detalles del proyecto" muestra la fase con su nombre y "Sin asignar" en todo el sistema.
 
+### Retoques del seguimiento (23/10/2026)
+- El subtítulo muestra el código y el título del proyecto; los botones superiores son más pequeños.
+- Una fase aprobada sin documentos dice "Fase aprobada sin documentos registrados" (antes decía que esperaba el primer documento).
+- Los datos de prueba incluyen un comprobante de pago aprobado en la Fase 1 de PG-0001.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

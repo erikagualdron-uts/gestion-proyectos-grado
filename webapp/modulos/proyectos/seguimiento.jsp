@@ -137,12 +137,12 @@
 <div class="d-flex flex-wrap align-items-end justify-content-between gap-3">
   <div>
     <h1 class="titulo-pagina">Seguimiento del proyecto</h1>
-    <p class="descripcion-pagina mb-3"><c:choose><c:when test="${py.estado_general == 'APTO_GRADUACION'}">Resumen del recorrido del proyecto <c:out value="${py.codigo}" />.</c:when><c:otherwise>Verde: fase superada o actual. Gris: fase pendiente.</c:otherwise></c:choose></p>
+    <p class="descripcion-pagina mb-3"><strong><c:out value="${py.codigo}" /></strong> · <c:out value="${py.titulo}" /><c:if test="${py.estado_general != 'APTO_GRADUACION'}"><br><span class="small">Verde: fase superada o actual. Gris: fase pendiente.</span></c:if></p>
   </div>
   <div class="d-flex flex-wrap gap-2 mb-3">
-    <a class="btn btn-outline-uts" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Historial de versiones</a>
-    <c:if test="${sessionScope.rol == 'ESTUDIANTE'}"><a class="btn btn-outline-uts" href="${ctx}/modulos/pqrs/pqrs.jsp"><i class="bi bi-chat me-1"></i>PQRS</a></c:if>
-    <button type="button" class="btn btn-outline-uts" data-bs-toggle="modal" data-bs-target="#modalProyecto"><i class="bi bi-info-circle me-1"></i>Detalles del proyecto</button>
+    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/historial/historial.jsp?id=${idProyecto}"><i class="bi bi-clock-history me-1"></i>Historial de versiones</a>
+    <c:if test="${sessionScope.rol == 'ESTUDIANTE'}"><a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/pqrs/pqrs.jsp"><i class="bi bi-chat me-1"></i>PQRS</a></c:if>
+    <button type="button" class="btn btn-outline-uts btn-sm" data-bs-toggle="modal" data-bs-target="#modalProyecto"><i class="bi bi-info-circle me-1"></i>Detalles del proyecto</button>
   </div>
 </div>
 
@@ -233,7 +233,7 @@
           </div>
         </c:when>
         <c:when test="${documentos.rowCount == 0}">
-          <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-file-earmark"></i></span><h3>Aún no hay documentos</h3><p><c:out value="${soyResponsable and esFaseActual ? 'Entrega tu documento con el formulario de abajo y aparecerá aquí con su enlace.' : 'Cuando se entregue el primero, aparecerá aquí con su enlace.'}" /></p></div></div>
+          <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-file-earmark"></i></span><c:choose><c:when test="${pf.estado == 'APROBADA'}"><h3>Fase aprobada sin documentos registrados</h3><p>El proyecto avanzó a la siguiente fase; esta fase no tiene documentos asociados.</p></c:when><c:otherwise><h3>Aún no hay documentos</h3><p><c:out value="${soyResponsable and esFaseActual ? 'Entrega tu documento con el formulario de abajo y aparecerá aquí con su enlace.' : 'Cuando se entregue el primero, aparecerá aquí con su enlace.'}" /></p></c:otherwise></c:choose></div></div>
         </c:when>
         <c:otherwise>
           <div class="table-responsive">
