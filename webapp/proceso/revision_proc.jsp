@@ -59,6 +59,14 @@
     SELECT id_revision, rol_revisor, decision FROM revision WHERE id_documento = ?
     <sql:param value="${idDocumento}" />
   </sql:query>
+  <c:if test="${rolRevision == 'EVALUADOR' and fase == 3}">
+    <sql:query var="rejillaRonda" dataSource="${bd}">
+      SELECT COUNT(*) AS total FROM documento
+      WHERE id_proyecto_fase = ? AND nombre = 'Rejilla de evaluación'
+        AND fecha_subida >= (SELECT fecha_subida FROM documento WHERE id_documento = ?)
+      <sql:param value="${py.id_proyecto_fase}" /><sql:param value="${idDocumento}" />
+    </sql:query>
+  </c:if>
   <c:set var="miPrevia" value="${0}" />
   <c:set var="directorAprobo" value="${false}" />
   <c:forEach var="r" items="${previas.rows}">
@@ -74,6 +82,9 @@
     <c:when test="${py.estado_fase != 'EN_CURSO'}"><c:set var="errorRevision" value="La fase no está esperando una revisión." /></c:when>
     <c:when test="${doc.rowCount != 1 or doc.rows[0].id_documento != idDocumento}"><c:set var="errorRevision" value="El documento cambió o no existe: recarga la página y revisa la versión vigente." /></c:when>
     <c:when test="${rolRevision != 'DIRECTOR' and (fase == 3 or fase == 5) and not directorAprobo}"><c:set var="errorRevision" value="Primero el director debe aprobar el envío del documento." /></c:when>
+    <c:when test="${param.decision == 'APROBAR' and rolRevision == 'EVALUADOR' and fase == 3 and empty rejillaIngresada and rejillaRonda.rows[0].total == 0}">
+      <c:set var="errorRevision" value="Para aprobar la Fase 3 adjunta el enlace de la rejilla de evaluación diligenciada (formato F-DC-124)." />
+    </c:when>
     <c:when test="${param.decision != 'APROBAR' and (empty observacion or fn:length(observacion) > 2000)}"><c:set var="errorRevision" value="Para aplazar o rechazar escribe las observaciones (máximo 2000 caracteres)." /></c:when>
     <c:when test="${fn:length(observacion) > 2000}"><c:set var="errorRevision" value="Las observaciones pueden tener máximo 2000 caracteres." /></c:when>
     <c:when test="${(not empty rejillaIngresada and (fn:length(rejillaIngresada) > 500 or fn:contains(rejillaIngresada, ' ') or not (fn:startsWith(rejillaIngresada, 'https://') or fn:startsWith(rejillaIngresada, 'http://'))))

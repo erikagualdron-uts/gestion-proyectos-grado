@@ -67,6 +67,17 @@
   </c:forEach>
 </c:if>
 
+<%-- Fase 3: el evaluador debe adjuntar la rejilla diligenciada (F-DC-124) para aprobar, salvo que ya la haya adjuntado para esta versión --%>
+<c:if test="${rolRevision == 'EVALUADOR' and fase == 3 and not empty docVigente}">
+  <sql:query var="rejillaRonda" dataSource="${bd}">
+    SELECT COUNT(*) AS total FROM documento
+    WHERE id_proyecto_fase = ? AND nombre = 'Rejilla de evaluación'
+      AND fecha_subida >= (SELECT fecha_subida FROM documento WHERE id_documento = ?)
+    <sql:param value="${py.id_proyecto_fase}" /><sql:param value="${docVigente.id_documento}" />
+  </sql:query>
+  <c:set var="rejillaObligatoria" value="${rejillaRonda.rows[0].total == 0}" />
+</c:if>
+
 <%-- Observaciones que recibieron las versiones anteriores del documento (para comprobar que se corrigieron) --%>
 <sql:query var="anteriores" dataSource="${bd}">
   SELECT r.rol_revisor, r.decision, r.observaciones, d.version_num, u.nombre_completo AS revisor, DATE_FORMAT(r.fecha_revision, '%d/%m/%Y %H:%i') AS fecha
@@ -168,8 +179,11 @@
             </div>
             <c:if test="${rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5 or fase == 6)}">
               <div class="mb-3">
-                <label for="rejilla" class="form-label">Rejilla de evaluación <span class="texto-sec">(enlace, opcional)</span></label>
-                <input type="url" class="form-control" id="rejilla" name="rejilla" maxlength="500" placeholder="https://...">
+                <label for="rejilla" class="form-label">Rejilla de evaluación diligenciada (formato F-DC-124)
+                  <span class="texto-sec"><c:out value="${rejillaObligatoria ? '(enlace, obligatorio para aprobar)' : '(enlace, opcional)'}" /></span></label>
+                <input type="url" class="form-control" id="rejilla" name="rejilla" maxlength="500" placeholder="https://..." ${rejillaObligatoria ? 'data-obligatoria-aprobar' : ''}>
+                <div class="form-text">Es la sección "Rejilla de evaluación" del formato F-DC-124, con tus marcas SI/NO, el concepto final y la firma. Pega el enlace a tu copia diligenciada.</div>
+                <div class="invalid-feedback">Para aprobar la Fase 3 adjunta el enlace de la rejilla diligenciada (http:// o https://).</div>
               </div>
             </c:if>
             <c:if test="${rolRevision == 'DIRECTOR' and fase == 5}">
