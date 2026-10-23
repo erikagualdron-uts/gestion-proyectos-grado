@@ -257,6 +257,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Estados en femenino ("Aprobada", "Rechazada") en la tabla y el filtro.
 - Para el estudiante: columnas Tipo y Fecha en lugar de Solicitante, sin tarjetas de resumen, sin paginación cuando hay 5 solicitudes o menos y una nota bajo el estado ("Sin respuesta aún" o "Respondida el ...").
 
+### Detalle de PQRS (23/10/2026)
+- La ventana muestra arriba el estado (etiqueta) y la respuesta con el color de la decisión, quién respondió y cuándo; si no hay respuesta, un aviso. El soporte es un enlace "Abrir soporte"; "Nuevo director" solo aparece en cambios de director; el solicitante se oculta al estudiante; se agregó el botón "Cerrar".
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

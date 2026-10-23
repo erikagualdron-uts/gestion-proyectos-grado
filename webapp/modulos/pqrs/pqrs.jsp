@@ -193,7 +193,7 @@
               </td>
               <td class="acciones">
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalPqrs" aria-label="Visualizar ${fn:escapeXml(s.codigo)}"
-                        data-codigo="${fn:escapeXml(s.codigo)}" data-tipo-texto="${tipoTexto}" data-asunto="${fn:escapeXml(s.asunto)}" data-descripcion="${fn:escapeXml(s.descripcion)}"
+                        data-codigo="${fn:escapeXml(s.codigo)}" data-tipo="${s.tipo}" data-tipo-texto="${tipoTexto}" data-asunto="${fn:escapeXml(s.asunto)}" data-descripcion="${fn:escapeXml(s.descripcion)}"
                         data-solicitante="${fn:escapeXml(s.solicitante)}" data-proyecto="${fn:escapeXml(s.codigo_proyecto)}" data-estado="${estadoTexto}" data-fecha="${s.fecha}"
                         data-respuesta="${fn:escapeXml(s.respuesta)}" data-resuelto="${fn:escapeXml(s.resuelto_por)}" data-fecha-resolucion="${s.fecha_resolucion}"
                         data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-nuevo-director="${fn:escapeXml(s.nuevo_director)}"><i class="bi bi-eye"></i></button>
@@ -220,21 +220,33 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body pt-0">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+          <span class="insignia" data-clases="estado|Aprobada=insignia-aprobado|Aplazada=insignia-aplazado|Rechazada=insignia-rechazado|Pendiente=insignia-pendiente" data-llenar="estado"></span>
+          <span class="texto-sec small">Radicada el <span data-llenar="fecha"></span></span>
+        </div>
+
+        <%-- Respuesta: arriba, con el color de la decisión --%>
+        <div class="alert mb-3" data-clases="estado|Aprobada=alert-success|Aplazada=alert-warning|Rechazada=alert-danger" data-mostrar-si="resuelto:*" hidden>
+          <div class="fw-bold mb-1"><i class="bi bi-chat-left-text me-1"></i>Respuesta</div>
+          <div style="white-space: pre-line" data-vacio="Sin observaciones" data-llenar="respuesta"></div>
+          <div class="small mt-2">Resuelta por <strong data-llenar="resuelto"></strong> el <span data-llenar="fechaResolucion"></span></div>
+        </div>
+        <div class="alert alert-secondary mb-3" data-mostrar-si="resuelto:!"><i class="bi bi-hourglass-split me-1"></i>Esta solicitud aún no ha sido respondida.</div>
+
         <div class="dato-etiqueta">Asunto</div><div class="dato-valor" data-llenar="asunto"></div>
         <div class="dato-etiqueta">Descripción</div><div class="dato-valor" style="white-space: pre-line" data-llenar="descripcion"></div>
         <div class="row">
-          <div class="col-sm-4"><div class="dato-etiqueta">Solicitante</div><div class="dato-valor" data-llenar="solicitante"></div></div>
-          <div class="col-sm-4"><div class="dato-etiqueta">Proyecto</div><div class="dato-valor" data-llenar="proyecto"></div></div>
-          <div class="col-sm-4"><div class="dato-etiqueta">Radicada</div><div class="dato-valor" data-llenar="fecha"></div></div>
+          <c:if test="${sessionScope.rol != 'ESTUDIANTE'}"><div class="col-sm-6"><div class="dato-etiqueta">Solicitante</div><div class="dato-valor" data-llenar="solicitante"></div></div></c:if>
+          <div class="col-sm-6"><div class="dato-etiqueta">Proyecto</div><div class="dato-valor" data-llenar="proyecto"></div></div>
         </div>
-        <div class="dato-etiqueta">Enlace del soporte</div><div class="dato-valor" style="word-break: break-all" data-llenar="soporte"></div>
-        <div class="dato-etiqueta">Estado</div><div class="dato-valor" data-llenar="estado"></div>
-        <div class="dato-etiqueta">Respuesta del comité</div><div class="dato-valor" style="white-space: pre-line" data-llenar="respuesta"></div>
-        <div class="row">
-          <div class="col-sm-4"><div class="dato-etiqueta">Resuelta por</div><div class="dato-valor" data-llenar="resuelto"></div></div>
-          <div class="col-sm-4"><div class="dato-etiqueta">Fecha de respuesta</div><div class="dato-valor" data-llenar="fechaResolucion"></div></div>
-          <div class="col-sm-4"><div class="dato-etiqueta">Nuevo director</div><div class="dato-valor" data-llenar="nuevoDirector"></div></div>
+        <div data-mostrar-si="tipo:CAMBIO_DIRECTOR" hidden><div class="dato-etiqueta">Nuevo director</div><div class="dato-valor" data-llenar="nuevoDirector"></div></div>
+        <div data-mostrar-si="soporte:*" hidden>
+          <div class="dato-etiqueta">Soporte</div>
+          <div class="dato-valor"><a class="fw-semibold" data-llenar-href="soporte" target="_blank" rel="noopener noreferrer">Abrir soporte <i class="bi bi-box-arrow-up-right"></i></a></div>
         </div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-uts" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

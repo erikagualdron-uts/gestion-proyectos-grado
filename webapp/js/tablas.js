@@ -38,7 +38,10 @@
       modal.querySelectorAll('[data-mostrar-si]').forEach(function (bloque) {
         var par = bloque.getAttribute('data-mostrar-si').split(':');
         // valor "*": se muestra solo si el botón trae ese dato con contenido
-        bloque.hidden = (par[1] === '*') ? !boton.dataset[par[0]] : (boton.dataset[par[0]] !== par[1]);
+        // valor "!": se muestra solo si el dato está vacío
+        if (par[1] === '*') { bloque.hidden = !boton.dataset[par[0]]; }
+        else if (par[1] === '!') { bloque.hidden = !!boton.dataset[par[0]]; }
+        else { bloque.hidden = (boton.dataset[par[0]] !== par[1]); }
       });
       // data-clases="clave|Valor=clase|Valor=clase": cambia la clase del elemento según el dato del botón
       modal.querySelectorAll('[data-clases]').forEach(function (nodo) {
@@ -51,11 +54,12 @@
       });
       // data-llenar-href="clave": el enlace toma su dirección del botón
       modal.querySelectorAll('[data-llenar-href]').forEach(function (enlace) {
-        enlace.setAttribute('href', boton.dataset[enlace.getAttribute('data-llenar-href')] || '#');
+        var destino = boton.dataset[enlace.getAttribute('data-llenar-href')] || '';
+        enlace.setAttribute('href', /^(https?:\/\/|\/)/i.test(destino) ? destino : '#');
       });
       modal.querySelectorAll('[data-llenar]').forEach(function (nodo) {
         var valor = boton.dataset[nodo.getAttribute('data-llenar')];
-        nodo.textContent = (valor && valor.length) ? valor : '—';
+        nodo.textContent = (valor && valor.length) ? valor : (nodo.getAttribute('data-vacio') || '—');
       });
       modal.querySelectorAll('[data-llenar-valor]').forEach(function (campo) {
         campo.value = boton.dataset[campo.getAttribute('data-llenar-valor')] || '';
