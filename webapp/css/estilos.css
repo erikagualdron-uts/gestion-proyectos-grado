@@ -19,6 +19,8 @@
   --bs-body-bg: var(--fondo);
   --bs-link-color: var(--verde-esmeralda);
   --bs-link-hover-color: var(--verde-bosque);
+  --bs-link-color-rgb: 20, 104, 75;
+  --bs-link-hover-color-rgb: 11, 61, 46;
 }
 
 body { font-family: 'Inter', system-ui, sans-serif; background: var(--fondo); color: var(--texto); }
@@ -139,6 +141,8 @@ textarea.form-control { height: auto; }
 .tabla-uts .acciones { white-space: nowrap; text-align: right; }
 .tabla-uts .acciones .btn { margin-left: 6px; }
 .texto-sec { color: var(--texto-sec); font-size: .85rem; }
+.tabla-uts a:not(.btn) { text-decoration: none; }
+.tabla-uts a:not(.btn):hover { text-decoration: underline; }
 
 /* ---------- Paginación ---------- */
 .pagination .page-link { color: var(--verde-esmeralda); border-color: var(--borde); border-radius: 8px; margin: 0 2px; min-width: 38px; text-align: center; }
