@@ -149,7 +149,7 @@
           <div class="dato-etiqueta">Documento por revisar</div>
           <div class="dato-valor">
             <c:choose>
-              <c:when test="${esCopia}"><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · aprobada en la Fase <c:out value="${fase - 1}" /> y enviada por el director (<c:out value="${docVigente.fecha}" />)</c:when>
+              <c:when test="${esCopia}"><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · versión aprobada en la Fase <c:out value="${fase - 1}" /> y enviada por el director (<c:out value="${docVigente.fecha}" />)</c:when>
               <c:otherwise><c:out value="${docVigente.nombre}" /> · v<c:out value="${docVigente.version_num}" /> · entregó <c:out value="${docVigente.subido}" /> (<c:out value="${docVigente.fecha}" />)</c:otherwise>
             </c:choose>
           </div>
@@ -211,18 +211,28 @@
               <div class="mb-3">
                 <label for="rejilla" class="form-label">Rejilla de evaluación diligenciada (formato <c:out value="${fase == 3 ? 'F-DC-124, sección Rejilla de evaluación' : 'F-DC-129'}" />)
                   <span class="texto-sec"><c:out value="${rejillaObligatoria ? '(enlace, obligatorio para aprobar)' : '(ya adjuntada para esta versión)'}" /></span></label>
-                <input type="url" class="form-control" id="rejilla" name="rejilla" maxlength="500" placeholder="https://..." ${rejillaObligatoria ? 'data-obligatoria-aprobar' : ''}>
-                <div class="form-text">Pega el enlace a tu copia diligenciada, con tus marcas <c:out value="${fase == 3 ? 'SI/NO' : 'SI/NO/N/A'}" />, el concepto final y la firma.</div>
-                <div class="invalid-feedback">Para aprobar adjunta el enlace de la rejilla diligenciada (http:// o https://).</div>
+                <c:choose>
+                  <c:when test="${rejillaObligatoria}">
+                    <input type="url" class="form-control" id="rejilla" name="rejilla" maxlength="500" placeholder="https://..." data-obligatoria-aprobar>
+                    <div class="form-text">Pega el enlace a tu copia diligenciada, con tus marcas <c:out value="${fase == 3 ? 'SI/NO' : 'SI/NO/N/A'}" />, el concepto final y la firma.</div>
+                    <div class="invalid-feedback">Para aprobar adjunta el enlace de la rejilla diligenciada (http:// o https://).</div>
+                  </c:when>
+                  <c:otherwise><div class="form-text"><i class="bi bi-check-circle me-1"></i>Ya quedó adjunta para esta versión; puedes abrirla en el botón de documentos.</div></c:otherwise>
+                </c:choose>
               </div>
             </c:if>
             <c:if test="${rolRevision == 'DIRECTOR' and fase == 5}">
               <div class="mb-3">
                 <label for="turnitin" class="form-label">Informe de similitud (Turnitin)
                   <span class="texto-sec"><c:out value="${turnitinObligatorio ? '(enlace, obligatorio en cualquier decisión)' : '(ya adjuntado para esta versión)'}" /></span></label>
-                <input type="url" class="form-control" id="turnitin" name="turnitin" maxlength="500" placeholder="https://..." ${turnitinObligatorio ? 'required' : ''}>
-                <div class="form-text">Es la evidencia del reporte de la herramienta antiplagio institucional para esta versión del informe.</div>
-                <div class="invalid-feedback">Adjunta el enlace del informe de similitud (http:// o https://).</div>
+                <c:choose>
+                  <c:when test="${turnitinObligatorio}">
+                    <input type="url" class="form-control" id="turnitin" name="turnitin" maxlength="500" placeholder="https://..." required>
+                    <div class="form-text">Es la evidencia del reporte de la herramienta antiplagio institucional para esta versión del informe.</div>
+                    <div class="invalid-feedback">Adjunta el enlace del informe de similitud (http:// o https://).</div>
+                  </c:when>
+                  <c:otherwise><div class="form-text"><i class="bi bi-check-circle me-1"></i>Ya quedó adjunto para esta versión; puedes abrirlo con el botón "Abrir Turnitin".</div></c:otherwise>
+                </c:choose>
               </div>
             </c:if>
             <div class="mb-3">
@@ -230,7 +240,7 @@
               <textarea class="form-control" id="observacion" name="observacion" rows="5" maxlength="2000" placeholder="${fase == 1 ? 'Ej.: El comprobante no se ve completo.' : 'Escribe tus observaciones'}"><c:out value="${not empty sessionScope.vrObservacion ? sessionScope.vrObservacion : miRevision.observaciones}" /></textarea>
               <div class="invalid-feedback">Escribe las observaciones.</div>
             </div>
-            <c:if test="${not empty miRevision}"><div class="alert alert-warning small" role="alert">Ya registraste una decisión (<strong><c:out value="${miRevision.decision == 'APROBADO' ? 'aprobado' : (miRevision.decision == 'APLAZADO' ? 'aplazado' : 'rechazado')}" /></strong>). Puedes cambiarla <c:out value="${(rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5)) ? 'hasta que el evaluador o el comité decidan' : 'mientras la fase siga en revisión'}" />; al guardar de nuevo se reemplaza.</div></c:if>
+            <c:if test="${not empty miRevision}"><div class="alert alert-info small" role="alert">Ya registraste una decisión (<strong><c:out value="${miRevision.decision == 'APROBADO' ? 'aprobado' : (miRevision.decision == 'APLAZADO' ? 'aplazado' : 'rechazado')}" /></strong>). Puedes cambiarla <c:out value="${(rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5)) ? 'hasta que el evaluador o el comité decidan' : 'mientras la fase siga en revisión'}" />; al guardar de nuevo se reemplaza.</div></c:if>
             <div class="d-flex flex-wrap gap-2 justify-content-end">
               <button type="submit" name="decision" value="RECHAZAR" class="btn btn-rechazar"><i class="bi bi-x-circle me-1"></i>Rechazar</button>
               <button type="submit" name="decision" value="APLAZAR" class="btn btn-aplazar"><i class="bi bi-pause-circle me-1"></i>Aplazar</button>
@@ -243,7 +253,8 @@
                 <c:if test="${rolRevision != 'EVALUADOR' and decEva != 'APROBADO'}"><c:set var="faltanOtros" value="${faltanOtros += (empty faltanOtros ? 'el evaluador' : ', el evaluador')}" /></c:if>
                 <c:if test="${rolRevision != 'COMITE' and decCom != 'APROBADO'}"><c:set var="faltanOtros" value="${faltanOtros += (empty faltanOtros ? 'el comité' : ', el comité')}" /></c:if>
               </c:if>
-              <li><strong>Aprobar:</strong> <c:choose>
+              <li><strong><c:out value="${etiquetaAprobar}" />:</strong> <c:choose>
+                <c:when test="${etiquetaAprobar == 'Aprobar envío'}">envía el documento a revisión del evaluador y del comité.</c:when>
                 <c:when test="${fase == 1}">valida el pago y el proyecto pasa a la Fase 2.</c:when>
                 <c:when test="${(fase == 3 or fase == 5) and not empty faltanOtros}">registra tu aprobación. Aún falta la decisión de: <c:out value="${faltanOtros}" />.</c:when>
                 <c:when test="${fase == 3 or fase == 5}">registra tu aprobación; con ella la fase queda aprobada.</c:when>

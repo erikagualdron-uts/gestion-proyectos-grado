@@ -349,6 +349,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Las horas se veían 5 horas adelantadas porque MySQL en Clever Cloud trabaja en UTC. La conexión (`conexion.jsp`) ahora fija la sesión en `-05:00` (`sessionVariables=time_zone='-05:00'`), y las fechas ya guardadas se corrigieron restándoles 5 horas (solo eran datos de prueba). Las sesiones recordadas se borraron.
 - Nota para el despliegue: si se instala en otro servidor, la base seguirá guardando en su propia zona, pero la conexión de la aplicación la fija en hora de Colombia.
 
+### Calificar: director en la Fase 5 (23/10/2026)
+- Si el Turnitin (director) o la rejilla (evaluador) ya están adjuntos para esa versión, ya no se muestra la caja vacía sino una nota; la ayuda del botón usa su mismo nombre ("Aprobar envío: envía el documento a revisión del evaluador y del comité"); "versión aprobada en la Fase X"; el aviso de decisión ya registrada es informativo.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
