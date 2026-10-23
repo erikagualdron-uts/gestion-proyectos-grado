@@ -218,6 +218,12 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - La paginación se oculta cuando todas las ideas caben en una página.
 - Se corrigió el texto de prueba de la idea ID-0004.
 
+### Ajustes de Mis propuestas / Propuestas Banco (23/10/2026)
+- Encabezado "Propuesta" (estudiante) o "Título" en lugar de "Descripción".
+- Las propuestas aprobadas muestran bajo el estado la fase actual del proyecto ("Fase 4 · Informe I", "Listo para sustentación" o "Proyecto cerrado").
+- Cuando hay compañero, la columna de integrantes indica quién es el responsable y quién el compañero.
+- Los íconos de acciones tienen texto flotante; se quitó el botón PQRS de la pantalla del estudiante (está en el menú).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
