@@ -277,5 +277,5 @@ img.iniciales { object-fit: cover; }
 a.resumen { color: inherit; transition: border-color .15s, box-shadow .15s; }
 a.resumen:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra); color: inherit; }
 .tarjeta.resumen-activa { border-color: var(--verde-esmeralda); box-shadow: 0 0 0 2px rgba(20, 104, 75, .18); }
-.btn-icono-vacio { display: inline-block; width: 38px; height: 38px; vertical-align: middle; }
+.btn-icono-vacio { display: inline-block; width: 38px; height: 38px; margin-left: 6px; vertical-align: middle; }
 .btn-outline-uts:disabled { opacity: .4; background: #fff; cursor: not-allowed; }
