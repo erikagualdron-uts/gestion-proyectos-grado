@@ -262,3 +262,8 @@ img.iniciales { object-fit: cover; }
 .notif-vacio i { display: block; font-size: 1.6rem; margin-bottom: 6px; }
 @media print { .notif-panel { display: none !important; } }
 .campana { cursor: pointer; }
+
+/* Punto de aviso sin leer */
+.punto-nuevo { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--verde-esmeralda); }
+/* Los avisos largos se recortan a tres líneas (el texto completo se ve al abrirlos) */
+.notif-msg { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
