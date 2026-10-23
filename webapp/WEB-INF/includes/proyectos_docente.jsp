@@ -128,7 +128,7 @@
                 <div class="fw-semibold">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></div>
                 <div class="texto-sec mb-1"><c:out value="${p.estudiantes}" /></div>
                 <c:choose>
-                  <c:when test="${p.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado">Apto para graduación</span></c:when>
+                  <c:when test="${p.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado">Listo para sustentación</span></c:when>
                   <c:when test="${p.estado_general == 'CERRADO'}"><span class="insignia insignia-rechazado">Cerrado</span></c:when>
                   <c:when test="${porRevisar}"><span class="insignia insignia-aplazado">Por revisar</span></c:when>
                   <c:when test="${p.estado_fase == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazado · espera al estudiante</span></c:when>

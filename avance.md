@@ -129,7 +129,7 @@
 | 5 Informe II | Se copia el informe aprobado en la fase 4 | Igual que la fase 3 |
 | 6 Revisión final | Estudiante responsable (informe final) | Evaluador y comité (ambos) |
 - Aplazado: el proyecto se queda en la fase, el responsable sube una nueva versión (v2, v3…) y la revisión vuelve a empezar; las versiones anteriores se conservan y la vigente queda marcada. En las fases 3 y 5 la nueva versión vuelve primero al director.
-- Rechazado: exige observación y confirmación y cierra el proyecto. Fase 6 aprobada: el proyecto queda "Apto para graduación".
+- Rechazado: exige observación y confirmación y cierra el proyecto. Fase 6 aprobada: el proyecto queda "Listo para sustentación".
 - Rejilla de evaluación (la adjunta el evaluador) y Turnitin (lo adjunta el director en la fase 5): enlaces opcionales al calificar.
 - Solo el responsable entrega; el compañero solo visualiza. Si el responsable está inactivo, el proyecto no recibe documentos.
 
@@ -142,7 +142,7 @@
 **Pantallas:** `proyectos/seguimiento.jsp`, `proyectos/revision_form.jsp`, `docente_director/docente_director.jsp`, `docente_evaluador/docente_evaluador.jsp`. **Procesos:** `entrega_proc.jsp`, `revision_proc.jsp`. **Fragmentos:** `fases.jsp`, `proyectos_docente.jsp`.
 **Requerimientos:** RF-38 a RF-52 (RF-46 con confirmación en el navegador). **Historias:** HU-22 a HU-32.
 
-**Pruebas hechas en el despliegue (peticiones HTTP):** ciclo completo de las seis fases hasta "Apto para graduación" (con aplazados en las fases 1, 2 y 3, rejilla y Turnitin); compañero y otros roles que intentan entregar o calificar; enlaces inválidos; entrega mientras el documento está en revisión; evaluador y comité antes de que el director apruebe el envío (también por POST directo); documento cambiado o inexistente; rechazo que cierra el proyecto y bloqueo de nuevas entregas y decisiones; permisos del seguimiento por rol (estudiante ajeno, docente no asignado); tablas de Director y Evaluador con filtro por fase y búsqueda; historial de versiones y revisiones en la base.
+**Pruebas hechas en el despliegue (peticiones HTTP):** ciclo completo de las seis fases hasta "Listo para sustentación" (con aplazados en las fases 1, 2 y 3, rejilla y Turnitin); compañero y otros roles que intentan entregar o calificar; enlaces inválidos; entrega mientras el documento está en revisión; evaluador y comité antes de que el director apruebe el envío (también por POST directo); documento cambiado o inexistente; rechazo que cierra el proyecto y bloqueo de nuevas entregas y decisiones; permisos del seguimiento por rol (estudiante ajeno, docente no asignado); tablas de Director y Evaluador con filtro por fase y búsqueda; historial de versiones y revisiones en la base.
 **Pendiente / mejoras posibles:** que el coordinador vea en su asignación un indicador de proyectos "por validar".
 
 ### Ajuste de diseño (22/10/2026)
@@ -150,3 +150,4 @@
 - En "Calificar documento" el revisor ve ahora la fase y su estado, el comentario de la entrega, un botón "Abrir documento" (sin repetir el nombre) y las observaciones que recibieron las versiones anteriores, para comprobar que se corrigieron. El orden de los botones de decisión (Rechazar, Aplazar, Aprobar) se mantiene igual en todas las pantallas por coherencia.
 - **Rejilla de evaluación y formato F-DC-124:** el formato institucional trae la rejilla dentro del mismo documento (SI/NO por criterio, concepto final y firmas del director y del evaluador) y el informe de similitud en el Anexo A. En el sistema el evaluador adjunta el enlace de su copia diligenciada ("Rejilla de evaluación diligenciada (formato F-DC-124)"): **obligatorio para aprobar en la Fase 3** (si no la adjuntó ya para esa versión) y opcional en las demás fases y decisiones. Diferencias conocidas con el formato: admite hasta 3 estudiantes (el sistema, 2) y pide los datos del pago (LQ, banco, valor); el sistema solo pide el enlace del comprobante.
 - En las fases 3 y 5, cuando el evaluador o el comité ya decidieron sobre una versión, la decisión del director queda cerrada (no se puede editar, ni en la pantalla ni en el servidor), para no dejar decisiones contradictorias. Además, el documento que el sistema copia a esas fases se describe como "aprobada en la Fase N y enviada por el director".
+- Al aprobar la fase 6 el proyecto se muestra como **"Listo para sustentación"** (antes decía "Apto para graduación"): después de la revisión final lo que sigue es la sustentación del trabajo de grado. Es solo el texto visible: el valor interno en la base de datos sigue siendo `APTO_GRADUACION`.

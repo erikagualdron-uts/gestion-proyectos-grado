@@ -11,7 +11,7 @@
   Registrar o editar la decisión de un revisor sobre el documento de la fase actual (RF-41, RF-43, RF-44, RF-45, RF-46, RF-52).
   Fase 1: comité (coordinador). Fases 2 y 4: director. Fases 3 y 5: el director aprueba el envío y luego deciden evaluador y comité.
   Fase 6: evaluador y comité. Resultado de la fase: cualquier RECHAZADO la cierra; cualquier APLAZADO la devuelve al estudiante;
-  cuando todos los requeridos aprueban, avanza (la fase 6 deja el proyecto apto para graduación).
+  cuando todos los requeridos aprueban, avanza (la fase 6 deja el proyecto listo para sustentación).
 --%>
 <c:set var="observacion" value="${fn:trim(param.observacion)}" />
 <c:set var="rejillaIngresada" value="${fn:trim(param.rejilla)}" />
@@ -204,7 +204,7 @@
         </sql:update>
         <sql:update>
           INSERT INTO historial_version (id_usuario, id_proyecto, entidad, id_entidad, accion, estado_anterior, estado_nuevo, detalle)
-          VALUES (?, ?, 'PROYECTO', ?, 'APTO_GRADUACION', 'EN_CURSO', 'APTO_GRADUACION', 'Revisión final aprobada: el proyecto queda apto para graduación')
+          VALUES (?, ?, 'PROYECTO', ?, 'APTO_GRADUACION', 'EN_CURSO', 'APTO_GRADUACION', 'Revisión final aprobada: el proyecto queda listo para sustentación')
           <sql:param value="${sessionScope.usuarioId}" /><sql:param value="${idProyecto}" /><sql:param value="${idProyecto}" />
         </sql:update>
       </c:if>
@@ -236,7 +236,7 @@
         SELECT pe.id_estudiante, ?, 'REVISION', ?
         FROM propuesta_estudiante pe JOIN proyecto pr ON pr.id_propuesta = pe.id_propuesta WHERE pr.id_proyecto = ?
         <sql:param value="${idProyecto}" />
-        <sql:param value="${fn:substring(rolTexto += ' ' += textoDecision += ' ' += nombrePrincipal += ' (fase ' += fase += ') del proyecto ' += py.codigo += '.' += (resultadoFase == 'APROBADA' ? (fase == 6 ? ' El proyecto queda apto para graduación.' : ' La fase fue aprobada.') : (resultadoFase == 'APLAZADA' ? ' Corrige y entrega una nueva versión.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ''))), 0, 250)}" />
+        <sql:param value="${fn:substring(rolTexto += ' ' += textoDecision += ' ' += nombrePrincipal += ' (fase ' += fase += ') del proyecto ' += py.codigo += '.' += (resultadoFase == 'APROBADA' ? (fase == 6 ? ' El proyecto queda listo para sustentación.' : ' La fase fue aprobada.') : (resultadoFase == 'APLAZADA' ? ' Corrige y entrega una nueva versión.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ''))), 0, 250)}" />
         <sql:param value="${idProyecto}" />
       </sql:update>
       <c:if test="${rolRevision == 'DIRECTOR' and decisionBd == 'APROBADO' and resultadoFase == 'EN_CURSO' and (fase == 3 or fase == 5)}">
@@ -265,7 +265,7 @@
 <c:choose>
   <c:when test="${empty errorRevision}">
     <c:set var="flashTipo" value="success" scope="session" />
-    <c:set var="flashMsg" value="Decisión registrada: ${decisionBd == 'APROBADO' ? 'aprobado' : (decisionBd == 'APLAZADO' ? 'aplazado' : 'rechazado')}.${resultadoFase == 'APROBADA' ? (fase == 6 ? ' El proyecto queda apto para graduación.' : ' La fase fue aprobada y avanzó a la siguiente.') : (resultadoFase == 'APLAZADA' ? ' La fase se devolvió al estudiante.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ' Falta la decisión de los demás revisores.'))}" scope="session" />
+    <c:set var="flashMsg" value="Decisión registrada: ${decisionBd == 'APROBADO' ? 'aprobado' : (decisionBd == 'APLAZADO' ? 'aplazado' : 'rechazado')}.${resultadoFase == 'APROBADA' ? (fase == 6 ? ' El proyecto queda listo para sustentación.' : ' La fase fue aprobada y avanzó a la siguiente.') : (resultadoFase == 'APLAZADA' ? ' La fase se devolvió al estudiante.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ' Falta la decisión de los demás revisores.'))}" scope="session" />
     <c:redirect url="/modulos/proyectos/seguimiento.jsp"><c:param name="id" value="${idProyecto}" /></c:redirect>
   </c:when>
   <c:otherwise>

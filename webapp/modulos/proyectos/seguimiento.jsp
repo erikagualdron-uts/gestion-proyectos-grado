@@ -134,7 +134,7 @@
 </div>
 
 <c:choose>
-  <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><div class="alert alert-success" role="alert"><i class="bi bi-mortarboard me-1"></i><strong>Apto para graduación.</strong> Se aprobó la revisión final del proyecto <c:out value="${py.codigo}" />.</div></c:when>
+  <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><div class="alert alert-success" role="alert"><i class="bi bi-mortarboard me-1"></i><strong>Listo para sustentación.</strong> Se aprobó la revisión final del proyecto <c:out value="${py.codigo}" />.</div></c:when>
   <c:when test="${py.estado_general == 'CERRADO'}"><div class="alert alert-danger" role="alert"><i class="bi bi-x-octagon me-1"></i><strong>Proyecto cerrado.</strong> El proceso se cerró por una decisión de rechazo.</div></c:when>
 </c:choose>
 
@@ -280,7 +280,7 @@
           <div class="col-6"><div class="dato-etiqueta">Director</div><div class="dato-valor"><c:out value="${empty py.director ? 'Por asignar' : py.director}" /></div></div>
           <div class="col-6"><div class="dato-etiqueta">Evaluador</div><div class="dato-valor"><c:out value="${empty py.evaluador ? 'Por asignar' : py.evaluador}" /></div></div>
           <div class="col-6"><div class="dato-etiqueta">Fase actual</div><div class="dato-valor"><c:out value="${py.fase_actual}" /></div></div>
-          <div class="col-6"><div class="dato-etiqueta">Estado</div><div class="dato-valor"><c:out value="${py.estado_general == 'EN_CURSO' ? 'En curso' : (py.estado_general == 'APTO_GRADUACION' ? 'Apto para graduación' : 'Cerrado')}" /></div></div>
+          <div class="col-6"><div class="dato-etiqueta">Estado</div><div class="dato-valor"><c:out value="${py.estado_general == 'EN_CURSO' ? 'En curso' : (py.estado_general == 'APTO_GRADUACION' ? 'Listo para sustentación' : 'Cerrado')}" /></div></div>
         </div>
       </div>
     </div>
