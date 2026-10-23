@@ -87,8 +87,13 @@
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalVerCuenta" title="Ver la solicitud de ${fn:escapeXml(s.nombre_completo)}" aria-label="Visualizar la solicitud de ${fn:escapeXml(s.nombre_completo)}"
                         data-nombre="${fn:escapeXml(s.nombre_completo)}" data-documento="${fn:escapeXml(s.tipo_documento)} ${fn:escapeXml(s.numero_documento)}"
                         data-correo="${fn:escapeXml(s.correo)}" data-registro="${s.registro}"><i class="bi bi-eye"></i></button>
-                <button type="button" class="btn btn-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalGestionarCuenta" title="Aprobar o rechazar la solicitud de ${fn:escapeXml(s.nombre_completo)}" aria-label="Aprobar o rechazar la solicitud de ${fn:escapeXml(s.nombre_completo)}"
-                        data-id="${s.id_usuario}" data-nombre="${fn:escapeXml(s.nombre_completo)}" data-correo="${fn:escapeXml(s.correo)}"><i class="bi bi-check2-square"></i></button>
+                <div class="dropdown d-inline-block">
+                  <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="Más acciones" aria-label="Más acciones de ${fn:escapeXml(s.nombre_completo)}"><i class="bi bi-three-dots"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end acciones-menu">
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalGestionarCuenta"
+                        data-id="${s.id_usuario}" data-nombre="${fn:escapeXml(s.nombre_completo)}" data-correo="${fn:escapeXml(s.correo)}"><i class="bi bi-check2-square me-2"></i>Aprobar o rechazar</button></li>
+                  </ul>
+                </div>
               </td>
             </tr>
           </c:forEach>

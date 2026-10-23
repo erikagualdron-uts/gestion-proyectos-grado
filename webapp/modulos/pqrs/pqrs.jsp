@@ -207,12 +207,20 @@
                         data-respuesta="${fn:escapeXml(s.respuesta)}" data-resuelto="${fn:escapeXml(s.resuelto_por)}" data-fecha-resolucion="${s.fecha_resolucion}"
                         data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-nuevo-director="${fn:escapeXml(s.nuevo_director)}"><i class="bi bi-eye"></i></button>
                 <c:if test="${esCoordinador}">
-                  <span class="d-inline-block" title="${s.estado == 'PENDIENTE' ? 'Resolver la solicitud' : 'Ya resuelta'}"><button type="button" class="btn btn-outline-uts btn-icono" ${s.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalResolver" aria-label="Gestionar ${fn:escapeXml(s.codigo)}"
+                  <div class="dropdown d-inline-block">
+                  <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="Más acciones" aria-label="Más acciones de ${fn:escapeXml(s.codigo)}"><i class="bi bi-three-dots"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end acciones-menu">
+                    <c:choose>
+                      <c:when test="${s.estado == 'PENDIENTE'}"><li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResolver"
                           data-id="${s.id_pqrs}" data-tipo="${s.tipo}" data-codigo="${fn:escapeXml(s.codigo)}" data-tipo-texto="${tipoTexto}" data-asunto="${fn:escapeXml(s.asunto)}"
                           data-descripcion="${fn:escapeXml(s.descripcion)}" data-solicitante="${fn:escapeXml(s.solicitante)}" data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-director-actual="${s.id_director}" data-evaluador-actual="${s.id_evaluador}"
                           data-proyecto-texto="${fn:escapeXml(s.codigo_proyecto)} · ${fn:escapeXml(s.titulo_proyecto)}"
                           data-director-nombre="${fn:escapeXml(empty s.director_actual_nombre ? 'Sin asignar' : s.director_actual_nombre)}"
-                          data-evaluador-nombre="${fn:escapeXml(empty s.evaluador_actual_nombre ? 'Sin asignar' : s.evaluador_actual_nombre)}"><i class="bi bi-pencil"></i></button></span>
+                          data-evaluador-nombre="${fn:escapeXml(empty s.evaluador_actual_nombre ? 'Sin asignar' : s.evaluador_actual_nombre)}"><i class="bi bi-check2-square me-2"></i>Aprobar o rechazar</button></li></c:when>
+                      <c:otherwise><li><span class="dropdown-item-text texto-sec small">Ya resuelta: sin acciones disponibles</span></li></c:otherwise>
+                    </c:choose>
+                  </ul>
+                </div>
                 </c:if>
               </td>
             </tr>

@@ -133,14 +133,15 @@
               </td>
               <td class="acciones">
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(p.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                <c:choose>
-                  <c:when test="${porRevisar}">
-                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/revision_form.jsp?id=${p.id_proyecto}" title="Calificar el documento de ${fn:escapeXml(p.codigo)}" aria-label="Calificar el documento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-pencil"></i></a>
-                  </c:when>
-                  <c:otherwise>
-                    <span class="d-inline-block" title="No hay ningún documento por calificar"><button type="button" class="btn btn-outline-uts btn-icono" disabled aria-label="No hay documento por calificar en ${fn:escapeXml(p.codigo)}"><i class="bi bi-pencil"></i></button></span>
-                  </c:otherwise>
-                </c:choose>
+                <div class="dropdown d-inline-block">
+                  <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="Más acciones" aria-label="Más acciones de ${fn:escapeXml(p.codigo)}"><i class="bi bi-three-dots"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end acciones-menu">
+                    <c:choose>
+                      <c:when test="${porRevisar}"><li><a class="dropdown-item" href="${ctx}/modulos/proyectos/revision_form.jsp?id=${p.id_proyecto}"><i class="bi bi-clipboard-check me-2"></i>Calificar el documento</a></li></c:when>
+                      <c:otherwise><li><span class="dropdown-item-text texto-sec small">No hay ningún documento por calificar</span></li></c:otherwise>
+                    </c:choose>
+                  </ul>
+                </div>
               </td>
             </tr>
           </c:forEach>

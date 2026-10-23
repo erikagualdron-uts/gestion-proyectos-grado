@@ -137,10 +137,18 @@
               <td><c:choose><c:when test="${empty p.evaluador}"><span class="insignia insignia-aplazado">Sin asignar</span></c:when><c:otherwise><c:out value="${p.evaluador}" /></c:otherwise></c:choose></td>
               <td class="acciones">
                 <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(p.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                <span class="d-inline-block" ${p.estado_general == 'EN_CURSO' ? 'title="Asignar director y evaluador"' : (p.estado_general == 'CERRADO' ? 'title="Proyecto cerrado: no se puede reasignar"' : 'title="Proyecto terminado: no se puede reasignar"')}><button type="button" class="btn btn-outline-uts btn-icono" ${p.estado_general == 'EN_CURSO' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalAsignar" aria-label="Asignar director y evaluador de ${fn:escapeXml(p.codigo)}"
-                        data-id="${p.id_proyecto}" data-codigo="${fn:escapeXml(p.codigo)}" data-titulo="${fn:escapeXml(p.titulo)}" data-estudiantes="${fn:escapeXml(p.estudiantes)}"
+                <div class="dropdown d-inline-block">
+                  <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="Más acciones" aria-label="Más acciones de ${fn:escapeXml(p.codigo)}"><i class="bi bi-three-dots"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end acciones-menu">
+                    <c:choose>
+                      <c:when test="${p.estado_general == 'EN_CURSO'}"><li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAsignar"
+                          data-id="${p.id_proyecto}" data-codigo="${fn:escapeXml(p.codigo)}" data-titulo="${fn:escapeXml(p.titulo)}" data-estudiantes="${fn:escapeXml(p.estudiantes)}"
                         data-director="${empty p.id_director ? '' : p.id_director}" data-evaluador="${empty p.id_evaluador ? '' : p.id_evaluador}"
-                        data-avanzado="${p.fase_actual > 1 ? 'SI' : ''}" data-fase-texto="Fase ${p.fase_actual} · ${fn:escapeXml(p.fase)}"><i class="bi bi-pencil"></i></button></span>
+                        data-avanzado="${p.fase_actual > 1 ? 'SI' : ''}" data-fase-texto="Fase ${p.fase_actual} · ${fn:escapeXml(p.fase)}"><i class="bi bi-people me-2"></i>Asignar director y evaluador</button></li></c:when>
+                      <c:otherwise><li><span class="dropdown-item-text texto-sec small"><c:out value="${p.estado_general == 'CERRADO' ? 'Proyecto cerrado: no se puede reasignar' : 'Proyecto terminado: no se puede reasignar'}" /></span></li></c:otherwise>
+                    </c:choose>
+                  </ul>
+                </div>
               </td>
             </tr>
           </c:forEach>

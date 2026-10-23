@@ -389,6 +389,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Acciones de Propuestas Banco con menú (23/10/2026)
 - Cada fila lleva siempre dos botones: el ojo y un menú de tres puntos con lo que se puede hacer en ese momento (ver seguimiento, aprobar/aplazar/rechazar, corregir y reenviar o agregar compañero); si no hay nada, dice "Sin acciones disponibles". Sin huecos y sin botones apagados.
 
+### Menú de tres puntos en todas las tablas con acciones (23/10/2026)
+- Propuestas Banco, PQRS, Asignación de proyectos, Director y Evaluador, Usuarios y Solicitudes de cuenta usan ahora el mismo patrón: el ojo (o el acceso al seguimiento) y un menú de tres puntos con lo que se puede hacer en esa fila; lo que no aplica se explica dentro del menú en lugar de dejar botones apagados o huecos. El Panel de control (pestaña Proyectos) y la administración de enlaces tienen una sola acción por fila y se dejaron como estaban.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
