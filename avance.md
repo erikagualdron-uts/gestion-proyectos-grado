@@ -358,6 +358,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Inicio del estudiante: código del proyecto y calendario (23/10/2026)
 - El panel "Tu proyecto" muestra el código y el título (por ejemplo "PG-0005 · Idea de prueba"). La tarjeta "Calendario académico" ya no sale en el inicio del estudiante (la tiene en la Base documental), así que quedan cuatro tarjetas en una fila; los demás roles la conservan (RF-18).
 
+### Color de los textos de ejemplo (23/10/2026)
+- Los ejemplos dentro de los campos (placeholder) ahora van en gris claro en todo el sistema, para que no se confundan con datos ya escritos.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
