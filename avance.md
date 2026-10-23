@@ -345,6 +345,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Botón de decidir en Propuestas Banco (23/10/2026)
 - El lápiz del coordinador se reemplazó por un botón verde con el icono de decisión ("Aprobar, aplazar o rechazar"), que solo aparece en lo pendiente; en lo ya decidido no se muestra ningún botón apagado.
 
+### Hora de Colombia (23/10/2026)
+- Las horas se veían 5 horas adelantadas porque MySQL en Clever Cloud trabaja en UTC. La conexión (`conexion.jsp`) ahora fija la sesión en `-05:00` (`sessionVariables=time_zone='-05:00'`), y las fechas ya guardadas se corrigieron restándoles 5 horas (solo eran datos de prueba). Las sesiones recordadas se borraron.
+- Nota para el despliegue: si se instala en otro servidor, la base seguirá guardando en su propia zona, pero la conexión de la aplicación la fija en hora de Colombia.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
