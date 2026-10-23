@@ -288,3 +288,11 @@ a.resumen:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra
   .grafico-imprimir { display: block !important; width: 100%; max-height: 300px; object-fit: contain; }
   .grafico-tarjeta { break-inside: avoid; page-break-inside: avoid; }
 }
+
+/* Generación del PDF: se ocultan los controles y se muestra la cabecera del informe */
+.generando-pdf .no-imprimir { display: none !important; }
+.generando-pdf .pdf-cabecera { margin-bottom: 16px; }
+.pdf-cabecera .pdf-sistema { font-size: .8rem; color: var(--texto-sec); }
+.pdf-cabecera .pdf-titulo { font-size: 1.5rem; font-weight: 800; color: var(--verde-bosque); margin: 2px 0; }
+.pdf-cabecera .pdf-fecha { font-size: .8rem; color: var(--texto-sec); }
+#area-pdf { background: var(--fondo); }

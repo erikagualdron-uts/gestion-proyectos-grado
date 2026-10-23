@@ -11,6 +11,7 @@
 <c:set var="titulo" value="Panel de control" scope="request" />
 <c:set var="vista" value="${fn:contains(',resumen,proyectos,', ',' += param.vista += ',') ? param.vista : 'resumen'}" />
 <c:if test="${vista == 'resumen'}"><c:set var="usarGraficos" value="si" scope="request" /></c:if>
+<c:set var="usarPdf" value="si" scope="request" />
 
 <c:set var="pp" value="${param.pp == '10' ? 10 : (param.pp == '20' ? 20 : 5)}" />
 <c:catch var="pagInvalida"><c:set var="pagPedida" value="${empty param.pag ? 1 : param.pag + 0}" /></c:catch>
@@ -131,7 +132,7 @@
     <p class="descripcion-pagina mb-3">Vista general del sistema: indicadores y gráficos, y estado de cada proyecto.</p>
   </div>
   <div class="d-flex flex-wrap gap-2 mb-3 no-imprimir">
-    <button type="button" class="btn btn-outline-uts" data-imprimir><i class="bi bi-printer me-1"></i>Imprimir</button>
+    <button type="button" class="btn btn-uts" data-descargar-pdf="area-pdf" data-pdf-nombre="${vista == 'resumen' ? 'panel_de_control_resumen' : 'panel_de_control_proyectos'}" data-pdf-titulo="Panel de control · ${vista == 'resumen' ? 'Resumen' : 'Proyectos'}"><i class="bi bi-file-earmark-pdf me-1"></i>Descargar PDF</button>
   </div>
 </div>
 
@@ -140,6 +141,8 @@
   <li class="nav-item"><a class="nav-link ${vista == 'proyectos' ? 'active' : ''}" href="${ctx}/modulos/informes/informe_coordinador.jsp?vista=proyectos"><i class="bi bi-folder2-open me-1"></i>Proyectos</a></li>
 </ul>
 
+<div id="area-pdf">
+<div class="pdf-cabecera" hidden></div>
 <c:choose>
   <%-- ======================== RESUMEN ======================== --%>
   <c:when test="${vista == 'resumen'}">
@@ -290,5 +293,6 @@
   </c:otherwise>
 
 </c:choose>
+</div>
 
 <jsp:include page="/WEB-INF/includes/pie.jsp" />

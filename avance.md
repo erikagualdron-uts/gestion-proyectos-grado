@@ -306,6 +306,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Impresión del Panel de control (23/10/2026)
 - Los gráficos se imprimían desbordados y encimados porque el lienzo conserva su tamaño de pantalla; ahora, al imprimir, cada gráfico se reemplaza por una imagen ajustada a su tarjeta y se restaura al terminar.
 
+### Panel de control: descarga en PDF (23/10/2026)
+- El botón "Imprimir" del Panel de control se reemplazó por **Descargar PDF**: genera en el navegador (librería html2pdf.js por CDN) un PDF horizontal de la pestaña que se está viendo, con título y fecha, sin controles ni filtros. Motivo: la impresión del navegador desbordaba los gráficos.
+- No se envía nada al servidor; el backend sigue siendo solo JSP + JSTL.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

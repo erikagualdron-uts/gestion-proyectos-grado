@@ -67,6 +67,8 @@
       var imagen = document.createElement('img');
       imagen.className = 'grafico-imprimir';
       imagen.alt = lienzo.getAttribute('aria-label') || 'Gráfico';
+      imagen.width = lienzo.width;
+      imagen.height = lienzo.height;
       imagen.src = lienzo.toDataURL('image/png');
       lienzo.insertAdjacentElement('afterend', imagen);
     });

@@ -15,6 +15,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="${ctx}/js/graficos.js"></script>
 </c:if>
+<c:if test="${not empty usarPdf}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="${ctx}/js/pdf.js"></script>
+</c:if>
 <script src="${ctx}/js/validaciones.js"></script>
 <script src="${ctx}/js/tablas.js"></script>
 </body>
