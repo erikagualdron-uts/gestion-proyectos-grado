@@ -105,13 +105,6 @@
   </div>
 </c:if>
 
-<c:if test="${notifCount > 0}">
-  <div class="tarjeta d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3 py-3">
-    <div><i class="bi bi-bell me-2"></i><span class="fw-bold">Tienes <c:out value="${notifCount}" /> notificación(es) sin leer.</span></div>
-    <a class="btn btn-outline-uts btn-sm" href="${ctx}/modulos/notificaciones/notificaciones.jsp">Ver notificaciones</a>
-  </div>
-</c:if>
-
 <c:set var="hayCalendario" value="${calendario.rowCount > 0 and (fn:startsWith(calendario.rows[0].url, 'https://') or fn:startsWith(calendario.rows[0].url, 'http://'))}" />
 <c:set var="columnasTarjeta" value="${fn:length(fn:split(tarjetas, ';')) + (hayCalendario ? 1 : 0) == 4 ? 'col-xl-3' : 'col-xl-4'}" />
 <div class="row g-3 mb-4">

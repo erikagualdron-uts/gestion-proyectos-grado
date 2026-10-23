@@ -263,6 +263,10 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Inicio del estudiante: tren de fases (23/10/2026)
 - La barra de rayas se reemplazó por un tren de seis fases en miniatura (mismo diseño del seguimiento, con el nombre de cada fase); se quitó el botón PQRS y la etiqueta repetida del panel, el aviso de notificaciones pasó debajo del panel del proyecto y el saludo cambia según el momento (todo aprobado o fase aplazada).
 
+### Notificaciones en la campana (23/10/2026)
+- Decisión de la estudiante: las notificaciones se ven solo en un menú de la campana (ya no hay pantalla propia). Muestra los últimos 20 avisos con icono por categoría, lo no leído resaltado con un punto verde, y "Marcar todas como leídas".
+- Al hacer clic en un aviso se marca como leído y se abre el módulo correcto (PQRS, propuestas, banco de ideas o seguimiento del proyecto). Se eliminó `modulos/notificaciones/notificaciones.jsp` y el aviso repetido del inicio.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
@@ -292,6 +296,7 @@ Resumen para actualizar la documentación final. Lo que no aparece aquí se impl
 | Informe de estado | Para el coordinador y para el estudiante (RF-60, RF-61, HU-39) | **Solo para el coordinador**; no hay informe del estudiante | Definido por la estudiante |
 | Módulos del administrador | El administrador consulta propuestas, PQRS e historial | Solo gestiona usuarios, cuentas y enlaces de la base documental | Definido por la estudiante |
 | Historial de versiones | Pantalla de historial con línea de tiempo por proyecto (RF-58, RF-59) | **No existe como pantalla**: las versiones y revisiones se ven en el seguimiento de cada fase; la tabla `historial_version` sigue registrando los eventos | Definido por la estudiante |
+| Notificaciones | Campana con contador y listado de avisos | Campana con contador y menú desplegable con los últimos 20 avisos; sin pantalla de listado | Definido por la estudiante |
 | Pantalla de informes | Informe de estado por proyecto | **Panel de control**: resumen con gráficos e informe de proyectos (solo coordinador) | Definido por la estudiante |
 | Exportar el informe | CSV o imprimir (RF-62, deseable) | Solo **imprimir** (con estilos de impresión); no hay exportación a archivo | Definido por la estudiante |
 | PQRS | Aprobar, aplazar o rechazar (HU-34) | Solo **aprobar o rechazar**; el cambio de director aprobado se aplica al proyecto | En PQRS no hay reenvío |

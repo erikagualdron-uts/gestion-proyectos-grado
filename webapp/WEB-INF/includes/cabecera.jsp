@@ -43,6 +43,17 @@
       <sql:param value="${sessionScope.usuarioId}" />
     </sql:query>
     <c:set var="notifCount" value="${notificaciones.rows[0].total}" scope="request" />
+    <sql:query var="avisosCampana" dataSource="${bd}">
+      SELECT n.id_notificacion, n.tipo, n.mensaje, IF(n.leida = 1, 'SI', 'NO') AS leida_txt,
+             DATE_FORMAT(n.fecha_creacion, '%d/%m/%Y %H:%i') AS fecha, p.codigo AS codigo_proyecto
+      FROM notificacion n
+      LEFT JOIN proyecto pr ON pr.id_proyecto = n.id_proyecto
+      LEFT JOIN propuesta p ON p.id_propuesta = pr.id_propuesta
+      WHERE n.id_usuario = ?
+      ORDER BY n.fecha_creacion DESC, n.id_notificacion DESC
+      LIMIT 20
+      <sql:param value="${sessionScope.usuarioId}" />
+    </sql:query>
     <jsp:include page="/WEB-INF/includes/menu.jsp" />
     <div class="contenido">
       <header class="topbar">
@@ -55,10 +66,50 @@
           </span>
         </div>
         <div class="derecha">
-          <a class="campana" href="${ctx}/modulos/notificaciones/notificaciones.jsp" aria-label="Notificaciones: ${notifCount} sin leer">
-            <i class="bi bi-bell"></i>
-            <c:if test="${notifCount > 0}"><span class="contador"><c:out value="${notifCount}" /></span></c:if>
-          </a>
+          <div class="dropdown">
+            <button type="button" class="campana" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notificaciones: ${notifCount} sin leer">
+              <i class="bi bi-bell"></i>
+              <c:if test="${notifCount > 0}"><span class="contador"><c:out value="${notifCount}" /></span></c:if>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end notif-panel p-0">
+              <div class="notif-cab">
+                <strong>Notificaciones</strong>
+                <c:if test="${notifCount > 0}">
+                  <form method="post" action="${ctx}/proceso/notificacion_proc.jsp" class="m-0">
+                    <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
+                    <input type="hidden" name="accion" value="todas">
+                    <input type="hidden" name="volver" value="${fn:escapeXml(pageContext.request.requestURI += (empty pageContext.request.queryString ? '' : '?') += pageContext.request.queryString)}">
+                    <button type="submit" class="notif-todas"><i class="bi bi-check2-all me-1"></i>Marcar todas como leídas</button>
+                  </form>
+                </c:if>
+              </div>
+              <div class="notif-lista">
+                <c:choose>
+                  <c:when test="${avisosCampana.rowCount == 0}">
+                    <div class="notif-vacio"><i class="bi bi-bell-slash"></i><div>Aún no tienes notificaciones.</div></div>
+                  </c:when>
+                  <c:otherwise>
+                    <c:forEach var="av" items="${avisosCampana.rows}">
+                      <c:set var="iconoAviso" value="${fn:startsWith(av.tipo, 'PQRS') ? 'bi-chat-dots' : (fn:startsWith(av.tipo, 'IDEA') ? 'bi-lightbulb' : (fn:startsWith(av.tipo, 'PROPUESTA') or av.tipo == 'COMPANERO_AGREGADO' ? 'bi-file-earmark-text' : (av.tipo == 'ASIGNACION' ? 'bi-people' : (av.tipo == 'REVISION' or av.tipo == 'ENTREGA' ? 'bi-clipboard-check' : 'bi-bell'))))}" />
+                      <form method="post" action="${ctx}/proceso/notificacion_proc.jsp" class="m-0">
+                        <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
+                        <input type="hidden" name="accion" value="abrir">
+                        <input type="hidden" name="id" value="${av.id_notificacion}">
+                        <button type="submit" class="notif-item ${av.leida_txt == 'NO' ? 'nueva' : ''}">
+                          <span class="notif-icono"><i class="bi ${iconoAviso}"></i></span>
+                          <span class="notif-texto">
+                            <span class="notif-msg"><c:out value="${av.mensaje}" /></span>
+                            <span class="notif-meta"><c:if test="${not empty av.codigo_proyecto}"><c:out value="${av.codigo_proyecto}" /> · </c:if><c:out value="${av.fecha}" /></span>
+                          </span>
+                          <c:if test="${av.leida_txt == 'NO'}"><span class="punto-nuevo" title="Sin leer"></span></c:if>
+                        </button>
+                      </form>
+                    </c:forEach>
+                  </c:otherwise>
+                </c:choose>
+              </div>
+            </div>
+          </div>
           <div class="usuario">
             <c:choose>
               <c:when test="${not empty sessionScope.fotoUrl}"><img class="iniciales" src="<c:out value='${sessionScope.fotoUrl}' />" alt="Foto de perfil" referrerpolicy="no-referrer"></c:when>
