@@ -5,7 +5,7 @@
 <%@ include file="/WEB-INF/includes/conexion.jsp" %>
 <c:set var="soloPost" value="true" />
 <%@ include file="/WEB-INF/includes/seguridad.jsp" %>
-<%-- Perfil propio (RF-14, RF-15, RF-16): guardar nombre, tipo de documento y foto; quitar foto; cambiar contraseña.
+<%-- Perfil propio (RF-14, RF-15, RF-16): guardar nombre y foto; quitar foto; cambiar contraseña.
      El documento y el correo no se reciben aquí: solo los cambia el administrador. --%>
 <c:set var="accion" value="${param.accion}" />
 <c:set var="nombreIngresado" value="${fn:trim(param.nombre)}" />
@@ -86,16 +86,12 @@
   <c:when test="${fn:length(nombreIngresado) < 5 or fn:length(nombreIngresado) > 120 or not fn:contains(nombreIngresado, ' ')}">
     <c:set var="errorPerfil" value="Ingresa tu nombre completo (nombre y apellido)." />
   </c:when>
-  <c:when test="${not fn:contains(',CC,TI,CE,PASAPORTE,OTRO,', ',' += param.tipo += ',')}">
-    <c:set var="errorPerfil" value="Selecciona un tipo de documento válido." />
-  </c:when>
   <c:when test="${not empty fotoIngresada and (fn:length(fotoIngresada) > 300 or fn:contains(fotoIngresada, ' ') or not (fn:startsWith(fotoIngresada, 'https://') or fn:startsWith(fotoIngresada, 'http://')))}">
     <c:set var="errorPerfil" value="El enlace de la foto debe empezar por http:// o https:// y tener máximo 300 caracteres." />
   </c:when>
 </c:choose>
 <c:if test="${not empty errorPerfil}">
   <c:set var="vpNombre" value="${nombreIngresado}" scope="session" />
-  <c:set var="vpTipo" value="${param.tipo}" scope="session" />
   <c:set var="vpFoto" value="${fotoIngresada}" scope="session" />
   <c:set var="flashTipo" value="danger" scope="session" />
   <c:set var="flashMsg" value="${errorPerfil}" scope="session" />
@@ -105,8 +101,8 @@
 <c:catch var="falloPerfil">
   <sql:transaction dataSource="${bd}">
     <sql:update>
-      UPDATE usuario SET nombre_completo = ?, tipo_documento = ?, foto_url = NULLIF(?, '') WHERE id_usuario = ?
-      <sql:param value="${nombreIngresado}" /><sql:param value="${param.tipo}" />
+      UPDATE usuario SET nombre_completo = ?, foto_url = NULLIF(?, '') WHERE id_usuario = ?
+      <sql:param value="${nombreIngresado}" />
       <sql:param value="${fotoIngresada}" /><sql:param value="${sessionScope.usuarioId}" />
     </sql:update>
     <sql:update>

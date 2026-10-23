@@ -79,19 +79,15 @@
 <h1 class="titulo-pagina">Docente <c:out value="${esDirector ? 'Director' : 'Evaluador'}" /></h1>
 <p class="descripcion-pagina">Proyectos donde eres <c:out value="${esDirector ? 'director' : 'evaluador'}" />. Elige una fase para filtrar la tabla.</p>
 
-<div class="tabla-envoltorio mb-4">
-  <div class="linea-fases">
-    <c:forEach var="n" begin="1" end="6">
-      <a class="fase-col ${filtroFase == n ? 'elegida' : ''} ${filtroFase == n ? 'actual' : 'pendiente'}" href="${ctx}${rutaDocente}?fase=${filtroFase == n ? 0 : n}" aria-label="Filtrar por la fase ${n}: ${nombresFase[n - 1]}">
-        <div class="fase-arriba"><span class="fase-circulo"><c:out value="${n}" /></span></div>
-        <div class="fase-tarjeta">
-          <small>Fase <c:out value="${n}" /></small>
-          <strong><c:out value="${nombresFase[n - 1]}" /></strong>
-          <span class="d-block mt-1" style="font-size: .8rem; opacity: .85"><c:out value="${empty conteoFases['f' += n] ? 0 : conteoFases['f' += n]}" /> proyecto(s)</span>
-        </div>
-      </a>
-    </c:forEach>
-  </div>
+<div class="tablero-fases mb-4">
+  <c:forEach var="n" begin="1" end="6">
+    <c:set var="cantidadFase" value="${empty conteoFases['f' += n] ? 0 : conteoFases['f' += n]}" />
+    <a class="fase-tile ${cantidadFase > 0 ? 'con-proyectos' : 'vacia'} ${filtroFase == n ? 'activa' : ''}" href="${ctx}${rutaDocente}?fase=${filtroFase == n ? 0 : n}" title="${filtroFase == n ? 'Quitar el filtro' : 'Ver solo los proyectos de esta fase'}" aria-label="Fase ${n}: ${nombresFase[n - 1]}, ${cantidadFase} proyecto(s)">
+      <span class="fase-tile-numero"><c:out value="${cantidadFase}" /></span>
+      <span class="fase-tile-nombre"><c:out value="${nombresFase[n - 1]}" /></span>
+      <span class="fase-tile-fase">Fase <c:out value="${n}" /></span>
+    </a>
+  </c:forEach>
 </div>
 
 <form method="get" action="${ctx}${rutaDocente}" class="row g-3 align-items-end mb-3">
@@ -117,27 +113,35 @@
   <c:otherwise>
     <div class="tabla-envoltorio table-responsive">
       <table class="table tabla-uts">
-        <thead><tr><th>ID</th><th>Descripción</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+        <thead><tr><th>Código</th><th>Proyecto</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
         <tbody>
           <c:forEach var="p" items="${proyectos.rows}">
             <c:set var="porRevisar" value="${p.estado_general == 'EN_CURSO' and p.estado_fase == 'EN_CURSO' and not empty p.doc_vigente and (esDirector ? ((p.fase_actual == 2 or p.fase_actual == 3 or p.fase_actual == 4 or p.fase_actual == 5) and p.dir_rev == 0) : ((p.fase_actual == 3 or p.fase_actual == 5) and p.dir_ok > 0 and p.eva_rev == 0))}" />
             <tr>
               <td class="fw-bold"><c:out value="${p.codigo}" /></td>
-              <td style="min-width: 220px"><c:out value="${p.titulo}" /></td>
+              <td style="min-width: 220px"><div><c:out value="${p.titulo}" /></div><div class="texto-sec"><c:out value="${p.estudiantes}" /></div></td>
               <td>
-                <div class="fw-semibold">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></div>
-                <div class="texto-sec mb-1"><c:out value="${p.estudiantes}" /></div>
+                <div class="fw-semibold mb-1">Fase <c:out value="${p.fase_actual}" /> · <c:out value="${p.fase}" /></div>
                 <c:choose>
                   <c:when test="${p.estado_general == 'APTO_GRADUACION'}"><span class="insignia insignia-aprobado">Listo para sustentación</span></c:when>
                   <c:when test="${p.estado_general == 'CERRADO'}"><span class="insignia insignia-rechazado">Cerrado</span></c:when>
                   <c:when test="${porRevisar}"><span class="insignia insignia-aplazado">Por revisar</span></c:when>
                   <c:when test="${p.estado_fase == 'APLAZADA'}"><span class="insignia insignia-aplazado">Aplazado · espera al estudiante</span></c:when>
-                  <c:otherwise><span class="insignia insignia-pendiente">En espera</span></c:otherwise>
+                  <c:when test="${empty p.doc_vigente}"><span class="insignia insignia-pendiente">Esperando el documento</span></c:when>
+                  <c:otherwise><span class="insignia insignia-pendiente">En revisión de otros</span></c:otherwise>
                 </c:choose>
               </td>
               <td class="acciones">
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/revision_form.jsp?id=${p.id_proyecto}" aria-label="Calificar el documento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-pencil"></i></a>
+                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${p.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(p.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(p.codigo)}"><i class="bi bi-eye"></i></a>
+                <div class="dropdown d-inline-block">
+                  <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="Más acciones" aria-label="Más acciones de ${fn:escapeXml(p.codigo)}"><i class="bi bi-three-dots"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end acciones-menu">
+                    <c:choose>
+                      <c:when test="${porRevisar}"><li><a class="dropdown-item" href="${ctx}/modulos/proyectos/revision_form.jsp?id=${p.id_proyecto}"><i class="bi bi-clipboard-check me-2"></i>Calificar el documento</a></li></c:when>
+                      <c:otherwise><li><span class="dropdown-item-text texto-sec small">No hay ningún documento por calificar</span></li></c:otherwise>
+                    </c:choose>
+                  </ul>
+                </div>
               </td>
             </tr>
           </c:forEach>

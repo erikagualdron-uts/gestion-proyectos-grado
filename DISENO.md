@@ -44,7 +44,7 @@ El diseño de referencia son 4 pantallas: inicio de sesión, inicio del estudian
 - Bordes redondeados de 10 a 16 px y sombras suaves, de forma consistente.
 - Responsive con la cuadrícula de Bootstrap; en pantallas pequeñas el menú se oculta y las tarjetas pasan a una columna.
 - Mismo orden y mismos textos de botones en todos los módulos.
-- No usar gráficos, animaciones ni librerías extra. Si algo no está aquí, usar el componente de Bootstrap más simple.
+- No usar animaciones ni librerías extra, salvo lo autorizado: Chart.js (CDN) solo en la pestaña Resumen del "Panel y auditoría". Si algo no está aquí, usar el componente de Bootstrap más simple.
 - No inventar estilos nuevos: si una pantalla es nueva, copiar la estructura de una de las cuatro de referencia.
 
 ## Pantallas del sistema y plantilla que copiar
@@ -56,7 +56,7 @@ Solo hay 4 pantallas de referencia (en `docs/referencia/`). Las demás se constr
 | Inicio (todos los roles) | 2. Inicio del estudiante (tarjetas según el rol) |
 | Banco de ideas, Base documental, Informes de estado (menú de tarjetas) | 2. Inicio del estudiante (cuadrícula de tarjetas) |
 | Mi perfil, Proponer idea, Nueva propuesta, Radicar PQRS, Crear o editar usuario, Administrar enlaces (formularios) | 1. Inicio de sesión: formulario dentro de tarjeta blanca, dentro del layout con menú lateral y cabecera |
-| Usuarios, Solicitudes de cuenta, Propuestas Banco, Solicitudes de estudiantes, Lista de PQRS, Historial de versiones, Notificaciones, Informes | 3. Solicitudes: tarjetas de resumen, buscador, filtro, tabla con ojo y lápiz, paginación |
+| Usuarios, Solicitudes de cuenta, Propuestas Banco, Solicitudes de estudiantes, Lista de PQRS, Notificaciones, Informes | 3. Solicitudes: tarjetas de resumen, buscador, filtro, tabla con ojo y lápiz, paginación |
 | Gestionar (aprobar, aplazar o rechazar), Visualizar detalle | Ventana modal de Bootstrap con la misma paleta; botones de decisión con los colores de estado |
 | Seguimiento del proyecto, Detalles del proyecto | 4. Seguimiento: línea de tiempo con tarjetas y tabla de documentos con enlace |
 | Módulos Docente Director y Docente Evaluador | 3. Solicitudes (tabla de proyectos) más la fila de fases de 4. Seguimiento como filtro |
@@ -83,7 +83,6 @@ Las 4 pantallas de `docs/referencia/` son los patrones. Toda pantalla nueva copi
 
 **Patrón D: seguimiento por fases (como el seguimiento del estudiante)**
 - Seguimiento de un proyecto desde cualquier rol, con la ventana de detalles y los documentos por enlace.
-- Historial de versiones del proyecto (lista cronológica con fecha, usuario, acción y enlace).
 
 **Patrón E: formulario dentro del área interna (campos como en el login, con el menú lateral)**
 - Mi perfil, crear o editar usuario, proponer una idea, crear una propuesta, radicar una PQRS, entregar un documento por enlace, calificar o decidir (aprobado, aplazado, rechazado, con observación).

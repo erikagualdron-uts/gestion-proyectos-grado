@@ -16,13 +16,13 @@
   <form method="post" action="${ctx}/proceso/registro_proc.jsp" class="needs-validation" novalidate>
     <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
     <div class="mb-3">
-      <label for="nombre" class="form-label">Nombre completo</label>
-      <input type="text" class="form-control" id="nombre" name="nombre" maxlength="120" minlength="5" autocomplete="name" value="<c:out value='${sessionScope.viejoNombre}' />" required>
+      <label for="nombre" class="form-label requerido">Nombre completo</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" maxlength="120" minlength="5" placeholder="Nombre y apellido" autocomplete="name" value="<c:out value='${sessionScope.viejoNombre}' />" required>
       <div class="invalid-feedback">Ingresa tu nombre completo.</div>
     </div>
     <div class="row g-3 mb-3">
       <div class="col-sm-5">
-        <label for="tipo" class="form-label">Tipo de documento</label>
+        <label for="tipo" class="form-label requerido">Tipo de documento</label>
         <select class="form-select" id="tipo" name="tipo" required>
           <c:forEach var="t" items="${fn:split('CC,TI,CE,PASAPORTE,OTRO', ',')}">
             <option value="${t}" ${sessionScope.viejoTipo == t ? 'selected' : ''}>${t}</option>
@@ -30,19 +30,20 @@
         </select>
       </div>
       <div class="col-sm-7">
-        <label for="documento" class="form-label">Número de documento</label>
-        <input type="text" class="form-control" id="documento" name="documento" pattern="[0-9A-Za-z]{5,20}" maxlength="20" inputmode="numeric" value="<c:out value='${sessionScope.viejoDocumento}' />" required>
+        <label for="documento" class="form-label requerido">Número de documento</label>
+        <input type="text" class="form-control" id="documento" name="documento" placeholder="Solo letras y números" pattern="[0-9A-Za-z]{5,20}" maxlength="20" inputmode="numeric" value="<c:out value='${sessionScope.viejoDocumento}' />" required>
         <div class="invalid-feedback">Entre 5 y 20 letras o números, sin espacios.</div>
       </div>
     </div>
     <div class="mb-3">
-      <label for="correo" class="form-label">Correo institucional</label>
-      <input type="email" class="form-control" id="correo" name="correo" placeholder="usuario@uts.edu.co" maxlength="120" pattern="[A-Za-z0-9._%+\-]+@uts\.edu\.co" autocomplete="email" value="<c:out value='${sessionScope.viejoCorreo}' />" required>
+      <label for="correo" class="form-label requerido">Correo institucional</label>
+      <input type="email" class="form-control" id="correo" name="correo" placeholder="nombre.apellido@uts.edu.co" maxlength="120" pattern="[A-Za-z0-9._%+\-]+@uts\.edu\.co" autocomplete="email" value="<c:out value='${sessionScope.viejoCorreo}' />" required>
+      <div class="form-text">Debe terminar en @uts.edu.co.</div>
       <div class="invalid-feedback">Usa tu correo institucional de estudiante (@uts.edu.co).</div>
     </div>
     <div class="row g-3 mb-4">
       <div class="col-sm-6">
-        <label for="clave" class="form-label">Contraseña</label>
+        <label for="clave" class="form-label requerido">Contraseña</label>
         <div class="campo-clave">
           <input type="password" class="form-control" id="clave" name="clave" minlength="8" maxlength="64" autocomplete="new-password" required>
           <button type="button" class="ver-clave" data-target="clave" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
@@ -50,15 +51,17 @@
         </div>
       </div>
       <div class="col-sm-6">
-        <label for="confirmar" class="form-label">Confirmar contraseña</label>
+        <label for="confirmar" class="form-label requerido">Confirmar contraseña</label>
         <div class="campo-clave">
           <input type="password" class="form-control" id="confirmar" name="confirmar" minlength="8" maxlength="64" autocomplete="new-password" required>
           <button type="button" class="ver-clave" data-target="confirmar" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
           <div class="invalid-feedback">Las contraseñas no coinciden.</div>
         </div>
       </div>
+      <div class="col-12 form-text mt-2">La contraseña debe tener entre 8 y 64 caracteres.</div>
     </div>
     <button type="submit" class="btn btn-uts w-100 py-2">Crear cuenta</button>
+    <p class="text-center small text-secondary mt-3 mb-0">Usamos tus datos solo para gestionar tu trabajo de grado (Ley 1581 de 2012).</p>
   </form>
   <p class="text-center small text-secondary mt-4 mb-0">¿Ya tienes cuenta? <a href="${ctx}/index.jsp">Iniciar sesión</a></p>
 </div>

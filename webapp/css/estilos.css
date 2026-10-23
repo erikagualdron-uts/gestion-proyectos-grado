@@ -36,7 +36,9 @@ h1, h2, h3, h4, h5, .btn, .titulo { font-family: 'Montserrat', sans-serif; }
 
 /* ---------- Formularios ---------- */
 .form-label { font-weight: 600; font-size: .875rem; margin-bottom: .35rem; }
-.form-control, .form-select { height: 46px; border-radius: 10px; border-color: var(--borde); }
+.form-control, .form-select { height: 46px; border-radius: 10px; border-color: #C9D3CE; background-color: #fff; }
+::placeholder { color: #9AA6A1; opacity: 1; }
+.form-label.requerido::after { content: ' *'; color: #C0392B; }
 textarea.form-control { height: auto; }
 .form-control:focus, .form-select:focus { border-color: var(--verde-esmeralda); box-shadow: 0 0 0 .2rem rgba(20, 104, 75, .15); }
 .form-check-input:checked { background-color: var(--verde-esmeralda); border-color: var(--verde-esmeralda); }
@@ -48,6 +50,7 @@ textarea.form-control { height: auto; }
 .alert { border-radius: 10px; font-size: .9rem; }
 .alert-success { background: var(--ok-fondo); border-color: #bfe5cf; color: var(--ok-texto); }
 .alert-danger  { background: var(--rechazado-fondo); border-color: #f2c3bf; color: var(--rechazado-texto); }
+.alert-info    { background: var(--verde-claro); border-color: #cfe5da; color: var(--verde-bosque); }
 .alert-warning { background: var(--aplazado-fondo); border-color: #f1dc9a; color: var(--aplazado-texto); }
 
 /* ---------- Pantallas públicas (login y registro) ---------- */
@@ -206,3 +209,111 @@ img.iniciales { object-fit: cover; }
   .usuario .nombre { display: none; }
   .tarjeta-form { padding: 28px 22px; }
 }
+
+/* ---------- Impresión (informes) ---------- */
+@media print {
+  .menu-lateral, .topbar, .no-imprimir, .pagination, nav[aria-label="Paginación"], .btn, .alert, label.texto-sec { display: none !important; }
+  .contenido { margin-left: 0 !important; padding: 0 !important; }
+  body { background: #fff !important; }
+  .tarjeta, .tabla-envoltorio { box-shadow: none !important; border: 1px solid #C9D3CE !important; }
+  .tabla-uts thead th { background: #14684B !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .insignia { border: 1px solid #C9D3CE; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .titulo-pagina { font-size: 22px; margin-top: 0; }
+  @page { margin: 14mm; }
+}
+
+/* Panel de control y auditoría (pestañas y gráficos) */
+.pestanas { border-bottom: 1px solid var(--borde); margin-bottom: 1.25rem; gap: 4px; flex-wrap: nowrap; overflow-x: auto; }
+.pestanas .nav-link { color: var(--texto-sec); font-weight: 600; border: 0; border-bottom: 3px solid transparent; border-radius: 0; white-space: nowrap; }
+.pestanas .nav-link:hover { color: var(--verde-esmeralda); }
+.pestanas .nav-link.active { color: var(--verde-bosque); background: transparent; border-bottom-color: var(--verde-esmeralda); }
+.grafico-tarjeta h2 { font-size: 1rem; font-weight: 700; color: var(--verde-bosque); margin-bottom: 2px; }
+.grafico-tarjeta .texto-sec { font-size: .82rem; margin-bottom: 12px; }
+.grafico-caja { position: relative; height: 280px; }
+.grafico-vacio { height: 280px; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--texto-sec); font-size: .9rem; border: 1px dashed #c9d3ce; border-radius: 10px; }
+
+/* Tren de fases en miniatura (inicio del estudiante) */
+.linea-fases.mini { padding: 14px 0 0; gap: 8px; }
+.linea-fases.mini .fase-arriba { margin-bottom: 6px; }
+.linea-fases.mini .fase-arriba::after { width: calc(100% + 8px); }
+.linea-fases.mini small { font-size: .82rem; color: var(--texto-sec); text-align: center; line-height: 1.2; }
+.linea-fases.mini .fase-col.actual small { color: var(--verde-bosque); font-weight: 700; }
+@media (max-width: 575px) { .linea-fases.mini { grid-template-columns: repeat(6, 1fr); } .linea-fases.mini small { display: none; } }
+
+/* Campana: menú de notificaciones */
+.notif-panel { width: 390px; max-width: 92vw; border: 1px solid var(--borde); border-radius: 14px; box-shadow: 0 12px 32px rgba(11, 61, 46, .16); overflow: hidden; }
+.notif-cab { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--borde); background: #fff; }
+.notif-cab strong { font-family: 'Montserrat', sans-serif; color: var(--verde-bosque); }
+.notif-todas { border: 0; background: none; padding: 0; font-size: .82rem; font-weight: 600; color: var(--verde-esmeralda); }
+.notif-todas:hover { color: var(--verde-bosque); text-decoration: underline; }
+.notif-lista { max-height: min(70vh, 460px); overflow-y: auto; background: #fff; }
+.notif-item { display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 12px 16px; border: 0; border-bottom: 1px solid #EEF2F0; background: #fff; text-align: left; color: var(--texto); }
+.notif-item:hover { background: var(--fondo); }
+.notif-item.nueva { background: #F2F9F5; }
+.notif-item.nueva:hover { background: var(--verde-claro); }
+.notif-icono { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: var(--verde-claro); color: var(--verde-esmeralda); display: inline-flex; align-items: center; justify-content: center; }
+.notif-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.notif-msg { font-size: .86rem; line-height: 1.3; }
+.notif-item.nueva .notif-msg { font-weight: 600; }
+.notif-item:not(.nueva) .notif-msg { color: var(--texto-sec); }
+.notif-meta { font-size: .75rem; color: var(--texto-sec); }
+.notif-item .punto-nuevo { margin: 6px 0 0 0; flex-shrink: 0; }
+.notif-vacio { padding: 32px 16px; text-align: center; color: var(--texto-sec); font-size: .9rem; }
+.notif-vacio i { display: block; font-size: 1.6rem; margin-bottom: 6px; }
+@media print { .notif-panel { display: none !important; } }
+.campana { cursor: pointer; }
+
+/* Punto de aviso sin leer */
+.punto-nuevo { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--verde-esmeralda); }
+/* Los avisos largos se recortan a tres líneas (el texto completo se ve al abrirlos) */
+.notif-msg { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Secciones del menú de notificaciones: nuevas y anteriores */
+.notif-grupo { padding: 8px 16px; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--texto-sec); background: var(--fondo); border-bottom: 1px solid var(--borde); position: sticky; top: 0; z-index: 1; }
+.notif-item:not(.nueva) { padding-top: 9px; padding-bottom: 9px; }
+.notif-item:not(.nueva) .notif-icono { width: 30px; height: 30px; font-size: .85rem; background: #EEF2F0; color: var(--texto-sec); }
+
+/* Propuestas del coordinador: tarjetas que filtran, huecos de iconos y botones ya decididos */
+a.resumen { color: inherit; transition: border-color .15s, box-shadow .15s; }
+a.resumen:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra); color: inherit; }
+.tarjeta.resumen-activa { border-color: var(--verde-esmeralda); box-shadow: 0 0 0 2px rgba(20, 104, 75, .18); }
+.btn-icono-vacio { display: inline-block; width: 38px; height: 38px; margin-left: 6px; vertical-align: middle; }
+.btn-outline-uts:disabled { opacity: .4; background: #fff; cursor: not-allowed; }
+
+/* Etiqueta del tipo de registro (idea de docente o propuesta de estudiante) */
+.etiqueta-tipo { display: inline-block; margin-top: 4px; padding: 1px 8px; border-radius: 999px; font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.etiqueta-tipo.idea { background: #F1F6C2; color: #5A6200; }
+.etiqueta-tipo.propuesta { background: var(--verde-claro); color: var(--verde-esmeralda); }
+
+/* Tablero de fases de los módulos Docente Director y Evaluador: cada tarjeta filtra por una fase */
+.tablero-fases { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.fase-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 16px 8px; border-radius: var(--radio); text-align: center; text-decoration: none; transition: transform .15s, box-shadow .15s; }
+.fase-tile:hover { transform: translateY(-2px); box-shadow: var(--sombra); }
+.fase-tile-numero { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 2rem; line-height: 1; }
+.fase-tile-nombre { font-weight: 700; font-size: .95rem; margin-top: 4px; }
+.fase-tile-fase { font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+.fase-tile.con-proyectos { background: var(--verde-esmeralda); color: #fff; }
+.fase-tile.con-proyectos .fase-tile-numero { color: var(--lima); }
+.fase-tile.vacia { background: #EEF2F0; color: var(--texto-sec); }
+.fase-tile.vacia:hover { color: var(--texto-sec); }
+.fase-tile.activa { outline: 3px solid var(--verde-bosque); outline-offset: 2px; }
+@media (max-width: 991px) { .tablero-fases { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 575px) { .tablero-fases { grid-template-columns: repeat(2, 1fr); } }
+
+/* Mensajes (éxito, error, aviso) dentro de las pantallas del sistema: separados del botón Volver y de la barra superior */
+.contenido > .alert { margin-top: 20px; margin-bottom: 12px; }
+
+/* Menú de tres puntos de las tablas */
+.tabla-uts .acciones .dropdown { margin-left: 6px; }
+.tabla-uts .acciones .dropdown .btn { margin-left: 0; }
+.acciones-menu { border: 1px solid var(--borde); border-radius: 12px; box-shadow: var(--sombra); padding: 6px; text-align: left; min-width: 230px; }
+.acciones-menu .dropdown-item { border-radius: 8px; font-size: .9rem; padding: 8px 12px; }
+.acciones-menu .dropdown-item:hover, .acciones-menu .dropdown-item:focus { background: var(--verde-claro); color: var(--verde-bosque); }
+.acciones-menu .dropdown-item-text { padding: 8px 12px; }
+
+/* Migas de pan en la franja superior */
+.migas { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: .9rem; color: var(--texto-sec); }
+.migas a { color: var(--texto-sec); text-decoration: none; }
+.migas a:hover { color: var(--verde-bosque); text-decoration: underline; }
+.migas .bi { font-size: .7rem; opacity: .7; }
+.migas .actual { color: var(--verde-bosque); font-weight: 600; }

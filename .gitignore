@@ -16,3 +16,6 @@ target/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Formatos institucionales de la UTS (solo de referencia local; no se publican en el repositorio)
+docs/F-DC-*.pdf

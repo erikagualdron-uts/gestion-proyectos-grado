@@ -7,7 +7,7 @@
     titulo         título de la pestaña
     paginaPublica  true para login/registro (panel verde a la izquierda, sin menú)
     menuActivo     (opcional) ruta del ítem del menú que debe verse activo
-    volverA        (opcional) ruta a la que lleva el botón "Volver" (por defecto, el inicio)
+    volverA        (opcional) ruta de la pantalla anterior; se muestra como nivel intermedio de las migas de pan (Inicio › anterior › esta)
 --%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" scope="request" />
 <!DOCTYPE html>
@@ -43,6 +43,17 @@
       <sql:param value="${sessionScope.usuarioId}" />
     </sql:query>
     <c:set var="notifCount" value="${notificaciones.rows[0].total}" scope="request" />
+    <sql:query var="avisosCampana" dataSource="${bd}">
+      SELECT n.id_notificacion, n.tipo, n.mensaje, IF(n.leida = 1, 'SI', 'NO') AS leida_txt,
+             DATE_FORMAT(n.fecha_creacion, '%d/%m/%Y %H:%i') AS fecha, p.codigo AS codigo_proyecto
+      FROM notificacion n
+      LEFT JOIN proyecto pr ON pr.id_proyecto = n.id_proyecto
+      LEFT JOIN propuesta p ON p.id_propuesta = pr.id_propuesta
+      WHERE n.id_usuario = ?
+      ORDER BY n.fecha_creacion DESC, n.id_notificacion DESC
+      LIMIT 20
+      <sql:param value="${sessionScope.usuarioId}" />
+    </sql:query>
     <jsp:include page="/WEB-INF/includes/menu.jsp" />
     <div class="contenido">
       <header class="topbar">
@@ -50,15 +61,86 @@
           <button class="btn btn-outline-uts btn-icono d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral" aria-label="Abrir menú">
             <i class="bi bi-list"></i>
           </button>
-          <span class="rol">
-            <c:out value="${fn:substring(sessionScope.rol, 0, 1)}" /><c:out value="${fn:toLowerCase(fn:substring(sessionScope.rol, 1, 40))}" /><c:if test="${sessionScope.rol == 'ESTUDIANTE' and not empty sessionScope.nivel}"> · Nivel <c:out value="${sessionScope.nivel == 'TECNOLOGICO' ? 'Tecnológico' : 'Profesional'}" /></c:if>
-          </span>
+          <c:choose>
+            <c:when test="${pageContext.request.servletPath == '/inicio.jsp'}">
+              <span class="rol">
+                <c:out value="${fn:substring(sessionScope.rol, 0, 1)}" /><c:out value="${fn:toLowerCase(fn:substring(sessionScope.rol, 1, 40))}" /><c:if test="${sessionScope.rol == 'ESTUDIANTE' and not empty sessionScope.nivel}"> · Nivel <c:out value="${sessionScope.nivel == 'TECNOLOGICO' ? 'Tecnológico' : 'Profesional'}" /></c:if>
+              </span>
+            </c:when>
+            <c:otherwise>
+              <c:choose>
+                <c:when test="${fn:endsWith(volverA, '/banco_ideas.jsp')}"><c:set var="padreNombre" value="Banco de ideas" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/base_documental.jsp')}"><c:set var="padreNombre" value="Base documental" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/pqrs.jsp')}"><c:set var="padreNombre" value="PQRS" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/propuestas_banco.jsp')}"><c:set var="padreNombre" value="${sessionScope.rol == 'ESTUDIANTE' ? 'Mis propuestas' : 'Propuestas Banco'}" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/usuarios.jsp')}"><c:set var="padreNombre" value="Usuarios" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/asignacion.jsp')}"><c:set var="padreNombre" value="Asignación de proyectos" /></c:when>
+                <c:when test="${fn:endsWith(volverA, '/docente_director.jsp')}"><c:set var="padreNombre" value="Docente Director" /></c:when>
+                <c:otherwise><c:set var="padreNombre" value="" /></c:otherwise>
+              </c:choose>
+              <nav class="migas" aria-label="Ruta de navegación">
+                <a href="${ctx}/inicio.jsp">Inicio</a>
+                <c:if test="${not empty padreNombre}"><i class="bi bi-chevron-right"></i><a href="${ctx}${volverA}"><c:out value="${padreNombre}" /></a></c:if>
+                <i class="bi bi-chevron-right"></i><span class="actual"><c:out value="${titulo}" /></span>
+              </nav>
+            </c:otherwise>
+          </c:choose>
         </div>
         <div class="derecha">
-          <a class="campana" href="${ctx}/modulos/notificaciones/notificaciones.jsp" aria-label="Notificaciones: ${notifCount} sin leer">
-            <i class="bi bi-bell"></i>
-            <c:if test="${notifCount > 0}"><span class="contador"><c:out value="${notifCount}" /></span></c:if>
-          </a>
+          <div class="dropdown">
+            <button type="button" class="campana" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notificaciones: ${notifCount} sin leer">
+              <i class="bi bi-bell"></i>
+              <c:if test="${notifCount > 0}"><span class="contador"><c:out value="${notifCount}" /></span></c:if>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end notif-panel p-0">
+              <div class="notif-cab">
+                <strong>Notificaciones</strong>
+                <c:if test="${notifCount > 0}">
+                  <form method="post" action="${ctx}/proceso/notificacion_proc.jsp" class="m-0">
+                    <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
+                    <input type="hidden" name="accion" value="todas">
+                    <input type="hidden" name="volver" value="${fn:escapeXml(pageContext.request.requestURI += (empty pageContext.request.queryString ? '' : '?') += pageContext.request.queryString)}">
+                    <button type="submit" class="notif-todas"><i class="bi bi-check2-all me-1"></i>Marcar todas como leídas</button>
+                  </form>
+                </c:if>
+              </div>
+              <div class="notif-lista">
+                <c:choose>
+                  <c:when test="${avisosCampana.rowCount == 0}">
+                    <div class="notif-vacio"><i class="bi bi-bell-slash"></i><div>Aún no tienes notificaciones.</div></div>
+                  </c:when>
+                  <c:otherwise>
+                    <c:set var="nuevasLista" value="${0}" />
+                    <c:forEach var="av" items="${avisosCampana.rows}"><c:if test="${av.leida_txt == 'NO'}"><c:set var="nuevasLista" value="${nuevasLista + 1}" /></c:if></c:forEach>
+                    <%-- Primero las nuevas y después las anteriores (ya leídas) --%>
+                    <c:forEach var="grupo" items="${fn:split('NO,SI', ',')}">
+                      <c:if test="${grupo == 'NO' ? nuevasLista > 0 : avisosCampana.rowCount - nuevasLista > 0}">
+                        <div class="notif-grupo"><c:out value="${grupo == 'NO' ? 'Nuevas' : 'Anteriores'}" /></div>
+                      </c:if>
+                      <c:forEach var="av" items="${avisosCampana.rows}">
+                        <c:if test="${av.leida_txt == grupo}">
+                          <c:set var="iconoAviso" value="${fn:startsWith(av.tipo, 'PQRS') ? 'bi-chat-dots' : (fn:startsWith(av.tipo, 'IDEA') ? 'bi-lightbulb' : (fn:startsWith(av.tipo, 'PROPUESTA') or av.tipo == 'COMPANERO_AGREGADO' ? 'bi-file-earmark-text' : (av.tipo == 'ASIGNACION' ? 'bi-people' : (av.tipo == 'REVISION' or av.tipo == 'ENTREGA' ? 'bi-clipboard-check' : 'bi-bell'))))}" />
+                          <form method="post" action="${ctx}/proceso/notificacion_proc.jsp" class="m-0">
+                            <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
+                            <input type="hidden" name="accion" value="abrir">
+                            <input type="hidden" name="id" value="${av.id_notificacion}">
+                            <button type="submit" class="notif-item ${av.leida_txt == 'NO' ? 'nueva' : ''}">
+                              <span class="notif-icono"><i class="bi ${iconoAviso}"></i></span>
+                              <span class="notif-texto">
+                                <span class="notif-msg"><c:out value="${av.mensaje}" /></span>
+                                <span class="notif-meta"><c:if test="${not empty av.codigo_proyecto}"><c:out value="${av.codigo_proyecto}" /> · </c:if><c:out value="${av.fecha}" /></span>
+                              </span>
+                              <c:if test="${av.leida_txt == 'NO'}"><span class="punto-nuevo" title="Sin leer"></span></c:if>
+                            </button>
+                          </form>
+                        </c:if>
+                      </c:forEach>
+                    </c:forEach>
+                  </c:otherwise>
+                </c:choose>
+              </div>
+            </div>
+          </div>
           <div class="usuario">
             <c:choose>
               <c:when test="${not empty sessionScope.fotoUrl}"><img class="iniciales" src="<c:out value='${sessionScope.fotoUrl}' />" alt="Foto de perfil" referrerpolicy="no-referrer"></c:when>
@@ -68,9 +150,6 @@
           </div>
         </div>
       </header>
-      <c:if test="${pageContext.request.servletPath != '/inicio.jsp'}">
-        <a class="btn btn-outline-uts btn-sm mt-2" href="${ctx}${empty volverA ? '/inicio.jsp' : volverA}"><i class="bi bi-arrow-left me-1"></i>Volver</a>
-      </c:if>
       <jsp:include page="/WEB-INF/includes/mensaje.jsp" />
   </c:otherwise>
 </c:choose>

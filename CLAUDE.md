@@ -35,7 +35,7 @@ Estudiante: Erika Viviana Gualdrón Parra · Tecnología en Desarrollo de Sistem
 
 **Estados de decisión:** APROBADO, APLAZADO (el estudiante corrige y reenvía una nueva versión), RECHAZADO (solo casos extremos; exige confirmación y observación obligatoria) y PENDIENTE (estado técnico inicial).
 
-**Otros módulos:** banco de ideas (solo ideas aprobadas, solo lectura), tabla de solicitudes con visualizar y gestionar, seguimiento con seis tarjetas (verde: superada o actual; gris: pendiente), PQRS (prórroga, cambio de director, petición, queja, reclamo, sugerencia), historial de versiones (se conservan todas, una marcada como vigente), notificaciones, informes de estado, base documental con seis tarjetas de enlaces.
+**Otros módulos:** banco de ideas (solo ideas aprobadas, solo lectura), tabla de solicitudes con visualizar y gestionar, seguimiento con seis tarjetas (verde: superada o actual; gris: pendiente), PQRS (prórroga, cambio de director, petición, queja, reclamo, sugerencia), versiones de los documentos (se conservan todas, una marcada como vigente; sin pantalla de historial), notificaciones, informes de estado, base documental con seis tarjetas de enlaces.
 
 ## 4. Cómo trabajar conmigo
 - Antes de configurar cuentas o servicios (GitHub, Clever Cloud, base de datos), **pregúntame los datos que necesites y encárgate tú de la configuración**. Guíame para iniciar sesión por navegador (`gh auth login`, `clever login`).
@@ -78,6 +78,7 @@ Crear un script `sql/datos_prueba.sql` (solo para demostración) con:
 - Un usuario por rol (administrador, coordinador, estudiante, docente director, docente evaluador), con contraseñas simples de prueba. Aclarar en el README que son solo para pruebas.
 - Un par de ideas aprobadas, una propuesta aprobada y un proyecto en distintas fases, para poder recorrer el sistema completo sin crear todo a mano.
 - Nunca usar datos reales de personas.
+- Excepción acordada (23/10/2026): en la base **desplegada** hay datos de demostración con nombres reales de la coordinadora y los docentes, estudiantes inventados y documentos ficticios. Esos nombres y contraseñas nunca se suben al repositorio; `datos_prueba.sql` sigue siendo genérico.
 
 ## 8. Git
 - Ramas: `main` (estable) y `develop` (trabajo). Integrar a main solo con el módulo probado.
@@ -97,6 +98,6 @@ Crear un script `sql/datos_prueba.sql` (solo para demostración) con:
 - Al final, la documentación se arma con el PDF del sistema como base y estos archivos, adaptada a lo que realmente quedó funcionando.
 
 ## 11. Seguridad y privacidad
-- Nunca escribas contraseñas, tokens ni claves en el código, en commits ni en el chat; usa variables de entorno.
+- Nunca escribas contraseñas, tokens ni claves en el código ni en commits; usa variables de entorno. En el chat solo las das si yo te las pido por el chat (por ejemplo, las contraseñas de las cuentas de prueba); nunca las muestres por iniciativa propia.
 - Contraseñas almacenadas con hash y sal (SHA2 de MySQL); nunca en texto plano.
 - Solo solicitar los datos personales necesarios (Ley 1581 de 2012).

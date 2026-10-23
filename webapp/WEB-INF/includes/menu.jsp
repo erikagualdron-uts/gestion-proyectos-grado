@@ -4,16 +4,16 @@
 <%-- Menú lateral según el rol (RF-06). Cada opción: icono|texto|ruta, separadas por punto y coma. --%>
 <c:choose>
   <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">
-    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|/modulos/propuestas/propuestas_banco.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
+    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Mis propuestas|/modulos/propuestas/propuestas_banco.jsp;bi-chat|PQRS|/modulos/pqrs/pqrs.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:when test="${sessionScope.rol == 'DOCENTE'}">
     <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Propuestas Banco|/modulos/propuestas/propuestas_banco.jsp;bi-person-check|Docente Director|/modulos/docente_director/docente_director.jsp;bi-clipboard-check|Docente Evaluador|/modulos/docente_evaluador/docente_evaluador.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:when test="${sessionScope.rol == 'COORDINADOR'}">
-    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Propuestas Banco|/modulos/propuestas/propuestas_banco.jsp;bi-people|Asignación de proyectos|/modulos/proyectos/asignacion.jsp;bi-chat|PQRS|/modulos/pqrs/pqrs.jsp;bi-bar-chart|Informes de estado|/modulos/informes/informe_coordinador.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
+    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-lightbulb|Banco de ideas|/modulos/banco_ideas/banco_ideas.jsp;bi-file-earmark-text|Propuestas Banco|/modulos/propuestas/propuestas_banco.jsp;bi-people|Asignación de proyectos|/modulos/proyectos/asignacion.jsp;bi-chat|PQRS|/modulos/pqrs/pqrs.jsp;bi-bar-chart|Panel de control|/modulos/informes/informe_coordinador.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
   </c:when>
   <c:otherwise>
-    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-people|Usuarios|/modulos/usuarios/usuarios.jsp;bi-person-check|Solicitudes de cuenta|/modulos/usuarios/cuentas_pendientes.jsp;bi-file-earmark-text|Propuestas Banco|/modulos/propuestas/propuestas_banco.jsp;bi-chat|PQRS|/modulos/pqrs/pqrs.jsp;bi-clock-history|Historial de versiones|/modulos/historial/historial.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
+    <c:set var="opciones" value="bi-house-door|Inicio|/inicio.jsp;bi-person|Mi perfil|/modulos/perfil/perfil.jsp;bi-people|Usuarios|/modulos/usuarios/usuarios.jsp;bi-person-check|Solicitudes de cuenta|/modulos/usuarios/cuentas_pendientes.jsp;bi-journal-text|Base documental|/modulos/base_documental/base_documental.jsp" />
   </c:otherwise>
 </c:choose>
 <c:set var="rutaActual" value="${empty menuActivo ? pageContext.request.servletPath : menuActivo}" />

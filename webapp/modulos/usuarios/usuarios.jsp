@@ -146,7 +146,12 @@
                         data-correo="${fn:escapeXml(u.correo)}" data-rol="${fn:escapeXml(fn:substring(u.rol, 0, 1))}${fn:escapeXml(fn:toLowerCase(fn:substring(u.rol, 1, 40)))}"
                         data-nivel="${u.nivel == 'TECNOLOGICO' ? 'Tecnológico' : (u.nivel == 'PROFESIONAL' ? 'Profesional' : '')}"
                         data-estado="${estadoTexto}" data-registro="${u.registro}"><i class="bi bi-eye"></i></button>
-                <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/usuarios/usuario_form.jsp?id=${u.id_usuario}" aria-label="Gestionar a ${fn:escapeXml(u.nombre_completo)}"><i class="bi bi-pencil"></i></a>
+                <div class="dropdown d-inline-block">
+                  <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="Más acciones" aria-label="Más acciones de ${fn:escapeXml(u.nombre_completo)}"><i class="bi bi-three-dots"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end acciones-menu">
+                    <li><a class="dropdown-item" href="${ctx}/modulos/usuarios/usuario_form.jsp?id=${u.id_usuario}"><i class="bi bi-pencil-square me-2"></i>Gestionar usuario</a></li>
+                  </ul>
+                </div>
               </td>
             </tr>
           </c:forEach>
