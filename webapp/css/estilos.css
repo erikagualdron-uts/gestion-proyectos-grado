@@ -302,3 +302,11 @@ a.resumen:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra
 
 /* Mensajes (éxito, error, aviso) dentro de las pantallas del sistema: separados del botón Volver y de la barra superior */
 .contenido > .alert { margin-top: 20px; margin-bottom: 12px; }
+
+/* Menú de tres puntos de las tablas */
+.tabla-uts .acciones .dropdown { margin-left: 6px; }
+.tabla-uts .acciones .dropdown .btn { margin-left: 0; }
+.acciones-menu { border: 1px solid var(--borde); border-radius: 12px; box-shadow: var(--sombra); padding: 6px; text-align: left; min-width: 230px; }
+.acciones-menu .dropdown-item { border-radius: 8px; font-size: .9rem; padding: 8px 12px; }
+.acciones-menu .dropdown-item:hover, .acciones-menu .dropdown-item:focus { background: var(--verde-claro); color: var(--verde-bosque); }
+.acciones-menu .dropdown-item-text { padding: 8px 12px; }

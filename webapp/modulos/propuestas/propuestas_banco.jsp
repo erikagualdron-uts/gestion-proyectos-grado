@@ -197,44 +197,31 @@
               </td>
               <td><span class="insignia insignia-${f.estado == 'APROBADO' ? 'aprobado' : (f.estado == 'APLAZADO' ? 'aplazado' : (f.estado == 'RECHAZADO' ? 'rechazado' : 'pendiente'))}"><c:out value="${estadoTexto}" /></span><c:if test="${f.estado == 'APROBADO' and not empty f.fase_texto}"><div class="texto-sec small mt-1"><c:out value="${f.fase_texto}" /></div></c:if></td>
               <td class="acciones">
-                <%-- Todas las filas llevan los mismos botones, siempre en el mismo orden; el que no aplica queda apagado y su texto flotante dice por qué --%>
+                <%-- Cada fila lleva siempre dos botones: el ojo y el menú de tres puntos con lo que se puede hacer en esa fila --%>
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalDetalle" title="Visualizar ${fn:escapeXml(f.codigo)}" aria-label="Visualizar ${fn:escapeXml(f.codigo)}"
                         data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-descripcion="${fn:escapeXml(f.descripcion)}"
                         data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}" data-autor="${fn:escapeXml(empty f.integrantes_texto ? f.autor : f.integrantes_texto)}"
                         data-fase="${f.estado == 'APROBADO' ? fn:escapeXml(f.fase_texto) : ''}" data-seguimiento-url="${f.id_proyecto > 0 ? ctx += '/modulos/proyectos/seguimiento.jsp?id=' += f.id_proyecto : ''}"
                         data-origen="${fn:escapeXml(f.origen_texto)}" data-estado="${estadoTexto}" data-fecha="${f.fecha_texto}"
                         data-observacion="${fn:escapeXml(f.observacion)}"><i class="bi bi-eye"></i></button>
-                <c:choose>
-                  <c:when test="${f.id_proyecto > 0}">
-                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${f.id_proyecto}" title="Ver el seguimiento de ${fn:escapeXml(f.codigo)}" aria-label="Ver el seguimiento de ${fn:escapeXml(f.codigo)}"><i class="bi bi-list-check"></i></a>
-                  </c:when>
-                  <c:otherwise>
-                    <span class="d-inline-block" title="Aún no es un proyecto: no hay seguimiento"><button type="button" class="btn btn-outline-uts btn-icono" disabled aria-label="Aún no es un proyecto: no hay seguimiento"><i class="bi bi-list-check"></i></button></span>
-                  </c:otherwise>
-                </c:choose>
-                <c:if test="${sessionScope.rol == 'COORDINADOR' or sessionScope.rol == 'ESTUDIANTE'}">
-                <c:choose>
-                  <c:when test="${esCoordinador and f.estado == 'PENDIENTE'}">
-                    <button type="button" class="btn btn-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalGestionar"
-                                title="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}" aria-label="Aprobar, aplazar o rechazar ${fn:escapeXml(f.codigo)}"
+                <c:set var="puedeDecidir" value="${esCoordinador and f.estado == 'PENDIENTE'}" />
+                <c:set var="puedeCorregir" value="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'APLAZADO' and f.id_responsable == sessionScope.usuarioId}" />
+                <c:set var="puedeCompanero" value="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'PENDIENTE' and f.id_responsable == sessionScope.usuarioId and not fn:contains(f.integrantes_texto, 'compañero')}" />
+                <div class="dropdown d-inline-block">
+                  <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-expanded="false" title="Más acciones de ${fn:escapeXml(f.codigo)}" aria-label="Más acciones de ${fn:escapeXml(f.codigo)}"><i class="bi bi-three-dots"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end acciones-menu">
+                    <c:if test="${f.id_proyecto > 0}"><li><a class="dropdown-item" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${f.id_proyecto}"><i class="bi bi-list-check me-2"></i>Ver seguimiento</a></li></c:if>
+                    <c:if test="${puedeDecidir}"><li>
+                      <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalGestionar"
                                 data-id="${f.id}" data-accion-url="${ctx}/proceso/${f.tipo == 'IDEA' ? 'idea_proc.jsp' : 'propuesta_proc.jsp'}"
                                 data-codigo="${fn:escapeXml(f.codigo)}" data-titulo="${fn:escapeXml(f.titulo)}" data-autor="${fn:escapeXml(f.autor)}"
-                                data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-check2-square"></i></button>
-                  </c:when>
-                  <c:when test="${esCoordinador}">
-                    <span class="d-inline-block" title="Ya decidida"><button type="button" class="btn btn-outline-uts btn-icono" disabled aria-label="Ya decidida"><i class="bi bi-check2-square"></i></button></span>
-                  </c:when>
-                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'APLAZADO' and f.id_responsable == sessionScope.usuarioId}">
-                    <a class="btn btn-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Corregir y reenviar ${fn:escapeXml(f.codigo)}" aria-label="Corregir y reenviar ${fn:escapeXml(f.codigo)}"><i class="bi bi-pencil"></i></a>
-                  </c:when>
-                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'PENDIENTE' and f.id_responsable == sessionScope.usuarioId and not fn:contains(f.integrantes_texto, 'compañero')}">
-                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}" aria-label="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}"><i class="bi bi-person-plus"></i></a>
-                  </c:when>
-                  <c:otherwise>
-                    <span class="d-inline-block" title="No hay cambios posibles en este estado"><button type="button" class="btn btn-outline-uts btn-icono" disabled aria-label="No hay cambios posibles en este estado"><i class="bi bi-pencil"></i></button></span>
-                  </c:otherwise>
-                </c:choose>
-                </c:if>
+                                data-descripcion="${fn:escapeXml(f.descripcion)}" data-objetivo="${fn:escapeXml(f.objetivo)}" data-alcance="${fn:escapeXml(f.alcance)}"><i class="bi bi-check2-square me-2"></i>Aprobar, aplazar o rechazar</button>
+                    </li></c:if>
+                    <c:if test="${puedeCorregir}"><li><a class="dropdown-item" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}"><i class="bi bi-pencil me-2"></i>Corregir y reenviar</a></li></c:if>
+                    <c:if test="${puedeCompanero}"><li><a class="dropdown-item" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}"><i class="bi bi-person-plus me-2"></i>Agregar compañero</a></li></c:if>
+                    <c:if test="${not (f.id_proyecto > 0 or puedeDecidir or puedeCorregir or puedeCompanero)}"><li><span class="dropdown-item-text texto-sec small">Sin acciones disponibles</span></li></c:if>
+                  </ul>
+                </div>
               </td>
             </tr>
           </c:forEach>

@@ -386,6 +386,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Acciones de Propuestas Banco: todas visibles (23/10/2026)
 - Por decisión de la estudiante, cada fila lleva siempre los mismos botones en el mismo orden (ver detalle, seguimiento y, para coordinador y estudiante, decidir o corregir); los que no aplican quedan apagados con un texto flotante que explica por qué ("Ya decidida", "Aún no es un proyecto: no hay seguimiento").
 
+### Acciones de Propuestas Banco con menú (23/10/2026)
+- Cada fila lleva siempre dos botones: el ojo y un menú de tres puntos con lo que se puede hacer en ese momento (ver seguimiento, aprobar/aplazar/rechazar, corregir y reenviar o agregar compañero); si no hay nada, dice "Sin acciones disponibles". Sin huecos y sin botones apagados.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
