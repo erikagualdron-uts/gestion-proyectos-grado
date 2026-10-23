@@ -299,3 +299,6 @@ a.resumen:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra
 .fase-tile.activa { outline: 3px solid var(--verde-bosque); outline-offset: 2px; }
 @media (max-width: 991px) { .tablero-fases { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 575px) { .tablero-fases { grid-template-columns: repeat(2, 1fr); } }
+
+/* Mensajes (éxito, error, aviso) dentro de las pantallas del sistema: separados del botón Volver y de la barra superior */
+.contenido > .alert { margin-top: 20px; margin-bottom: 12px; }

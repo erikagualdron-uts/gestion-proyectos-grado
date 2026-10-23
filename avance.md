@@ -361,6 +361,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Color de los textos de ejemplo (23/10/2026)
 - Los ejemplos dentro de los campos (placeholder) ahora van en gris claro en todo el sistema, para que no se confundan con datos ya escritos.
 
+### Separación de los mensajes (23/10/2026)
+- Los mensajes de éxito, error o aviso quedaban pegados al botón "Volver"; ahora llevan más separación arriba y abajo en todas las pantallas.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
