@@ -210,7 +210,7 @@
             <c:if test="${rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5)}">
               <div class="mb-3">
                 <label for="rejilla" class="form-label">Rejilla de evaluación diligenciada (formato <c:out value="${fase == 3 ? 'F-DC-124, sección Rejilla de evaluación' : 'F-DC-129'}" />)
-                  <span class="texto-sec"><c:out value="${rejillaObligatoria ? '(enlace, obligatorio para aprobar)' : '(enlace, opcional)'}" /></span></label>
+                  <span class="texto-sec"><c:out value="${rejillaObligatoria ? '(enlace, obligatorio para aprobar)' : '(ya adjuntada para esta versión)'}" /></span></label>
                 <input type="url" class="form-control" id="rejilla" name="rejilla" maxlength="500" placeholder="https://..." ${rejillaObligatoria ? 'data-obligatoria-aprobar' : ''}>
                 <div class="form-text"><c:choose>
                   <c:when test="${fase == 3}">Es la sección "Rejilla de evaluación" del formato F-DC-124 (anteproyecto), con tus marcas SI/NO, el concepto final y la firma.</c:when>
