@@ -383,6 +383,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Acciones de Propuestas Banco sin huecos (23/10/2026)
 - Se quitó el icono de seguimiento de la tabla (queda en el pie de la ventana de detalle) y los espacios reservados. Cada fila lleva, si corresponde, un botón con texto a la izquierda ("Decidir" para el coordinador; "Corregir" o "Agregar compañero" para el estudiante) y el ojo siempre al final, así las acciones quedan pegadas al borde derecho sin huecos.
 
+### Acciones de Propuestas Banco: todas visibles (23/10/2026)
+- Por decisión de la estudiante, cada fila lleva siempre los mismos botones en el mismo orden (ver detalle, seguimiento y, para coordinador y estudiante, decidir o corregir); los que no aplican quedan apagados con un texto flotante que explica por qué ("Ya decidida", "Aún no es un proyecto: no hay seguimiento").
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
