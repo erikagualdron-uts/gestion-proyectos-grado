@@ -394,6 +394,7 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 
 ### Pruebas finales y README (23/10/2026)
 - Recorrido con los cuatro roles en el despliegue: todas las pantallas de cada rol cargan sin error; las pantallas de otros roles responden "Acceso denegado"; sin sesión se vuelve al ingreso; los procesos rechazan peticiones sin token anti-CSRF o por GET; un estudiante no puede ver el seguimiento de un proyecto ajeno.
+- **Prueba completa de extremo a extremo (135 comprobaciones, todas correctas)** con datos temporales que se borraron al terminar (las tablas quedaron con los mismos conteos de antes): usuarios (crear, repetir correo, dominio incorrecto, contraseña corta, editar, inactivar y reactivar); registro y aprobación o rechazo de cuentas; ideas (proponer, aprobar, aplazar); propuestas (elegir del banco, una activa por estudiante, propia con compañero, aplazar, corregir, rechazar); asignación; compañero de solo lectura; PQRS (los seis tipos, validaciones, resolver, cambio de director con sus reglas y texto con etiquetas escapado); las seis fases hasta "listo para sustentación" con aplazamiento y versiones; rechazo de un documento que cierra el proyecto; notificaciones; perfil y contraseña; enlaces de la base documental; y controles de seguridad.
 - README actualizado (qué hace cada rol, instalación, variables de entorno, hora de Colombia, base documental, usuarios de prueba y seguridad). Los PDF de formatos institucionales se agregaron al `.gitignore`.
 
 ---
