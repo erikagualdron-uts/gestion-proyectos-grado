@@ -119,8 +119,8 @@
 
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
 
-<h1 class="titulo-pagina">Calificar documento</h1>
-<p class="descripcion-pagina">Proyecto <strong><c:out value="${py.codigo}" /></strong> · Fase <c:out value="${fase}" /> (<c:out value="${py.fase}" />) · Revisas como <strong><c:out value="${rolTexto}" /></strong>.</p>
+<h1 class="titulo-pagina"><c:out value="${fase == 1 ? 'Validar pago' : 'Calificar documento'}" /></h1>
+<p class="descripcion-pagina">Proyecto <strong><c:out value="${py.codigo}" /></strong> · Fase <c:out value="${fase}" /> (<c:out value="${py.fase}" />) · <c:choose><c:when test="${fase == 1}">Validas el pago como <strong>coordinador</strong>.</c:when><c:otherwise>Revisas como <strong><c:out value="${rolTexto}" /></strong>.</c:otherwise></c:choose></p>
 
 <div class="row g-4">
   <div class="col-12 col-xl-7">
@@ -230,7 +230,7 @@
             </c:if>
             <div class="mb-3">
               <label for="observacion" class="form-label">Observaciones <span class="texto-sec">(obligatorias para aplazar o rechazar)</span></label>
-              <textarea class="form-control" id="observacion" name="observacion" rows="5" maxlength="2000"><c:out value="${not empty sessionScope.vrObservacion ? sessionScope.vrObservacion : miRevision.observaciones}" /></textarea>
+              <textarea class="form-control" id="observacion" name="observacion" rows="5" maxlength="2000" placeholder="${fase == 1 ? 'Ej.: El comprobante no se ve completo; sube uno legible.' : 'Ej.: Falta ajustar el alcance según lo conversado.'}"><c:out value="${not empty sessionScope.vrObservacion ? sessionScope.vrObservacion : miRevision.observaciones}" /></textarea>
               <div class="invalid-feedback">Escribe las observaciones.</div>
             </div>
             <c:if test="${not empty miRevision}"><div class="alert alert-warning small" role="alert">Ya registraste una decisión (<strong><c:out value="${miRevision.decision == 'APROBADO' ? 'aprobado' : (miRevision.decision == 'APLAZADO' ? 'aplazado' : 'rechazado')}" /></strong>). Puedes cambiarla <c:out value="${(rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5)) ? 'hasta que el evaluador o el comité decidan' : 'mientras la fase siga en revisión'}" />; al guardar de nuevo se reemplaza.</div></c:if>
@@ -239,6 +239,11 @@
               <button type="submit" name="decision" value="APLAZAR" class="btn btn-aplazar"><i class="bi bi-pause-circle me-1"></i>Aplazar</button>
               <button type="submit" name="decision" value="APROBAR" class="btn btn-uts"><i class="bi bi-check-circle me-1"></i><c:out value="${etiquetaAprobar}" /></button>
             </div>
+            <ul class="small texto-sec mt-3 mb-0 ps-3">
+              <li><strong>Aprobar:</strong> <c:out value="${fase == 1 ? 'valida el pago y el proyecto pasa a la Fase 2.' : 'registra tu aprobación; la fase avanza cuando todos los que deben decidir aprueban.'}" /></li>
+              <li><strong>Aplazar:</strong> el estudiante corrige y envía una nueva versión (la observación es obligatoria).</li>
+              <li><strong>Rechazar:</strong> cierra el proyecto. Es un caso extremo y pide confirmación.</li>
+            </ul>
           </form>
         </c:when>
         <c:otherwise>
