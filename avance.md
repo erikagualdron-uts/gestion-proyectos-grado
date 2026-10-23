@@ -374,6 +374,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - El inicio de un estudiante sin proyecto muestra un cuadro de primeros pasos (sin propuesta: botones al banco y a proponer una idea propia; con propuesta pendiente o aplazada: su estado y un botón a "Mis propuestas") en lugar del aviso de revisiones del director, y un saludo que lo orienta.
 - Formulario de nueva propuesta: asteriscos en los obligatorios, ejemplos en título, objetivo y alcance, aviso de una propuesta activa por estudiante y de que solo el responsable entrega los documentos.
 
+### Propuesta pendiente del estudiante (23/10/2026)
+- En "Mis propuestas", una propuesta pendiente muestra el botón "Agregar a tu compañero" (icono de persona) solo si todavía no lo tiene, y la aplazada el botón verde "Corregir y reenviar"; el detalle de una propuesta pendiente avisa que el coordinador la está revisando; la pantalla de edición se llama "Agregar compañero" (o "Corregir propuesta" si fue aplazada) y no marca con asterisco los campos que están bloqueados.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

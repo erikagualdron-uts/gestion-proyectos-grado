@@ -222,8 +222,12 @@
                       <c:otherwise><span class="btn-icono-vacio" aria-hidden="true"></span></c:otherwise>
                     </c:choose>
                   </c:when>
-                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and (f.estado == 'PENDIENTE' or f.estado == 'APLAZADO') and f.id_responsable == sessionScope.usuarioId}">
-                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="${f.estado == 'APLAZADO' ? 'Corregir y reenviar' : 'Editar compañero de'} ${fn:escapeXml(f.codigo)}" aria-label="${f.estado == 'APLAZADO' ? 'Corregir y reenviar' : 'Editar compañero de'} ${fn:escapeXml(f.codigo)}"><i class="bi bi-pencil"></i></a>
+                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'APLAZADO' and f.id_responsable == sessionScope.usuarioId}">
+                    <a class="btn btn-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Corregir y reenviar ${fn:escapeXml(f.codigo)}" aria-label="Corregir y reenviar ${fn:escapeXml(f.codigo)}"><i class="bi bi-pencil"></i></a>
+                  </c:when>
+                  <%-- Pendiente: lo único que se puede hacer es agregar al compañero, y solo si todavía no lo tiene --%>
+                  <c:when test="${sessionScope.rol == 'ESTUDIANTE' and f.estado == 'PENDIENTE' and f.id_responsable == sessionScope.usuarioId and not fn:contains(f.integrantes_texto, 'compañero')}">
+                    <a class="btn btn-outline-uts btn-icono" href="${ctx}/modulos/propuestas/propuesta_form.jsp?id=${f.id}" title="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}" aria-label="Agregar a tu compañero en ${fn:escapeXml(f.codigo)}"><i class="bi bi-person-plus"></i></a>
                   </c:when>
                 </c:choose>
               </td>
@@ -254,6 +258,7 @@
         <div class="dato-etiqueta">Descripción</div><div class="dato-valor" style="white-space: pre-line" data-llenar="descripcion"></div>
         <div class="dato-etiqueta">Objetivo</div><div class="dato-valor" style="white-space: pre-line" data-llenar="objetivo"></div>
         <div class="dato-etiqueta">Alcance</div><div class="dato-valor" style="white-space: pre-line" data-llenar="alcance"></div>
+        <div class="alert alert-info small" data-mostrar-si="estado:Pendiente" hidden><i class="bi bi-hourglass-split me-1"></i>El coordinador la está revisando. Recibirás un aviso en la campana cuando decida.</div>
         <div data-mostrar-si="observacion:*" hidden>
           <div class="dato-etiqueta">Observación del coordinador</div>
           <div class="alert alert-secondary mb-0" style="white-space: pre-line" data-clases="estado|Aplazado=alert-warning|Rechazado=alert-danger" data-llenar="observacion"></div>

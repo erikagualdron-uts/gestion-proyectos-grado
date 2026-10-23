@@ -50,7 +50,7 @@
 <c:set var="editando" value="${not empty propuesta}" />
 <c:set var="companeroFijo" value="${editando and companero.rowCount > 0}" />
 <c:set var="contenidoEditable" value="${not editando or propuesta.estado_decision == 'APLAZADO'}" />
-<c:set var="titulo" value="${editando ? 'Corregir propuesta' : 'Nueva propuesta'}" scope="request" />
+<c:set var="titulo" value="${editando ? (propuesta.estado_decision == 'APLAZADO' ? 'Corregir propuesta' : (companeroFijo ? 'Mi propuesta' : 'Agregar compañero')) : 'Nueva propuesta'}" scope="request" />
 <c:set var="vTitulo" value="${not empty sessionScope.vpTitulo ? sessionScope.vpTitulo : (editando ? propuesta.titulo : '')}" />
 <c:set var="vDescripcion" value="${not empty sessionScope.vpDescripcion ? sessionScope.vpDescripcion : (editando ? propuesta.descripcion : '')}" />
 <c:set var="vObjetivo" value="${not empty sessionScope.vpObjetivo ? sessionScope.vpObjetivo : (editando ? propuesta.objetivo : '')}" />
@@ -82,7 +82,7 @@
         <c:if test="${editando}"><input type="hidden" name="id" value="${propuesta.id_propuesta}"></c:if>
 
         <div class="mb-3">
-          <label for="titulo" class="form-label requerido">Título</label>
+          <label for="titulo" class="form-label ${contenidoEditable ? 'requerido' : ''}">Título</label>
           <input type="text" class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="titulo" name="titulo" maxlength="200" minlength="5" placeholder="Ej.: Sistema web para el control de inventario" value="<c:out value='${vTitulo}' />" ${contenidoEditable ? 'required' : 'readonly'}>
           <div class="invalid-feedback">Ingresa el título (mínimo 5 caracteres).</div>
         </div>
@@ -91,12 +91,12 @@
           <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="descripcion" name="descripcion" rows="3" maxlength="2000" ${contenidoEditable ? '' : 'readonly'}><c:out value="${vDescripcion}" /></textarea>
         </div>
         <div class="mb-3">
-          <label for="objetivo" class="form-label requerido">Objetivo</label>
+          <label for="objetivo" class="form-label ${contenidoEditable ? 'requerido' : ''}">Objetivo</label>
           <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="objetivo" name="objetivo" rows="3" maxlength="2000" placeholder="¿Qué quieres lograr con tu trabajo de grado?" ${contenidoEditable ? 'required' : 'readonly'}><c:out value="${vObjetivo}" /></textarea>
           <div class="invalid-feedback">Escribe el objetivo.</div>
         </div>
         <div class="mb-3">
-          <label for="alcance" class="form-label requerido">Alcance</label>
+          <label for="alcance" class="form-label ${contenidoEditable ? 'requerido' : ''}">Alcance</label>
           <textarea class="form-control ${contenidoEditable ? '' : 'campo-bloqueado'}" id="alcance" name="alcance" rows="3" maxlength="2000" placeholder="¿Hasta dónde llega el trabajo y qué no incluye?" ${contenidoEditable ? 'required' : 'readonly'}><c:out value="${vAlcance}" /></textarea>
           <div class="invalid-feedback">Escribe el alcance.</div>
         </div>
