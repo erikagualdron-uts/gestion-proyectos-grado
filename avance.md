@@ -290,6 +290,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Búsqueda por documento en Propuestas Banco (23/10/2026)
 - El coordinador puede buscar propuestas por el número de documento de los estudiantes, además de por código, título y nombre.
 
+### Lista de PQRS del coordinador (23/10/2026)
+- Las solicitudes pendientes salen primero; las tarjetas de resumen filtran la tabla; el tipo tiene su propia columna; bajo "Aprobada/Rechazada" se muestra la fecha de resolución y el lápiz de lo ya resuelto explica por qué está apagado. Subtítulo más corto.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

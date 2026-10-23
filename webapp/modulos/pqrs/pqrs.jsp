@@ -56,7 +56,7 @@
          s.nombre_completo AS solicitante, p.codigo AS codigo_proyecto, rv.nombre_completo AS resuelto_por, nd.nombre_completo AS nuevo_director,
          DATE_FORMAT(q.fecha_creacion, '%d/%m/%Y %H:%i') AS fecha, DATE_FORMAT(q.fecha_resolucion, '%d/%m/%Y %H:%i') AS fecha_resolucion
   ${desdePqrs} ${filtrosPqrs}
-  ORDER BY q.fecha_creacion DESC, q.id_pqrs DESC
+  ORDER BY (q.estado = 'PENDIENTE') DESC, q.fecha_creacion DESC, q.id_pqrs DESC
   LIMIT ? OFFSET ?
   <sql:param value="${sessionScope.rol}" /><sql:param value="${sessionScope.usuarioId}" /><sql:param value="${sessionScope.usuarioId}" />
   <sql:param value="${q}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" /><sql:param value="${qLike}" />
@@ -97,7 +97,7 @@
     <h1 class="titulo-pagina">PQRS</h1>
     <p class="descripcion-pagina mb-3">
       <c:choose>
-        <c:when test="${esCoordinador}">Resuelve las solicitudes (aprobar o rechazar con respuesta): prórrogas, cambios de director, peticiones, quejas, reclamos y sugerencias.</c:when>
+        <c:when test="${esCoordinador}">Resuelve las solicitudes de los estudiantes.</c:when>
         <c:when test="${sessionScope.rol == 'ESTUDIANTE'}">Consulta el estado y la respuesta de tus solicitudes, o radica una nueva.</c:when>
         <c:otherwise>Consulta las solicitudes radicadas y su estado.</c:otherwise>
       </c:choose>
@@ -114,9 +114,9 @@
 
 <c:if test="${sessionScope.rol != 'ESTUDIANTE'}">
 <div class="row g-3 mb-4">
-  <div class="col-12 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></div></div>
-  <div class="col-6 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></div></div>
-  <div class="col-6 col-md-4"><div class="tarjeta resumen"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></div></div>
+  <div class="col-12 col-md-4"><a class="tarjeta resumen text-decoration-none ${filtroEstado == 'PENDIENTE' ? 'resumen-activa' : ''}" href="${ctx}/modulos/pqrs/pqrs.jsp?estado=PENDIENTE" title="Ver solo: pendientes"><span class="resumen-icono pendiente"><i class="bi bi-clock"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].pendientes}" default="0" /></div><div class="resumen-etiqueta">Pendientes</div></div></a></div>
+  <div class="col-6 col-md-4"><a class="tarjeta resumen text-decoration-none ${filtroEstado == 'APROBADO' ? 'resumen-activa' : ''}" href="${ctx}/modulos/pqrs/pqrs.jsp?estado=APROBADO" title="Ver solo: aprobadas"><span class="resumen-icono aprobado"><i class="bi bi-check-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].aprobadas}" default="0" /></div><div class="resumen-etiqueta">Aprobadas</div></div></a></div>
+  <div class="col-6 col-md-4"><a class="tarjeta resumen text-decoration-none ${filtroEstado == 'RECHAZADO' ? 'resumen-activa' : ''}" href="${ctx}/modulos/pqrs/pqrs.jsp?estado=RECHAZADO" title="Ver solo: rechazadas"><span class="resumen-icono rechazado"><i class="bi bi-x-circle"></i></span><div><div class="resumen-numero"><c:out value="${resumen.rows[0].rechazadas}" default="0" /></div><div class="resumen-etiqueta">Rechazadas</div></div></a></div>
 </div>
 </c:if>
 
@@ -165,7 +165,7 @@
   <c:otherwise>
     <div class="tabla-envoltorio table-responsive">
       <table class="table tabla-uts">
-        <thead><tr><th>Código</th><th>Asunto</th><c:choose><c:when test="${sessionScope.rol == 'ESTUDIANTE'}"><th>Tipo</th><th>Fecha</th></c:when><c:otherwise><th>Solicitante</th></c:otherwise></c:choose><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+        <thead><tr><th>Código</th><th>Asunto</th><c:choose><c:when test="${sessionScope.rol == 'ESTUDIANTE'}"><th>Tipo</th><th>Fecha</th></c:when><c:otherwise><th>Tipo</th><th>Solicitante</th></c:otherwise></c:choose><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
         <tbody>
           <c:forEach var="s" items="${solicitudes.rows}">
             <c:set var="tipoTexto" value="${s.tipo == 'PRORROGA' ? 'Prórroga' : (s.tipo == 'CAMBIO_DIRECTOR' ? 'Cambio de director' : (s.tipo == 'PETICION' ? 'Petición' : (s.tipo == 'QUEJA' ? 'Queja' : (s.tipo == 'RECLAMO' ? 'Reclamo' : 'Sugerencia'))))}" />
@@ -179,7 +179,8 @@
                   <td style="white-space: nowrap"><c:out value="${s.fecha}" /></td>
                 </c:when>
                 <c:otherwise>
-                  <td style="min-width: 240px"><div><c:out value="${s.asunto}" /></div><div class="texto-sec"><c:out value="${tipoTexto}" /><c:if test="${not empty s.codigo_proyecto}"> · <c:out value="${s.codigo_proyecto}" /></c:if></div></td>
+                  <td style="min-width: 220px"><div><c:out value="${s.asunto}" /></div><c:if test="${not empty s.codigo_proyecto}"><div class="texto-sec"><c:out value="${s.codigo_proyecto}" /></div></c:if></td>
+                  <td><c:out value="${tipoTexto}" /></td>
                   <td><div><c:out value="${s.solicitante}" /></div><div class="texto-sec"><c:out value="${s.fecha}" /></div></td>
                 </c:otherwise>
               </c:choose>
@@ -190,6 +191,9 @@
                     <c:otherwise>Respondida el <c:out value="${fn:substring(s.fecha_resolucion, 0, 10)}" /><c:if test="${not empty s.respuesta}"> · con observación</c:if></c:otherwise>
                   </c:choose></div>
                 </c:if>
+                <c:if test="${sessionScope.rol != 'ESTUDIANTE' and s.estado != 'PENDIENTE'}">
+                  <div class="texto-sec small mt-1">Resuelta el <c:out value="${fn:substring(s.fecha_resolucion, 0, 10)}" /></div>
+                </c:if>
               </td>
               <td class="acciones">
                 <button type="button" class="btn btn-outline-uts btn-icono" data-bs-toggle="modal" data-bs-target="#modalPqrs" aria-label="Visualizar ${fn:escapeXml(s.codigo)}"
@@ -198,9 +202,9 @@
                         data-respuesta="${fn:escapeXml(s.respuesta)}" data-resuelto="${fn:escapeXml(s.resuelto_por)}" data-fecha-resolucion="${s.fecha_resolucion}"
                         data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-nuevo-director="${fn:escapeXml(s.nuevo_director)}"><i class="bi bi-eye"></i></button>
                 <c:if test="${esCoordinador}">
-                  <button type="button" class="btn btn-outline-uts btn-icono" ${s.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalResolver" aria-label="Gestionar ${fn:escapeXml(s.codigo)}"
+                  <span class="d-inline-block" title="${s.estado == 'PENDIENTE' ? 'Resolver la solicitud' : 'Ya resuelta'}"><button type="button" class="btn btn-outline-uts btn-icono" ${s.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalResolver" aria-label="Gestionar ${fn:escapeXml(s.codigo)}"
                           data-id="${s.id_pqrs}" data-tipo="${s.tipo}" data-codigo="${fn:escapeXml(s.codigo)}" data-tipo-texto="${tipoTexto}" data-asunto="${fn:escapeXml(s.asunto)}"
-                          data-descripcion="${fn:escapeXml(s.descripcion)}" data-solicitante="${fn:escapeXml(s.solicitante)}" data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-director-actual="${s.id_director}" data-evaluador-actual="${s.id_evaluador}"><i class="bi bi-pencil"></i></button>
+                          data-descripcion="${fn:escapeXml(s.descripcion)}" data-solicitante="${fn:escapeXml(s.solicitante)}" data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-director-actual="${s.id_director}" data-evaluador-actual="${s.id_evaluador}"><i class="bi bi-pencil"></i></button></span>
                 </c:if>
               </td>
             </tr>
