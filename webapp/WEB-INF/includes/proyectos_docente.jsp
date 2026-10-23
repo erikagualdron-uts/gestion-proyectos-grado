@@ -54,8 +54,8 @@
             FROM propuesta_estudiante pe JOIN usuario e ON e.id_usuario = pe.id_estudiante WHERE pe.id_propuesta = p.id_propuesta) AS estudiantes,
            (SELECT d.id_documento FROM documento d
             WHERE d.id_proyecto_fase = pf.id_proyecto_fase AND d.vigente = 1
-              AND d.nombre = CASE pr.fase_actual WHEN 1 THEN 'Comprobante de pago' WHEN 2 THEN 'Propuesta (anteproyecto)' WHEN 3 THEN 'Propuesta'
-                                                WHEN 4 THEN 'Informe' WHEN 5 THEN 'Informe' ELSE 'Informe final' END
+              AND d.nombre = CASE pr.fase_actual WHEN 1 THEN 'Comprobante de pago' WHEN 2 THEN 'Anteproyecto (F-DC-124)' WHEN 3 THEN 'Anteproyecto (F-DC-124)'
+                                                WHEN 4 THEN 'Informe (F-DC-125)' WHEN 5 THEN 'Informe (F-DC-125)' ELSE 'Revisión final' END
             ORDER BY d.version_num DESC LIMIT 1) AS doc_vigente
     ${misProyectos}
     ORDER BY pr.id_proyecto DESC LIMIT ? OFFSET ?
@@ -120,7 +120,7 @@
         <thead><tr><th>ID</th><th>Descripción</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
         <tbody>
           <c:forEach var="p" items="${proyectos.rows}">
-            <c:set var="porRevisar" value="${p.estado_general == 'EN_CURSO' and p.estado_fase == 'EN_CURSO' and not empty p.doc_vigente and (esDirector ? ((p.fase_actual == 2 or p.fase_actual == 3 or p.fase_actual == 4 or p.fase_actual == 5) and p.dir_rev == 0) : ((p.fase_actual == 3 or p.fase_actual == 5 or p.fase_actual == 6) and (p.fase_actual == 6 or p.dir_ok > 0) and p.eva_rev == 0))}" />
+            <c:set var="porRevisar" value="${p.estado_general == 'EN_CURSO' and p.estado_fase == 'EN_CURSO' and not empty p.doc_vigente and (esDirector ? ((p.fase_actual == 2 or p.fase_actual == 3 or p.fase_actual == 4 or p.fase_actual == 5) and p.dir_rev == 0) : ((p.fase_actual == 3 or p.fase_actual == 5) and p.dir_ok > 0 and p.eva_rev == 0))}" />
             <tr>
               <td class="fw-bold"><c:out value="${p.codigo}" /></td>
               <td style="min-width: 220px"><c:out value="${p.titulo}" /></td>

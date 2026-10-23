@@ -153,3 +153,10 @@
 - Al aprobar la fase 6 el proyecto se muestra como **"Listo para sustentación"** (antes decía "Apto para graduación"): después de la revisión final lo que sigue es la sustentación del trabajo de grado. Es solo el texto visible: el valor interno en la base de datos sigue siendo `APTO_GRADUACION`.
 - **Turnitin obligatorio (fase 5):** como evidencia del reporte de la herramienta antiplagio, el director debe adjuntar el enlace del informe de similitud en **cualquier decisión** (aprobar el envío, aplazar o rechazar), una vez por versión del informe. No se verifica el porcentaje: el sistema solo guarda el enlace.
 - "Calificar documento": ahora muestra el progreso de la revisión de la versión (por ejemplo "Director: aprobó · Evaluador: pendiente · Comité: pendiente"), pone primero los enlaces de evidencia (rejilla o Turnitin) y después las observaciones, y el aviso de "Ya registraste una decisión" explica hasta cuándo se puede cambiar.
+
+### Ajustes según los formatos institucionales F-DC-124, F-DC-125 y F-DC-129 (23/10/2026)
+- **F-DC-124** es el formato del **anteproyecto** (fases 2 y 3, con su rejilla y el informe de similitud como Anexo A); **F-DC-125** es el formato del **informe de trabajo de grado** (fases 4 y 5); **F-DC-129** es la **rejilla de evaluación del informe** (fase 5).
+- Los documentos se llaman ahora "Anteproyecto (F-DC-124)" e "Informe (F-DC-125)", para que el estudiante sepa qué formato usar.
+- **Rejilla del evaluador:** obligatoria para aprobar en la **fase 3** (formato F-DC-124, sección de rejilla) y en la **fase 5** (formato F-DC-129), una vez por versión.
+- **Fase 6 (Revisión final):** ya no tiene entrega ni revisión. Se alcanza sola cuando el evaluador y el comité aprueban la fase 5, y deja el proyecto **"Listo para sustentación"**. La tarjeta 6 se conserva como estado final.
+- Pendiente de confirmar: si el informe de similitud (Turnitin) también debe ser obligatorio para el director en la fase 3 (el F-DC-124 lo incluye como Anexo A).

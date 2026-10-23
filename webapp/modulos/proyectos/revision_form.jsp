@@ -72,8 +72,8 @@
   </c:forEach>
 </c:if>
 
-<%-- Fase 3: el evaluador debe adjuntar la rejilla diligenciada (F-DC-124) para aprobar, salvo que ya la haya adjuntado para esta versión --%>
-<c:if test="${rolRevision == 'EVALUADOR' and fase == 3 and not empty docVigente}">
+<%-- Fases 3 y 5: el evaluador debe adjuntar su rejilla diligenciada para aprobar (F-DC-124 en la fase 3, F-DC-129 en la 5), salvo que ya la haya adjuntado para esta versión --%>
+<c:if test="${rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5) and not empty docVigente}">
   <sql:query var="rejillaRonda" dataSource="${bd}">
     SELECT COUNT(*) AS total FROM documento
     WHERE id_proyecto_fase = ? AND nombre = 'Rejilla de evaluación'
@@ -104,7 +104,7 @@
 </sql:query>
 
 <%-- ¿Le toca revisar en esta fase? --%>
-<c:set var="faseCorresponde" value="${rolRevision == 'COMITE' ? (fase == 1 or fase == 3 or fase == 5 or fase == 6) : (rolRevision == 'DIRECTOR' ? (fase == 2 or fase == 3 or fase == 4 or fase == 5) : (fase == 3 or fase == 5 or fase == 6))}" />
+<c:set var="faseCorresponde" value="${rolRevision == 'COMITE' ? (fase == 1 or fase == 3 or fase == 5) : (rolRevision == 'DIRECTOR' ? (fase == 2 or fase == 3 or fase == 4 or fase == 5) : (fase == 3 or fase == 5))}" />
 <c:set var="esperaDirector" value="${rolRevision != 'DIRECTOR' and (fase == 3 or fase == 5) and empty directorAprobo}" />
 <c:choose>
   <c:when test="${py.estado_general != 'EN_CURSO'}"><c:set var="motivo" value="El proyecto ya no está en curso." /></c:when>
@@ -130,7 +130,7 @@
         <span class="insignia insignia-${py.estado_fase == 'EN_CURSO' ? 'pendiente' : (py.estado_fase == 'APLAZADA' ? 'aplazado' : 'aprobado')}"><c:out value="${py.estado_fase == 'EN_CURSO' ? 'En revisión' : (py.estado_fase == 'APLAZADA' ? 'Aplazada' : 'Cerrada')}" /></span>
       </div>
       <c:if test="${not empty docVigente}">
-        <c:set var="rolesFase" value="${fase == 1 ? 'COMITE' : ((fase == 2 or fase == 4) ? 'DIRECTOR' : (fase == 6 ? 'EVALUADOR,COMITE' : 'DIRECTOR,EVALUADOR,COMITE'))}" />
+        <c:set var="rolesFase" value="${fase == 1 ? 'COMITE' : ((fase == 2 or fase == 4) ? 'DIRECTOR' : 'DIRECTOR,EVALUADOR,COMITE')}" />
         <div class="dato-etiqueta">Revisión de esta versión</div>
         <div class="d-flex flex-wrap gap-2 mb-3">
           <c:forEach var="rr" items="${fn:split(rolesFase, ',')}">
@@ -207,13 +207,16 @@
             <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
             <input type="hidden" name="id" value="${idProyecto}">
             <input type="hidden" name="documento" value="${docVigente.id_documento}">
-            <c:if test="${rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5 or fase == 6)}">
+            <c:if test="${rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5)}">
               <div class="mb-3">
-                <label for="rejilla" class="form-label">Rejilla de evaluación diligenciada (formato F-DC-124)
+                <label for="rejilla" class="form-label">Rejilla de evaluación diligenciada (formato <c:out value="${fase == 3 ? 'F-DC-124, sección Rejilla de evaluación' : 'F-DC-129'}" />)
                   <span class="texto-sec"><c:out value="${rejillaObligatoria ? '(enlace, obligatorio para aprobar)' : '(enlace, opcional)'}" /></span></label>
                 <input type="url" class="form-control" id="rejilla" name="rejilla" maxlength="500" placeholder="https://..." ${rejillaObligatoria ? 'data-obligatoria-aprobar' : ''}>
-                <div class="form-text">Es la sección "Rejilla de evaluación" del formato F-DC-124, con tus marcas SI/NO, el concepto final y la firma. Pega el enlace a tu copia diligenciada.</div>
-                <div class="invalid-feedback">Para aprobar la Fase 3 adjunta el enlace de la rejilla diligenciada (http:// o https://).</div>
+                <div class="form-text"><c:choose>
+                  <c:when test="${fase == 3}">Es la sección "Rejilla de evaluación" del formato F-DC-124 (anteproyecto), con tus marcas SI/NO, el concepto final y la firma.</c:when>
+                  <c:otherwise>Es el formato F-DC-129 (rejilla de evaluación del informe), con tus marcas SI/NO/N/A, el concepto final y la firma.</c:otherwise>
+                </c:choose> Pega el enlace a tu copia diligenciada.</div>
+                <div class="invalid-feedback">Para aprobar adjunta el enlace de la rejilla diligenciada (http:// o https://).</div>
               </div>
             </c:if>
             <c:if test="${rolRevision == 'DIRECTOR' and fase == 5}">

@@ -59,7 +59,7 @@
     SELECT id_revision, rol_revisor, decision FROM revision WHERE id_documento = ?
     <sql:param value="${idDocumento}" />
   </sql:query>
-  <c:if test="${rolRevision == 'EVALUADOR' and fase == 3}">
+  <c:if test="${rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5)}">
     <sql:query var="rejillaRonda" dataSource="${bd}">
       SELECT COUNT(*) AS total FROM documento
       WHERE id_proyecto_fase = ? AND nombre = 'Rejilla de evaluación'
@@ -83,7 +83,7 @@
     <c:if test="${r.rol_revisor == rolRevision}"><c:set var="miPrevia" value="${r.id_revision}" /></c:if>
     <c:if test="${r.rol_revisor == 'DIRECTOR' and r.decision == 'APROBADO'}"><c:set var="directorAprobo" value="${true}" /></c:if>
   </c:forEach>
-  <c:set var="faseCorresponde" value="${rolRevision == 'COMITE' ? (fase == 1 or fase == 3 or fase == 5 or fase == 6) : (rolRevision == 'DIRECTOR' ? (fase == 2 or fase == 3 or fase == 4 or fase == 5) : (rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5 or fase == 6)))}" />
+  <c:set var="faseCorresponde" value="${rolRevision == 'COMITE' ? (fase == 1 or fase == 3 or fase == 5) : (rolRevision == 'DIRECTOR' ? (fase == 2 or fase == 3 or fase == 4 or fase == 5) : (rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5)))}" />
 
   <c:choose>
     <c:when test="${empty rolRevision}"><c:set var="errorRevision" value="No eres revisor de este proyecto." /></c:when>
@@ -93,8 +93,8 @@
     <c:when test="${doc.rowCount != 1 or doc.rows[0].id_documento != idDocumento}"><c:set var="errorRevision" value="El documento cambió o no existe: recarga la página y revisa la versión vigente." /></c:when>
     <c:when test="${rolRevision != 'DIRECTOR' and (fase == 3 or fase == 5) and not directorAprobo}"><c:set var="errorRevision" value="Primero el director debe aprobar el envío del documento." /></c:when>
     <c:when test="${rolRevision == 'DIRECTOR' and (fase == 3 or fase == 5) and otrosDecidieron}"><c:set var="errorRevision" value="El evaluador o el comité ya decidieron sobre esta versión: tu decisión quedó cerrada." /></c:when>
-    <c:when test="${param.decision == 'APROBAR' and rolRevision == 'EVALUADOR' and fase == 3 and empty rejillaIngresada and rejillaRonda.rows[0].total == 0}">
-      <c:set var="errorRevision" value="Para aprobar la Fase 3 adjunta el enlace de la rejilla de evaluación diligenciada (formato F-DC-124)." />
+    <c:when test="${param.decision == 'APROBAR' and rolRevision == 'EVALUADOR' and (fase == 3 or fase == 5) and empty rejillaIngresada and rejillaRonda.rows[0].total == 0}">
+      <c:set var="errorRevision" value="Para aprobar adjunta el enlace de la rejilla de evaluación diligenciada (formato F-DC-124 en la Fase 3 y F-DC-129 en la Fase 5)." />
     </c:when>
     <c:when test="${rolRevision == 'DIRECTOR' and fase == 5 and empty turnitinIngresado and turnitinRonda.rows[0].total == 0}">
       <c:set var="errorRevision" value="En la Fase 5 adjunta el enlace del informe de similitud (Turnitin) como evidencia, sea cual sea tu decisión." />
@@ -186,7 +186,7 @@
       </c:forEach>
       <c:set var="hayRechazo" value="${decDir == 'RECHAZADO' or decEva == 'RECHAZADO' or decCom == 'RECHAZADO'}" />
       <c:set var="hayAplazo" value="${decDir == 'APLAZADO' or decEva == 'APLAZADO' or decCom == 'APLAZADO'}" />
-      <c:set var="todosAprueban" value="${fase == 1 ? decCom == 'APROBADO' : ((fase == 2 or fase == 4) ? decDir == 'APROBADO' : (fase == 6 ? (decEva == 'APROBADO' and decCom == 'APROBADO') : (decDir == 'APROBADO' and decEva == 'APROBADO' and decCom == 'APROBADO')))}" />
+      <c:set var="todosAprueban" value="${fase == 1 ? decCom == 'APROBADO' : ((fase == 2 or fase == 4) ? decDir == 'APROBADO' : (decDir == 'APROBADO' and decEva == 'APROBADO' and decCom == 'APROBADO'))}" />
       <c:set var="resultadoFase" value="${hayRechazo ? 'RECHAZADA' : (hayAplazo ? 'APLAZADA' : (todosAprueban ? 'APROBADA' : 'EN_CURSO'))}" />
 
       <c:if test="${resultadoFase != 'EN_CURSO'}">
@@ -208,20 +208,24 @@
           <sql:param value="${idProyecto}" />
         </sql:update>
       </c:if>
-      <c:if test="${resultadoFase == 'APROBADA' and fase == 6}">
+      <c:if test="${resultadoFase == 'APROBADA' and fase == 5}">
         <sql:update>
-          UPDATE proyecto SET estado_general = 'APTO_GRADUACION' WHERE id_proyecto = ?
+          UPDATE proyecto_fase SET estado = 'APROBADA', fecha_inicio = NOW(), fecha_fin = NOW() WHERE id_proyecto = ? AND id_fase = 6
+          <sql:param value="${idProyecto}" />
+        </sql:update>
+        <sql:update>
+          UPDATE proyecto SET fase_actual = 6, estado_general = 'APTO_GRADUACION' WHERE id_proyecto = ?
           <sql:param value="${idProyecto}" />
         </sql:update>
         <sql:update>
           INSERT INTO historial_version (id_usuario, id_proyecto, entidad, id_entidad, accion, estado_anterior, estado_nuevo, detalle)
-          VALUES (?, ?, 'PROYECTO', ?, 'APTO_GRADUACION', 'EN_CURSO', 'APTO_GRADUACION', 'Revisión final aprobada: el proyecto queda listo para sustentación')
+          VALUES (?, ?, 'PROYECTO', ?, 'APTO_GRADUACION', 'EN_CURSO', 'APTO_GRADUACION', 'Todas las fases aprobadas: el proyecto queda listo para sustentación')
           <sql:param value="${sessionScope.usuarioId}" /><sql:param value="${idProyecto}" /><sql:param value="${idProyecto}" />
         </sql:update>
       </c:if>
 
       <%-- 4. Avance a la siguiente fase (y copia del documento aprobado en las fases 3 y 5) --%>
-      <c:if test="${resultadoFase == 'APROBADA' and fase < 6}">
+      <c:if test="${resultadoFase == 'APROBADA' and fase < 5}">
         <sql:update>
           UPDATE proyecto_fase SET estado = 'EN_CURSO', fecha_inicio = NOW() WHERE id_proyecto = ? AND id_fase = ?
           <sql:param value="${idProyecto}" /><sql:param value="${proximaFase}" />
@@ -247,7 +251,7 @@
         SELECT pe.id_estudiante, ?, 'REVISION', ?
         FROM propuesta_estudiante pe JOIN proyecto pr ON pr.id_propuesta = pe.id_propuesta WHERE pr.id_proyecto = ?
         <sql:param value="${idProyecto}" />
-        <sql:param value="${fn:substring(rolTexto += ' ' += textoDecision += ' ' += nombrePrincipal += ' (fase ' += fase += ') del proyecto ' += py.codigo += '.' += (resultadoFase == 'APROBADA' ? (fase == 6 ? ' El proyecto queda listo para sustentación.' : ' La fase fue aprobada.') : (resultadoFase == 'APLAZADA' ? ' Corrige y entrega una nueva versión.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ''))), 0, 250)}" />
+        <sql:param value="${fn:substring(rolTexto += ' ' += textoDecision += ' ' += nombrePrincipal += ' (fase ' += fase += ') del proyecto ' += py.codigo += '.' += (resultadoFase == 'APROBADA' ? (fase == 5 ? ' Todas las fases están aprobadas: el proyecto queda listo para sustentación.' : ' La fase fue aprobada.') : (resultadoFase == 'APLAZADA' ? ' Corrige y entrega una nueva versión.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ''))), 0, 250)}" />
         <sql:param value="${idProyecto}" />
       </sql:update>
       <c:if test="${rolRevision == 'DIRECTOR' and decisionBd == 'APROBADO' and resultadoFase == 'EN_CURSO' and (fase == 3 or fase == 5)}">
@@ -261,7 +265,7 @@
           <sql:param value="${empty py.id_evaluador ? 0 : py.id_evaluador}" />
         </sql:update>
       </c:if>
-      <c:if test="${resultadoFase == 'APROBADA' and fase < 6 and (proximaFase == 3 or proximaFase == 5)}">
+      <c:if test="${resultadoFase == 'APROBADA' and fase < 5 and (proximaFase == 3 or proximaFase == 5)}">
         <sql:update>
           INSERT INTO notificacion (id_usuario, id_proyecto, tipo, mensaje) VALUES (?, ?, 'REVISION', ?)
           <sql:param value="${py.id_director}" /><sql:param value="${idProyecto}" />
@@ -276,7 +280,7 @@
 <c:choose>
   <c:when test="${empty errorRevision}">
     <c:set var="flashTipo" value="success" scope="session" />
-    <c:set var="flashMsg" value="Decisión registrada: ${decisionBd == 'APROBADO' ? 'aprobado' : (decisionBd == 'APLAZADO' ? 'aplazado' : 'rechazado')}.${resultadoFase == 'APROBADA' ? (fase == 6 ? ' El proyecto queda listo para sustentación.' : ' La fase fue aprobada y avanzó a la siguiente.') : (resultadoFase == 'APLAZADA' ? ' La fase se devolvió al estudiante.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ' Falta la decisión de los demás revisores.'))}" scope="session" />
+    <c:set var="flashMsg" value="Decisión registrada: ${decisionBd == 'APROBADO' ? 'aprobado' : (decisionBd == 'APLAZADO' ? 'aplazado' : 'rechazado')}.${resultadoFase == 'APROBADA' ? (fase == 5 ? ' Todas las fases están aprobadas: el proyecto queda listo para sustentación.' : ' La fase fue aprobada y avanzó a la siguiente.') : (resultadoFase == 'APLAZADA' ? ' La fase se devolvió al estudiante.' : (resultadoFase == 'RECHAZADA' ? ' El proyecto se cerró.' : ' Falta la decisión de los demás revisores.'))}" scope="session" />
     <c:redirect url="/modulos/proyectos/seguimiento.jsp"><c:param name="id" value="${idProyecto}" /></c:redirect>
   </c:when>
   <c:otherwise>

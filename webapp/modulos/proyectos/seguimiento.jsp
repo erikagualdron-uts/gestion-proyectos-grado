@@ -110,18 +110,17 @@
   <c:choose>
     <c:when test="${py.responsable_activo != 'SI'}"><c:set var="motivoEntrega" value="El responsable del proyecto está inactivo; mientras tanto el proyecto no recibe documentos." /></c:when>
     <c:when test="${(faseSel == 2 or faseSel == 4 or faseSel == 3 or faseSel == 5) and empty py.id_director}"><c:set var="motivoEntrega" value="El coordinador aún no ha asignado un director a tu proyecto." /></c:when>
-    <c:when test="${faseSel == 6 and (empty py.id_evaluador or empty py.id_director)}"><c:set var="motivoEntrega" value="El coordinador aún no ha asignado el director y el evaluador de tu proyecto." /></c:when>
     <c:when test="${faseAplazada}"><c:set var="puedeEntregar" value="${true}" /></c:when>
-    <c:when test="${faseEnCurso and (faseSel == 1 or faseSel == 2 or faseSel == 4 or faseSel == 6) and empty docVigente}"><c:set var="puedeEntregar" value="${true}" /></c:when>
+    <c:when test="${faseEnCurso and (faseSel == 1 or faseSel == 2 or faseSel == 4) and empty docVigente}"><c:set var="puedeEntregar" value="${true}" /></c:when>
     <c:when test="${faseEnCurso}"><c:set var="motivoEntrega" value="Tu documento está en revisión. Cuando haya una decisión lo verás aquí." /></c:when>
   </c:choose>
 </c:if>
 
 <%-- ¿Puede este usuario calificar la fase? (director, evaluador o comité según la fase) --%>
 <c:set var="puedeCalificar" value="${esFaseActual and faseEnCurso and not empty docVigente and (
-    (sessionScope.rol == 'COORDINADOR' and (faseSel == 1 or faseSel == 3 or faseSel == 5 or faseSel == 6)) or
+    (sessionScope.rol == 'COORDINADOR' and (faseSel == 1 or faseSel == 3 or faseSel == 5)) or
     (soyDirector and faseSel != 1 and faseSel != 6) or
-    (soyEvaluador and (faseSel == 3 or faseSel == 5 or faseSel == 6)))}" />
+    (soyEvaluador and (faseSel == 3 or faseSel == 5)))}" />
 
 <jsp:include page="/WEB-INF/includes/cabecera.jsp" />
 
@@ -171,6 +170,9 @@
     </c:when>
     <c:otherwise>
       <c:choose>
+        <c:when test="${faseSel == 6}">
+          <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-mortarboard"></i></span><h3>Listo para sustentación</h3><p>Se aprobaron todas las fases. En esta fase no se entregan documentos: el estudiante ya puede preparar la sustentación de su trabajo de grado.</p></div></div>
+        </c:when>
         <c:when test="${documentos.rowCount == 0}">
           <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-file-earmark"></i></span><h3>Aún no hay documentos</h3><p>Cuando se entregue el primero, aparecerá aquí con su enlace.</p></div></div>
         </c:when>
@@ -181,7 +183,7 @@
               <tbody>
                 <c:forEach var="d" items="${documentos.rows}">
                   <c:set var="esApoyo" value="${d.nombre == 'Rejilla de evaluación' or d.nombre == 'Turnitin'}" />
-                  <c:set var="completo" value="${faseSel == 1 ? d.com_ok > 0 : ((faseSel == 2 or faseSel == 4) ? d.dir_ok > 0 : (faseSel == 6 ? (d.eva_ok > 0 and d.com_ok > 0) : (d.dir_ok > 0 and d.eva_ok > 0 and d.com_ok > 0)))}" />
+                  <c:set var="completo" value="${faseSel == 1 ? d.com_ok > 0 : ((faseSel == 2 or faseSel == 4) ? d.dir_ok > 0 : (d.dir_ok > 0 and d.eva_ok > 0 and d.com_ok > 0))}" />
                   <c:set var="estadoDoc" value="${d.n_rech > 0 ? 'Rechazado' : (d.n_apl > 0 ? 'Aplazado' : (completo ? 'Aprobado' : 'Pendiente'))}" />
                   <tr class="${d.vigente_txt == 'SI' ? '' : 'doc-anterior'}">
                     <td><div class="fw-semibold"><c:out value="${d.nombre}" /></div><c:if test="${not empty d.comentario}"><div class="texto-sec"><c:out value="${d.comentario}" /></div></c:if></td>
@@ -240,7 +242,7 @@
                     <input type="text" class="form-control" name="comentario" maxlength="300" placeholder="¿Qué cambió? (opcional)">
                   </div>
                   <div class="col-12 col-lg-auto">
-                    <button type="submit" class="btn btn-uts w-100"><c:out value="${faseSel == 1 ? 'Enviar al coordinador' : (faseSel == 6 ? 'Enviar al evaluador y al comité' : 'Enviar al director')}" /></button>
+                    <button type="submit" class="btn btn-uts w-100"><c:out value="${faseSel == 1 ? 'Enviar al coordinador' : 'Enviar al director'}" /></button>
                   </div>
                 </div>
                 <div class="form-text">Los documentos se entregan solo como enlace (Drive, OneDrive, etc.). Asegúrate de que el enlace permita verlo.</div>

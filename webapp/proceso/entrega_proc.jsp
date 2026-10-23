@@ -55,10 +55,7 @@
     <c:when test="${(fase == 2 or fase == 3 or fase == 4 or fase == 5) and empty py.id_director}">
       <c:set var="errorEntrega" value="El coordinador aún no ha asignado un director al proyecto." />
     </c:when>
-    <c:when test="${fase == 6 and (empty py.id_director or empty py.id_evaluador)}">
-      <c:set var="errorEntrega" value="El coordinador aún no ha asignado el director y el evaluador del proyecto." />
-    </c:when>
-    <c:when test="${py.estado_fase != 'APLAZADA' and not (py.estado_fase == 'EN_CURSO' and (fase == 1 or fase == 2 or fase == 4 or fase == 6) and existente.rowCount == 0)}">
+    <c:when test="${py.estado_fase != 'APLAZADA' and not (py.estado_fase == 'EN_CURSO' and (fase == 1 or fase == 2 or fase == 4) and existente.rowCount == 0)}">
       <c:set var="errorEntrega" value="Ahora no puedes entregar un documento: el actual está en revisión o la fase no admite entregas." />
     </c:when>
     <c:when test="${empty enlaceIngresado or fn:length(enlaceIngresado) > 500 or fn:contains(enlaceIngresado, ' ') or not (fn:startsWith(enlaceIngresado, 'https://') or fn:startsWith(enlaceIngresado, 'http://'))}">
@@ -108,17 +105,6 @@
             FROM usuario u JOIN rol r ON r.id_rol = u.id_rol WHERE r.nombre = 'COORDINADOR' AND u.activo = 1 AND u.estado_cuenta = 'APROBADA'
             <sql:param value="${idProyecto}" />
             <sql:param value="${'Pago por validar en el proyecto ' += py.codigo += '.'}" />
-          </sql:update>
-        </c:when>
-        <c:when test="${fase == 6}">
-          <sql:update>
-            INSERT INTO notificacion (id_usuario, id_proyecto, tipo, mensaje)
-            SELECT u.id_usuario, ?, 'ENTREGA', ?
-            FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
-            WHERE (r.nombre = 'COORDINADOR' AND u.activo = 1 AND u.estado_cuenta = 'APROBADA') OR u.id_usuario = ?
-            <sql:param value="${idProyecto}" />
-            <sql:param value="${'Informe final por revisar en el proyecto ' += py.codigo += '.'}" />
-            <sql:param value="${py.id_evaluador}" />
           </sql:update>
         </c:when>
         <c:otherwise>
