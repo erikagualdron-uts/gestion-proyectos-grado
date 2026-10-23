@@ -133,7 +133,7 @@
 </div>
 
 <c:choose>
-  <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><div class="alert alert-success" role="alert"><i class="bi bi-mortarboard me-1"></i><strong>Listo para sustentación.</strong> Se aprobó la revisión final del proyecto <c:out value="${py.codigo}" />.</div></c:when>
+  <c:when test="${py.estado_general == 'APTO_GRADUACION'}"><div class="alert alert-success" role="alert"><i class="bi bi-mortarboard me-1"></i><strong>Listo para sustentación.</strong> Se aprobaron todas las fases del proyecto <c:out value="${py.codigo}" />.</div></c:when>
   <c:when test="${py.estado_general == 'CERRADO'}"><div class="alert alert-danger" role="alert"><i class="bi bi-x-octagon me-1"></i><strong>Proyecto cerrado.</strong> El proceso se cerró por una decisión de rechazo.</div></c:when>
 </c:choose>
 
@@ -144,7 +144,7 @@
       <a class="fase-col ${claseFase} ${f.numero == faseSel ? 'elegida' : ''}" href="${ctx}/modulos/proyectos/seguimiento.jsp?id=${idProyecto}&fase=${f.numero}" aria-label="Fase ${f.numero}: ${fn:escapeXml(f.nombre)}">
         <div class="fase-arriba"><span class="fase-circulo"><c:choose><c:when test="${claseFase == 'superada'}"><i class="bi bi-check-lg"></i></c:when><c:when test="${claseFase == 'rechazada'}"><i class="bi bi-x-lg"></i></c:when><c:otherwise><c:out value="${f.numero}" /></c:otherwise></c:choose></span></div>
         <div class="fase-tarjeta">
-          <small><c:out value="${claseFase == 'superada' ? 'Aprobada' : (claseFase == 'actual' ? 'Fase actual' : (claseFase == 'rechazada' ? 'Rechazada' : 'Pendiente'))}" /></small>
+          <small><c:out value="${claseFase == 'superada' ? (f.numero == 6 ? 'Listo para sustentación' : 'Aprobada') : (claseFase == 'actual' ? 'Fase actual' : (claseFase == 'rechazada' ? 'Rechazada' : 'Pendiente'))}" /></small>
           <strong><c:out value="${f.nombre}" /></strong>
         </div>
       </a>

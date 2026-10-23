@@ -160,3 +160,4 @@
 - **Rejilla del evaluador:** obligatoria para aprobar en la **fase 3** (formato F-DC-124, sección de rejilla) y en la **fase 5** (formato F-DC-129), una vez por versión.
 - **Fase 6 (Revisión final):** ya no tiene entrega ni revisión. Se alcanza sola cuando el evaluador y el comité aprueban la fase 5, y deja el proyecto **"Listo para sustentación"**. La tarjeta 6 se conserva como estado final.
 - Decisión: el informe de similitud (Turnitin) se exige solo al director en la fase 5; en la fase 3 no se pide.
+- En el seguimiento, el aviso final dice "Se aprobaron todas las fases del proyecto" y la tarjeta de la fase 6 muestra "Listo para sustentación" en lugar de "Aprobada".
