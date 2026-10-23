@@ -53,7 +53,9 @@
 
 <sql:query var="solicitudes" dataSource="${bd}">
   SELECT pr.id_director, pr.id_evaluador, q.id_pqrs, q.codigo, q.tipo, q.asunto, q.descripcion, q.enlace_soporte, q.estado, q.respuesta, q.id_proyecto,
-         s.nombre_completo AS solicitante, p.codigo AS codigo_proyecto, rv.nombre_completo AS resuelto_por, nd.nombre_completo AS nuevo_director,
+         s.nombre_completo AS solicitante, p.codigo AS codigo_proyecto, p.titulo AS titulo_proyecto, rv.nombre_completo AS resuelto_por, nd.nombre_completo AS nuevo_director,
+         (SELECT du.nombre_completo FROM usuario du WHERE du.id_usuario = pr.id_director) AS director_actual_nombre,
+         (SELECT eu.nombre_completo FROM usuario eu WHERE eu.id_usuario = pr.id_evaluador) AS evaluador_actual_nombre,
          DATE_FORMAT(q.fecha_creacion, '%d/%m/%Y %H:%i') AS fecha, DATE_FORMAT(q.fecha_resolucion, '%d/%m/%Y %H:%i') AS fecha_resolucion
   ${desdePqrs} ${filtrosPqrs}
   ORDER BY (q.estado = 'PENDIENTE') DESC, q.fecha_creacion DESC, q.id_pqrs DESC
@@ -78,7 +80,10 @@
 <%-- Coordinador: docentes activos para el cambio de director --%>
 <c:if test="${esCoordinador}">
   <sql:query var="docentes" dataSource="${bd}">
-    SELECT u.id_usuario, u.nombre_completo FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
+    SELECT u.id_usuario, u.nombre_completo,
+           (SELECT COUNT(*) FROM proyecto pr WHERE pr.id_director = u.id_usuario AND pr.estado_general = 'EN_CURSO') AS n_dirige,
+           (SELECT COUNT(*) FROM proyecto pr WHERE pr.id_evaluador = u.id_usuario AND pr.estado_general = 'EN_CURSO') AS n_evalua
+    FROM usuario u JOIN rol r ON r.id_rol = u.id_rol
     WHERE r.nombre = 'DOCENTE' AND u.estado_cuenta = 'APROBADA' AND u.activo = 1 ORDER BY u.nombre_completo
   </sql:query>
 </c:if>
@@ -204,7 +209,10 @@
                 <c:if test="${esCoordinador}">
                   <span class="d-inline-block" title="${s.estado == 'PENDIENTE' ? 'Resolver la solicitud' : 'Ya resuelta'}"><button type="button" class="btn btn-outline-uts btn-icono" ${s.estado == 'PENDIENTE' ? '' : 'disabled'} data-bs-toggle="modal" data-bs-target="#modalResolver" aria-label="Gestionar ${fn:escapeXml(s.codigo)}"
                           data-id="${s.id_pqrs}" data-tipo="${s.tipo}" data-codigo="${fn:escapeXml(s.codigo)}" data-tipo-texto="${tipoTexto}" data-asunto="${fn:escapeXml(s.asunto)}"
-                          data-descripcion="${fn:escapeXml(s.descripcion)}" data-solicitante="${fn:escapeXml(s.solicitante)}" data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-director-actual="${s.id_director}" data-evaluador-actual="${s.id_evaluador}"><i class="bi bi-pencil"></i></button></span>
+                          data-descripcion="${fn:escapeXml(s.descripcion)}" data-solicitante="${fn:escapeXml(s.solicitante)}" data-soporte="${fn:escapeXml(s.enlace_soporte)}" data-director-actual="${s.id_director}" data-evaluador-actual="${s.id_evaluador}"
+                          data-proyecto-texto="${fn:escapeXml(s.codigo_proyecto)} · ${fn:escapeXml(s.titulo_proyecto)}"
+                          data-director-nombre="${fn:escapeXml(empty s.director_actual_nombre ? 'Sin asignar' : s.director_actual_nombre)}"
+                          data-evaluador-nombre="${fn:escapeXml(empty s.evaluador_actual_nombre ? 'Sin asignar' : s.evaluador_actual_nombre)}"><i class="bi bi-pencil"></i></button></span>
                 </c:if>
               </td>
             </tr>
@@ -243,7 +251,7 @@
           <c:if test="${sessionScope.rol != 'ESTUDIANTE'}"><div class="col-sm-6"><div class="dato-etiqueta">Solicitante</div><div class="dato-valor" data-llenar="solicitante"></div></div></c:if>
           <div class="col-sm-6"><div class="dato-etiqueta">Proyecto</div><div class="dato-valor" data-llenar="proyecto"></div></div>
         </div>
-        <div data-mostrar-si="tipo:CAMBIO_DIRECTOR" hidden><div class="dato-etiqueta">Nuevo director</div><div class="dato-valor" data-llenar="nuevoDirector"></div></div>
+        <div data-mostrar-si="nuevoDirector:*" hidden><div class="dato-etiqueta">Nuevo director</div><div class="dato-valor" data-llenar="nuevoDirector"></div></div>
         <div data-mostrar-si="soporte:*" hidden>
           <div class="dato-etiqueta">Soporte</div>
           <div class="dato-valor"><a class="fw-semibold" data-llenar-href="soporte" target="_blank" rel="noopener noreferrer">Abrir soporte <i class="bi bi-box-arrow-up-right"></i></a></div>
@@ -271,13 +279,23 @@
           <div class="modal-body pt-0">
             <div class="dato-etiqueta">Asunto</div><div class="dato-valor" data-llenar="asunto"></div>
             <div class="dato-etiqueta">Descripción</div><div class="dato-valor" style="white-space: pre-line" data-llenar="descripcion"></div>
-            <div class="dato-etiqueta">Solicitante</div><div class="dato-valor" data-llenar="solicitante"></div>
-            <div class="dato-etiqueta">Enlace del soporte</div><div class="dato-valor" style="word-break: break-all" data-llenar="soporte"></div>
+            <div class="row">
+              <div class="col-sm-6"><div class="dato-etiqueta">Solicitante</div><div class="dato-valor" data-llenar="solicitante"></div></div>
+              <div class="col-sm-6"><div class="dato-etiqueta">Proyecto</div><div class="dato-valor" data-llenar="proyectoTexto"></div></div>
+            </div>
+            <div data-mostrar-si="soporte:*" hidden>
+              <div class="dato-etiqueta">Soporte</div>
+              <div class="dato-valor"><a class="fw-semibold" data-llenar-href="soporte" target="_blank" rel="noopener noreferrer">Abrir soporte <i class="bi bi-box-arrow-up-right"></i></a></div>
+            </div>
             <div class="mb-3" data-mostrar-si="tipo:CAMBIO_DIRECTOR" hidden>
+              <div class="row">
+                <div class="col-sm-6"><div class="dato-etiqueta">Director actual</div><div class="dato-valor mb-2" data-llenar="directorNombre"></div></div>
+                <div class="col-sm-6"><div class="dato-etiqueta">Evaluador del proyecto</div><div class="dato-valor mb-2" data-llenar="evaluadorNombre"></div></div>
+              </div>
               <label for="nuevoDirector" class="form-label">Nuevo director <span class="texto-sec">(obligatorio para aprobar el cambio)</span></label>
               <select class="form-select" id="nuevoDirector" name="nuevoDirector" data-obligatoria-aprobar data-excluir="directorActual,evaluadorActual">
                 <option value="">Selecciona un docente</option>
-                <c:forEach var="d" items="${docentes.rows}"><option value="${d.id_usuario}"><c:out value="${d.nombre_completo}" /></option></c:forEach>
+                <c:forEach var="d" items="${docentes.rows}"><option value="${d.id_usuario}"><c:out value="${d.nombre_completo}" /> · dirige ${d.n_dirige}, evalúa ${d.n_evalua}</option></c:forEach>
               </select>
               <div class="form-text">No se puede elegir al director actual ni al evaluador del proyecto.</div>
               <div class="invalid-feedback">Selecciona el nuevo director.</div>

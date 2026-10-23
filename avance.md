@@ -300,6 +300,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - El último movimiento ya muestra "PQRS resuelta" y demás acciones con su nombre (antes salía el código, como "RESOLVER").
 - La actividad muestra los 30 días completos (con ceros), las barras son menos gruesas y la pestaña Proyectos junta director y evaluador en una columna "Docentes" y evita partir la etiqueta de estado.
 
+### Ventanas de PQRS del coordinador (23/10/2026)
+- En el detalle, "Nuevo director" solo aparece cuando ya existe. En "Resolver": se muestra el proyecto (código y título), el soporte como enlace solo si hay, el director actual y el evaluador del proyecto en los cambios de director, y cada docente de la lista con su carga ("dirige 1, evalúa 0").
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
