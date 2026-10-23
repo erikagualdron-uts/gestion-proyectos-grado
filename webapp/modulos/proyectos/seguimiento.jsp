@@ -235,6 +235,7 @@
             </div>
           </div>
         </c:when>
+        <c:when test="${documentos.rowCount == 0 and soyResponsable and esFaseActual and puedeEntregar}"><%-- el formulario de abajo hace de llamada a la acción --%></c:when>
         <c:when test="${documentos.rowCount == 0}">
           <div class="px-4 pb-4"><div class="vacio"><span class="icono-circulo"><i class="bi bi-file-earmark"></i></span><c:choose><c:when test="${pf.estado == 'APROBADA'}"><h3>Fase aprobada sin documentos registrados</h3><p>El proyecto avanzó a la siguiente fase; esta fase no tiene documentos asociados.</p></c:when><c:otherwise><h3>Aún no hay documentos</h3><p><c:out value="${soyResponsable and esFaseActual ? 'Entrega tu documento con el formulario de abajo y aparecerá aquí con su enlace.' : 'Cuando se entregue el primero, aparecerá aquí con su enlace.'}" /></p></c:otherwise></c:choose></div></div>
         </c:when>
@@ -294,20 +295,22 @@
               <form method="post" action="${ctx}/proceso/entrega_proc.jsp" class="needs-validation" novalidate>
                 <input type="hidden" name="csrf" value="<c:out value='${sessionScope.csrf}' />">
                 <input type="hidden" name="id" value="${idProyecto}">
-                <label for="enlace" class="form-label"><c:out value="${faseAplazada ? 'Nueva versión' : 'Documento'}" /> (<c:out value="${nombrePrincipal}" />): enlace al documento</label>
+                <h3 class="h6 fw-bold mb-3" style="color: var(--verde-bosque)"><i class="bi bi-upload me-1"></i><c:out value="${faseAplazada ? 'Envía una nueva versión: ' : 'Entrega: '}" /><c:out value="${nombrePrincipal}" /></h3>
+                <label for="enlace" class="form-label">Enlace al documento</label>
                 <div class="row g-2">
                   <div class="col-12 col-lg">
                     <input type="url" class="form-control" id="enlace" name="enlace" maxlength="500" placeholder="https://drive.google.com/..." required>
                     <div class="invalid-feedback">Ingresa un enlace que empiece por http:// o https://.</div>
                   </div>
                   <div class="col-12 col-lg-4">
-                    <input type="text" class="form-control" name="comentario" maxlength="300" placeholder="¿Qué cambió? (opcional)">
+                    <input type="text" class="form-control" name="comentario" maxlength="300" placeholder="${faseAplazada ? '¿Qué cambió? (opcional)' : 'Comentario (opcional)'}">
                   </div>
                   <div class="col-12 col-lg-auto">
                     <button type="submit" class="btn btn-uts w-100"><c:out value="${faseSel == 1 ? 'Enviar al coordinador' : 'Enviar al director'}" /></button>
                   </div>
                 </div>
-                <div class="form-text">Los documentos se entregan solo como enlace (Drive, OneDrive, etc.). Asegúrate de que el enlace permita verlo.</div>
+                <div class="form-text">Los documentos se entregan solo como enlace (Drive, OneDrive, etc.). Comprueba que cualquier persona con el enlace pueda abrirlo.</div>
+                <div class="form-text"><i class="bi bi-arrow-right-circle me-1"></i><c:out value="${faseSel == 1 ? 'El coordinador validará tu pago y avanzarás a la Fase 2.' : 'El director revisará tu documento y te avisaremos con su decisión.'}" /></div>
               </form>
             </c:when>
             <c:when test="${not empty motivoEntrega}"><div class="texto-sec"><i class="bi bi-info-circle me-1"></i><c:out value="${motivoEntrega}" /></div></c:when>

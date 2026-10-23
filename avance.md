@@ -330,6 +330,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - Inicio de sesión: "Mantener sesión activa" ya no viene marcada por defecto y se indican los dominios de correo de cada tipo de usuario.
 - Registro: asteriscos en los campos obligatorios, ejemplos en nombre, documento y correo, nota sobre el dominio y las reglas de la contraseña, y aviso del uso de los datos personales (Ley 1581 de 2012).
 
+### Formulario de entrega del estudiante (23/10/2026)
+- Cuando el responsable puede entregar y aún no hay documentos, se muestra solo el formulario con el título "Entrega: Comprobante de pago" (en vez del cuadro "Aún no hay documentos" y el formulario aparte); la etiqueta es "Enlace al documento", el comentario dice "Comentario (opcional)" en la primera entrega y "¿Qué cambió?" solo al enviar una nueva versión, y se explica qué pasa después de enviar.
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)
