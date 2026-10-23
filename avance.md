@@ -271,7 +271,7 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 - El menú de notificaciones separa "Nuevas" (resaltadas, arriba) de "Anteriores" (leídas, en gris y más compactas). Los avisos leídos no se borran; los más antiguos salen solos porque solo se muestran los últimos 20.
 
 ### Base documental con enlaces reales (23/10/2026)
-- Se cargaron los seis enlaces (calendario académico y reglamentos de la UTS; formatos, propuesta F-DC-124 e informe F-DC-128 en Dropbox). El calendario académico ya aparece como tarjeta en el inicio.
+- Se cargaron los seis enlaces (calendario académico y reglamentos de la UTS; formatos, propuesta F-DC-124 e informe F-DC-125 en Dropbox). El calendario académico ya aparece como tarjeta en el inicio.
 - Para quien no administra, las tarjetas sin enlace dicen "Aún no disponible" y, si no hay ninguno, un aviso; las que tienen enlace muestran "Abrir". El enlace de cada tarjeta ahora se escapa con `c:out`.
 - Los enlaces de Dropbox (con clave de acceso compartida) no están en `datos_iniciales.sql` para no publicarlos en el repositorio; se cargan desde "Administrar enlaces".
 
