@@ -23,7 +23,7 @@
 <sql:query var="eventos" dataSource="${bd}">
   SELECT ${columnasAuditoria} ${desdeAuditoria}
   ORDER BY h.fecha_evento DESC, h.id_historial DESC LIMIT 5000
-  <sql:param value="${aDesde}" /><sql:param value="${aDesde}" /><sql:param value="${aHasta}" /><sql:param value="${aHasta}" />
+  <sql:param value="${aDesde}" /><sql:param value="${aDesdeP}" /><sql:param value="${aHasta}" /><sql:param value="${aHastaP}" />
   <sql:param value="${aUsuario}" /><sql:param value="${aUsuario}" /><sql:param value="${aEntidad}" /><sql:param value="${aEntidad}" />
   <sql:param value="${aAccion}" /><sql:param value="${aAccion}" />
   <sql:param value="${aq}" /><sql:param value="${aqLike}" /><sql:param value="${aqLike}" /><sql:param value="${aqLike}" />

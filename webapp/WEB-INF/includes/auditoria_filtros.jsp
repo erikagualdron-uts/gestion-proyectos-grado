@@ -1,11 +1,14 @@
 <%-- Filtros y consulta comunes de la bitácora de auditoría (informe_coordinador.jsp e informe_excel.jsp).
      Define: aDesde, aHasta, aUsuario, aEntidad, aAccion, aq, aqLike, el fragmento casoAccion y los textos SQL
      desdeAuditoria y columnasAuditoria.
-     Parámetros de desdeAuditoria, en orden: desde x2, hasta x2, usuario x2, entidad x2, acción x2, aq, aqLike x3. --%>
+     Parámetros de desdeAuditoria, en orden: desde (aDesde, aDesdeP), hasta (aHasta, aHastaP), usuario x2, entidad x2, acción x2, aq, aqLike x3. --%>
 <c:set var="aq" value="${fn:trim(param.aq)}" />
 <c:set var="aqLike" value="%${aq}%" />
 <c:set var="aDesde" value="${not empty param.desde and param.desde.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}') ? param.desde : ''}" />
 <c:set var="aHasta" value="${not empty param.hasta and param.hasta.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}') ? param.hasta : ''}" />
+<%-- Valores de reemplazo para la comparación de fechas cuando el filtro está vacío (MySQL no compara una fecha con ''). --%>
+<c:set var="aDesdeP" value="${empty aDesde ? '1970-01-01' : aDesde}" />
+<c:set var="aHastaP" value="${empty aHasta ? '2999-12-31' : aHasta}" />
 <c:catch var="errorUsuarioAud"><c:set var="aUsuario" value="${empty param.usuario ? 0 : param.usuario + 0}" /></c:catch>
 <c:if test="${not empty errorUsuarioAud or aUsuario < 0}"><c:set var="aUsuario" value="${0}" /></c:if>
 <c:set var="aEntidad" value="${fn:contains(',USUARIO,IDEA,PROPUESTA,PROYECTO,FASE,DOCUMENTO,PQRS,', ',' += param.entidad += ',') ? param.entidad : ''}" />
