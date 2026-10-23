@@ -8,7 +8,7 @@
 <%-- Avisos de la campana (RF-57): "abrir" marca el aviso como leído y lleva al módulo que corresponde; "todas" marca todos.
      Solo se tocan los avisos del propio usuario. Después de "todas" se vuelve a la página donde estaba (solo rutas internas). --%>
 <c:set var="destinoVolver" value="/inicio.jsp" />
-<c:if test="${not empty param.volver and param.volver.matches('^/[A-Za-z0-9_./?=&%-]*$') and not fn:startsWith(param.volver, '//') and fn:length(param.volver) < 300}">
+<c:if test="${not empty param.volver and param.volver.matches('^/[A-Za-z0-9_./?=&%-]*$') and not fn:contains(param.volver, '//') and fn:length(param.volver) < 300}">
   <c:set var="destinoVolver" value="${param.volver}" />
 </c:if>
 
