@@ -278,3 +278,8 @@ a.resumen:hover { border-color: var(--verde-esmeralda); box-shadow: var(--sombra
 .tarjeta.resumen-activa { border-color: var(--verde-esmeralda); box-shadow: 0 0 0 2px rgba(20, 104, 75, .18); }
 .btn-icono-vacio { display: inline-block; width: 38px; height: 38px; margin-left: 6px; vertical-align: middle; }
 .btn-outline-uts:disabled { opacity: .4; background: #fff; cursor: not-allowed; }
+
+/* Etiqueta del tipo de registro (idea de docente o propuesta de estudiante) */
+.etiqueta-tipo { display: inline-block; margin-top: 4px; padding: 1px 8px; border-radius: 999px; font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.etiqueta-tipo.idea { background: #F1F6C2; color: #5A6200; }
+.etiqueta-tipo.propuesta { background: var(--verde-claro); color: var(--verde-esmeralda); }

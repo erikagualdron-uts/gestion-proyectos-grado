@@ -314,6 +314,9 @@ Reemplaza la pantalla "Informes de estado" (solo coordinador, `modulos/informes/
 ### Se quitan Imprimir y Descargar PDF (23/10/2026)
 - Decisión de la estudiante: el sistema no ofrece imprimir ni exportar informes. Se eliminó el botón del Panel de control, la librería `html2pdf.js`, `js/pdf.js`, el reemplazo de gráficos por imágenes y los estilos de impresión del panel (los gráficos desbordaban al imprimir y al generar el PDF).
 
+### Etiqueta de tipo en Propuestas Banco (23/10/2026)
+- Bajo el código aparece una etiqueta "Idea" (lima) o "Propuesta" (verde) para coordinador y docente, para distinguir a simple vista las ideas de docentes (ID-) de las propuestas de estudiantes (PG-).
+
 ---
 
 ## Diferencias entre el sistema construido y el documento del sistema (PDF)

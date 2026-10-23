@@ -183,7 +183,7 @@
           <c:forEach var="f" items="${filas.rows}">
             <c:set var="estadoTexto" value="${f.estado == 'APROBADO' ? 'Aprobado' : (f.estado == 'APLAZADO' ? 'Aplazado' : (f.estado == 'RECHAZADO' ? 'Rechazado' : 'Pendiente'))}" />
             <tr>
-              <td class="fw-bold"><c:out value="${f.codigo}" /></td>
+              <td class="fw-bold"><c:out value="${f.codigo}" /><c:if test="${sessionScope.rol != 'ESTUDIANTE'}"><div><span class="etiqueta-tipo ${f.tipo == 'IDEA' ? 'idea' : 'propuesta'}">${f.tipo == 'IDEA' ? 'Idea' : 'Propuesta'}</span></div></c:if></td>
               <td style="min-width: 240px"><div><c:out value="${f.titulo}" /></div><div class="texto-sec"><c:out value="${empty f.relacion_texto ? f.origen_texto : f.relacion_texto}" /></div></td>
               <td>
                 <c:choose>
